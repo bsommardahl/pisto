@@ -2,16 +2,13 @@
 
 let component = ReasonReact.statelessComponent("App");
 
-
 let make = ( _children) => {
-  ...component,
+  ...component,  
   render: (_self) =>
     <div className="App">
       <div className="App-header">
         <div className="Title"> (ReasonReact.stringToElement("Cafe")) </div>
       </div>
-      <div className="App-intro">
-        <StartNewOrder />
-      </div>
+      <CafeRouter />
     </div>
 };

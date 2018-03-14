@@ -1,30 +1,22 @@
-type action = 
-  | NewOrder
-  | Reset;
-
 let component = ReasonReact.statelessComponent("StartNewOrder");
 
-let goStartNewOrder = (_event) => Js.log("clicked");
+let onNameChange: event => (
+  ReasonReact.Update({customerName: event.target.value})
+);
 
 let make = _children => {
   ...component,
-  reducer: (action, state) => switch(action) {
-    | NewOrder => NoneReasonReact.Router.url({ path: "/newOrder" });        
-    | Reset => None
-    },    
   render: _self =>
-    let onClick = (_event) => _self.send(NewOrder);
-    <div id="startNewOrder">
-            <input
-                _type="text"
-                name="customerName"
-                id="customerName"
-                placeholder="Nombre del Cliente"
-                required=Js.true_
-            />
-            <button onClick>
-                (ReasonReact.stringToElement("Empezar Orden"))
-            </button>
-    </div>
-    
+    <div id="newOrder">
+      <input
+        _type="text"
+        name="customerName"
+        id="customerName"
+        placeholder="Nombre del Cliente"
+        required=Js.true_
+        onChange=(onNameChange)
+      />
+      /* Here, the button should push to /NewOrder?customerName=john and the view changes */
+      <Link href=""> (ReasonReact.stringToElement("Empezar Orden")) </Link>
+    </div>,
 };
