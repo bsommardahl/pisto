@@ -1,9 +1,6 @@
 let component = ReasonReact.statelessComponent("StartNewOrder");
 
-let onNameChange: event => (
-  ReasonReact.Update({customerName: event.target.value})
-);
-
+/* Here, the button should push to /NewOrder?customerName=john and the view changes */
 let make = _children => {
   ...component,
   render: _self =>
@@ -14,9 +11,7 @@ let make = _children => {
         id="customerName"
         placeholder="Nombre del Cliente"
         required=Js.true_
-        onChange=(onNameChange)
       />
-      /* Here, the button should push to /NewOrder?customerName=john and the view changes */
-      <Link href=""> (ReasonReact.stringToElement("Empezar Orden")) </Link>
+      <button> (ReasonReact.stringToElement("Empezar Orden")) </button>
     </div>,
 };

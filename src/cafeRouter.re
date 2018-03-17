@@ -1,52 +1,50 @@
-/* Not sure what's going on here with this build error*/
-/* This router is where I will take the url and render the appropriate component */
+type view =
+  | Home
+  | Order;
+
 type customerName = string;
 
-type orderId = int;
-
-type route =
-  | Home
-  | NewOrder(customerName)
-  | Order(orderId);
+type state = {currentView: view};
 
 type action =
-  | ChangeRoute(route);
-
-let reducer = (action, _state) =>
-  switch (action) {
-  | ChangeRoute(route) => ReasonReact.Update({route: route})
-  };
-
-let mapUrlToRoute = (url: ReasonReact.Router.url) =>
-  switch (url.path) {
-  | _ => Home
-  /* | ["newOrder"] => NewOrder(url.search)
-     | ["order", _] => Order(1) */
-  };
+  | ShowHome
+  | ShowOrder;
 
 let component = ReasonReact.reducerComponent("CafeRouter");
 
+let joinStrings = l => l |> Array.of_list |> Js.Array.joinWith(",");
+
 let make = _children => {
   ...component,
-  reducer,
-  initialState: () => {route: Home},
+  initialState: () => {currentView: Home},
+  reducer: (action, _state) =>
+    switch (action) {
+    | ShowHome => ReasonReact.Update({currentView: Home})
+    | ShowOrder => ReasonReact.Update({currentView: Order})
+    },
   subscriptions: self => [
     Sub(
       () =>
         ReasonReact.Router.watchUrl(url =>
-          self.send(ChangeRoute(url |> mapUrlToRoute))
+          switch (url.path) {
+          | [] => self.send(ShowHome)
+          | ["order"] => self.send(ShowOrder)
+          | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
+          }
         ),
       ReasonReact.Router.unwatchUrl,
     ),
   ],
-  render: self =>
+  render: self => {
+    let onStartNewOrder = customerName =>
+      ReasonReact.Router.push("order?customerName=" ++ customerName);
     <div>
       (
-        switch (self.state.route) {
-        | Home => <ActiveOrders />
-        | NewOrder(_) => <Order isNew />
-        | Order(_) => <Order orderId=1 />
+        switch (self.state.currentView) {
+        | Home => <Home onStartNewOrder />
+        | Order => <Order />
         }
       )
-    </div>,
+    </div>;
+  },
 };
