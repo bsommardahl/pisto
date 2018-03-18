@@ -5,12 +5,14 @@ module Order = {
     salePrice: float,
   };
   type order = {
-    id: option(string),
+    id: option(int),
     customerName: string,
     amountPaid: option(float),
     orderItems: list(orderItem),
     paymentTakenBy: option(string),
     paidOn: option(float),
     createdOn: float,
+    lastUpdated: option(float),
+    removed: bool,
   };
 };

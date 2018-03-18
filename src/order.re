@@ -34,17 +34,20 @@ let buildNewOrder = (customerName: string) : OrderData.Order.order => {
   paidOn: None,
   amountPaid: None,
   paymentTakenBy: None,
+  lastUpdated: None,
+  removed: false,
 };
 
 let loadExistingOrder = (orderId: int) : OrderData.Order.order => {
-  /* get order from store */
-  id: Some(string_of_int(orderId)),
+  id: Some(orderId),
   customerName: "n/a",
   orderItems: [],
   createdOn: Js.Date.now(),
   paidOn: None,
   amountPaid: None,
   paymentTakenBy: None,
+  lastUpdated: None,
+  removed: false,
 };
 
 let component = ReasonReact.reducerComponent("Order");
@@ -107,7 +110,7 @@ let make = (~finishedWithOrder: OrderData.Order.order => unit, _children) => {
       (
         switch (self.state.order.id) {
         | None => <div />
-        | Some(id) => <h2> (s("Id:")) (s(id)) </h2>
+        | Some(id) => <h2> (s("Id:")) (s(string_of_int(id))) </h2>
         }
       )
       (
