@@ -1,19 +1,17 @@
 open OrderData;
 
-open Util;
-
 type state = {orders: list(Order.order)};
 
 type action =
   | SelectOrder(Order.order);
 
-let orders = CafeStore.getOpenOrders(CafeStore.retrieveAllOrders());
+let getOrders = () => CafeStore.getOpenOrders(CafeStore.retrieveAllOrders());
 
 let component = ReasonReact.reducerComponent("OpenOrders");
 
 let make = _children => {
   ...component,
-  initialState: () => {orders: orders},
+  initialState: () => {orders: getOrders()},
   reducer: (action, _state) =>
     switch (action) {
     | SelectOrder(order) =>

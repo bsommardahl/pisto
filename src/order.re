@@ -35,17 +35,8 @@ let buildNewOrder = (customerName: string) : OrderData.Order.order => {
   removed: false,
 };
 
-let loadExistingOrder = (orderId: int) : OrderData.Order.order => {
-  id: Some(orderId),
-  customerName: "n/a",
-  orderItems: [],
-  createdOn: Js.Date.now(),
-  paidOn: None,
-  amountPaid: None,
-  paymentTakenBy: None,
-  lastUpdated: None,
-  removed: false,
-};
+let loadExistingOrder = (orderId: int) : OrderData.Order.order =>
+  CafeStore.find(orderId, CafeStore.retrieveAllOrders());
 
 let component = ReasonReact.reducerComponent("Order");
 
