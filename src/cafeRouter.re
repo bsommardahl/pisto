@@ -38,7 +38,10 @@ let make = _children => {
   render: self => {
     let onStartNewOrder = customerName =>
       ReasonReact.Router.push("order?customerName=" ++ customerName);
-    let finishedWithOrder = (_) => self.send(ShowHome);
+    let finishedWithOrder = (_) => {
+      Js.Console.log("Done with order.");
+      self.send(ShowHome);
+    };
     <div>
       (
         switch (self.state.currentView) {

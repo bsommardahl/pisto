@@ -1,6 +1,5 @@
 let component = ReasonReact.statelessComponent("StartNewOrder");
 
-/* Here, the button should push to /NewOrder?customerName=john and the view changes */
 let make = _children => {
   ...component,
   render: _self =>

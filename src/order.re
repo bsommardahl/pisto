@@ -12,13 +12,10 @@ type state = {
 };
 
 type action =
-  | Save
-  | Pay
-  | Delete
-  | Close
   | SelectTag(string)
   | SelectProduct(Product.t)
-  | DeselectTag;
+  | DeselectTag
+  | CloseOrderScreen;
 
 let buildOrderItem = (product: Product.t) : OrderData.Order.orderItem => {
   product,
@@ -59,10 +56,8 @@ let make = (~finishedWithOrder: OrderData.Order.order => unit, _children) => {
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
-    | Save => ReasonReact.NoUpdate
-    | Pay => ReasonReact.NoUpdate
-    | Delete => ReasonReact.NoUpdate
-    | Close => ReasonReact.NoUpdate
+    | CloseOrderScreen =>
+      ReasonReact.SideEffects((_self => finishedWithOrder(state.order)))
     | SelectProduct(product) =>
       ReasonReact.Update({
         ...state,
@@ -136,7 +131,10 @@ let make = (~finishedWithOrder: OrderData.Order.order => unit, _children) => {
       )
       <OrderItems orderItems=self.state.order.orderItems />
       <OrderTotals orderItems=self.state.order.orderItems />
-      <OrderActions order=self.state.order onFinish=finishedWithOrder />
+      <OrderActions
+        order=self.state.order
+        onFinish=((_) => self.send(CloseOrderScreen))
+      />
     </div>;
   },
 };
