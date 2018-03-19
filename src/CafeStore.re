@@ -13,6 +13,7 @@ let retrieveAllOrders = () : list(OrderData.Order.order) => {
   Js.Console.log(
     string_of_int(orders |> List.length) ++ " orders retrieved.",
   );
+  /* Js.Console.log(Js.Json.stringify(Array.of_list(orders))); */
   orders;
 };
 
@@ -51,6 +52,44 @@ let add =
     (order: OrderData.Order.order, allOrders: list(OrderData.Order.order)) => {
   let orders = List.concat([[order], allOrders]);
   Js.Console.log("Order added to array.");
+  orders;
+};
+
+let getOpenOrders =
+    (allOrders: list(OrderData.Order.order))
+    : list(OrderData.Order.order) => {
+  let orders =
+    allOrders
+    |> List.filter((o: OrderData.Order.order) =>
+         switch (OrderData.Order.(o.paidOn)) {
+         | None => true
+         | Some(paidOn) =>
+           Js.Console.log(string_of_float(paidOn));
+           false;
+         }
+       );
+  Js.Console.log(
+    string_of_int(orders |> List.length) ++ " open orders found.",
+  );
+  orders;
+};
+
+let getClosedOrders =
+    (allOrders: list(OrderData.Order.order))
+    : list(OrderData.Order.order) => {
+  let orders =
+    allOrders
+    |> List.filter((o: OrderData.Order.order) =>
+         switch (OrderData.Order.(o.paidOn)) {
+         | None => false
+         | Some(paidOn) =>
+           Js.Console.log(string_of_float(paidOn));
+           true;
+         }
+       );
+  Js.Console.log(
+    string_of_int(orders |> List.length) ++ " closed orders found.",
+  );
   orders;
 };
 

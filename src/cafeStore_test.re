@@ -52,6 +52,34 @@ describe("the cafe store", () => {
       expect(result.customerName) |> toEqual("Emanuel");
     })
   );
+  describe("querying for closed orders", () =>
+    test("it should return only the open orders", () => {
+      let emanuel = {...buildOrder(3, "Emanuel"), paidOn: Some(600.00)};
+      let nathan = {...buildOrder(50, "Nathan"), paidOn: Some(500.00)};
+      let allOrders = [
+        buildOrder(1, "Byron"),
+        buildOrder(2, "Pamela"),
+        emanuel,
+        nathan,
+      ];
+      let result = CafeStore.getClosedOrders(allOrders);
+      expect(result) |> toEqual([emanuel, nathan]);
+    })
+  );
+  describe("querying for open orders", () =>
+    test("it should return only the open orders", () => {
+      let byron = buildOrder(1, "Byron");
+      let pamela = buildOrder(2, "Pamela");
+      let allOrders = [
+        byron,
+        pamela,
+        {...buildOrder(3, "Emanuel"), paidOn: Some(600.00)},
+        {...buildOrder(50, "Nathan"), paidOn: Some(500.00)},
+      ];
+      let result = CafeStore.getOpenOrders(allOrders);
+      expect(result) |> toEqual([byron, pamela]);
+    })
+  );
   describe("removing an order by id", () =>
     test("it should not be in the list anymore", () => {
       let allOrders = [

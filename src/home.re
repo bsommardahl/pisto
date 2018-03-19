@@ -30,6 +30,7 @@ let make = (~onStartNewOrder, _children) => {
       <button onClick=(_event => onStartNewOrder(self.state.customerName))>
         (s("Start Order"))
       </button>
+      <OpenOrders />
     </div>;
   },
 };
