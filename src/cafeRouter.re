@@ -43,7 +43,7 @@ let make = _children => {
       (
         switch (self.state.currentView) {
         | Home => <Home onStartNewOrder />
-        | Order => <Order finishedWithOrder />
+        | Order => <Order finishedWithOrder />        
         }
       )
     </div>;

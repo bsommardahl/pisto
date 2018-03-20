@@ -1,7 +1,7 @@
 open Util;
 
 let saveToStore = (order: OrderData.Order.order) => {
-  Js.Console.log("Persisting order....");
+  /* Js.Console.log("Persisting order....");
   switch (order.id) {
   | None =>
     let allOrders = CafeStore.retrieveAllOrders();
@@ -18,18 +18,18 @@ let saveToStore = (order: OrderData.Order.order) => {
     |> CafeStore.update({...order, lastUpdated: Some(Js.Date.now())})
     |> CafeStore.persistAllOrders;
     Js.Console.log("Modifying order....");
-  };
+  }; */
 };
 
-let removeFromStore = (order: OrderData.Order.order) =>
-  switch (order.id) {
+let removeFromStore = (order: OrderData.Order.order) => {
+  /* switch (order.id) {
   | None => ()
   | Some(id) =>
     CafeStore.retrieveAllOrders()
     |> CafeStore.remove(id)
     |> CafeStore.persistAllOrders
-  };
-
+  }; */
+};
 type state = {
   order: OrderData.Order.order,
   onFinish: OrderData.Order.order => unit,

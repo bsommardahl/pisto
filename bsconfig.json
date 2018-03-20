@@ -1,8 +1,6 @@
 {
   "name": "reason-scripts",
-  "sources": [
-    "src"
-  ],
+  "sources": ["src", "src/openOrders"],
   "bs-dependencies": [
     "reason-react",
     "bs-jest"

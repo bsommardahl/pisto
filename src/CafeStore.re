@@ -1,36 +1,11 @@
-[@bs.val] external unsafeJsonParse : string => 'a = "JSON.parse";
+open Pouchdb;
 
-let namespace = "cafe-orders";
 
-let retrieveAllOrders = () : list(OrderData.Order.order) => {
-  let orders =
-    Dom.Storage.(
-      switch (localStorage |> getItem(namespace)) {
-      | Some(json) => unsafeJsonParse(json)
-      | None => []
-      }
-    );
-  Js.Console.log(
-    string_of_int(orders |> List.length) ++ " orders retrieved.",
-  );
-  /* Js.Console.log(Js.Json.stringify(Array.of_list(orders))); */
-  orders;
-};
 
-let persistAllOrders = (allOrders: list(OrderData.Order.order)) => {
-  Dom.Storage.(
-    switch (allOrders |> Js.Json.stringifyAny) {
-    | Some(json) => setItem(namespace, json, localStorage)
-    | None => ()
-    }
-  );
-  Js.Console.log(
-    string_of_int(allOrders |> List.length) ++ " orders persisted.",
-  );
-};
-
-let getNextId = (allOrders: list(OrderData.Order.order)) : int => {
-  let highestId =
+/* 
+/* not sure this is needed anymore. Depends on how I can generate order ids. */
+let getNextId = () : int => {
+  /* let highestId =
     switch (allOrders |> List.length) {
     | 0 => 0
     | _ =>
@@ -45,56 +20,47 @@ let getNextId = (allOrders: list(OrderData.Order.order)) : int => {
       |> List.hd
     };
   Js.Console.log("new id generated");
-  highestId + 1;
+  highestId + 1; */
+  1;
 };
 
-let add =
-    (order: OrderData.Order.order, allOrders: list(OrderData.Order.order)) => {
-  let orders = List.concat([[order], allOrders]);
-  Js.Console.log("Order added to array.");
+let add = (order: OrderData.Order.order, db: PouchDBConnection.t): Js.Promise.t((PutResponse.t)) => {
+  db |> PouchDBConnection.put(order);
+};
+
+type selector = { paidOn: option(float) };
+
+type findOrders = {
+  selector: selector
+};
+
+let getOpenOrders = (db: PouchDBConnection.t) : list(OrderData.Order.order) => {      
+  let orders = PouchDBConnection.find({ selector: { paidOn: None } }, db)
+    |> Js.Promise.then_(o=> {
+      let orders = list(o.docs);
+      order;
+    });
+  /* Js.Console.log(
+    string_of_int(orders |> List.length) ++ " open orders found.",
+  ); */
   orders;
 };
 
-let getOpenOrders =
-    (allOrders: list(OrderData.Order.order))
+/* let getClosedOrders =
+    (db: PouchDBConnection.t)
     : list(OrderData.Order.order) => {
-  let orders =
-    allOrders
-    |> List.filter((o: OrderData.Order.order) =>
-         switch (OrderData.Order.(o.paidOn)) {
-         | None => true
-         | Some(paidOn) =>
-           Js.Console.log(string_of_float(paidOn));
-           false;
-         }
-       );
+  let orders = PouchDBConnection.find({ selector: { paidOn: Some(float) }}, db)
+  |> Js.Promise.then_(o=> {
+    o.docs;
+  });
   Js.Console.log(
     string_of_int(orders |> List.length) ++ " open orders found.",
   );
   orders;
-};
-
-let getClosedOrders =
-    (allOrders: list(OrderData.Order.order))
-    : list(OrderData.Order.order) => {
-  let orders =
-    allOrders
-    |> List.filter((o: OrderData.Order.order) =>
-         switch (OrderData.Order.(o.paidOn)) {
-         | None => false
-         | Some(paidOn) =>
-           Js.Console.log(string_of_float(paidOn));
-           true;
-         }
-       );
-  Js.Console.log(
-    string_of_int(orders |> List.length) ++ " closed orders found.",
-  );
-  orders;
-};
+}; */
 
 let update =
-    (order: OrderData.Order.order, allOrders: list(OrderData.Order.order)) => {
+    (order: OrderData.Order.order, db: PouchDBConnection.t) => {
   let orders =
     allOrders
     |> List.map((o: OrderData.Order.order) =>
@@ -109,7 +75,7 @@ let update =
 };
 
 let find =
-    (orderId: int, allOrders: list(OrderData.Order.order))
+    (orderId: int, db: PouchDBConnection.t)
     : OrderData.Order.order => {
   let orders =
     allOrders
@@ -121,7 +87,7 @@ let find =
   orders;
 };
 
-let remove = (orderId: int, allOrders: list(OrderData.Order.order)) => {
+let remove = (orderId: int,  db: PouchDBConnection.t) => {
   let orders =
     allOrders
     |> List.map((o: OrderData.Order.order) =>
@@ -139,4 +105,4 @@ let remove = (orderId: int, allOrders: list(OrderData.Order.order)) => {
     "Order removed. " ++ string_of_int(orders |> List.length) ++ " left.",
   );
   orders;
-};
+}; */

@@ -1,4 +1,4 @@
-open Jest;
+/* open Jest;
 
 open Expect;
 
@@ -111,4 +111,4 @@ describe("the cafe store", () => {
       expect(reFindOrder.customerName) |> toEqual("Vanessa");
     })
   );
-});
+}); */
