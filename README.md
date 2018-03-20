@@ -1,4 +1,4 @@
-##Cafe
+# Reason-Cafe
 
 Cafe is a browser-based POS system for small counter-service restaurants. It is under construction, so use at your own risk.
 
