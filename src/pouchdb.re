@@ -16,9 +16,6 @@ module RevResponse = {
   };
 };
 
-/* module FindResponse = (()) => {
-     type t = {. "docs": array(Js.t({..}))};
-   }; */
 module FindRequest = {
   type t;
   type queryT;
