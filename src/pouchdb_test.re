@@ -127,17 +127,23 @@ describe("The PouchDb Wrapper", () => {
       let name = string_of_float(Js.Date.now());
       db
       |> PouchDBConnection.post({"name": name})
-      |> Js.Promise.then_((_: RevResponse.t) => {
+      |> Js.Promise.then_((created: RevResponse.t) => {
+           expect(created##ok) |> toBeTruthy |> ignore;
+           let rev = created##rev;
            db
            |> PouchDBConnection.find(
                 FindRequest.query(~selector={"name": name}, ()),
               )
            |> Js.Promise.then_(response => {
                 let docs = response##docs;
+                expect(docs[0]##_rev) |> toEqual(rev) |> ignore;
                 finish(expect(docs[0]##name) |> toEqual("byron"));
                 db |> PouchDBConnection.closeConnection |> ignore;
                 Js.Promise.resolve();
               })
+           |> Js.Promise.catch(err
+                /* finish(expect(err##error) |> toEqual("")); */
+                => Js.Promise.resolve(Js.log(err)))
            |> ignore;
            Js.Promise.resolve();
          })
@@ -146,14 +152,3 @@ describe("The PouchDb Wrapper", () => {
     })
   );
 });
-/*
- let db = connect("test");
-       let promise = PouchDBConnection.info(db);
-       Js.Promise.then_(
-         info => {
-           expect(info##db_name) |> toEqual("test");
-           finish(Jest.Ok);
-           Js.Promise.resolve();
-         },
-         promise,
-       ); */

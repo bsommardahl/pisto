@@ -48,12 +48,42 @@ module PouchDBConnection = {
 
 type t;
 
+type findPlugin;
+
+[@bs.module] external getFindPlugin : findPlugin = "pouchdb-find";
+
+[@bs.module "pouchdb"] external plugin : findPlugin => unit = "";
+
 [@bs.module] [@bs.new]
 external pouchdb : string => PouchDBConnection.t = "pouchdb";
-/* db */
-/* |> PouchDBConnection.put({"_id": "test"}) */
-/* |> Js.Promise.then_(response => { */
-/*      Js.log(response##ok); */
-/*      Js.Promise.resolve(); */
-/*    }); */
-/* let query = FindRequest.query(~selector: {"test": "foo"}); */
+
+let pouchDb = (dbNameOrUrl: string) => {
+  plugin(getFindPlugin);
+  pouchdb(dbNameOrUrl);
+};
+/* let db = pouchdb("test");
+
+   db |> withFind; */
+/*
+ db |> PouchDBConnection.post({"name": "testing"}) |> ignore; */
+/*
+ let name = string_of_float(Js.Date.now());
+
+ db
+ |> PouchDBConnection.post({"name": name})
+ |> Js.Promise.then_((_: RevResponse.t) => {
+      db
+      |> PouchDBConnection.query(
+           FindRequest.query(~selector={"name": name}, ()),
+         )
+      |> Js.Promise.then_(response => {
+           let docs = response##docs;
+           Js.log(docs[0]##name);
+           db |> PouchDBConnection.closeConnection |> ignore;
+           Js.Promise.resolve();
+         })
+      |> Js.Promise.catch(err => Js.Promise.resolve(Js.log(err)))
+      |> ignore;
+      Js.Promise.resolve();
+    })
+ |> ignore; */

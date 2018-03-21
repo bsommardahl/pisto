@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "pouchdb": "^6.4.3",
+    "pouchdb-find": "^6.4.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "reason-scripts": "0.8.0"
