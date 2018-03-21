@@ -15,6 +15,7 @@ Cafe is a browser-based POS system for small counter-service restaurants. It is 
 - PouchDb for offline sync - Uses local database that syncs with remote database(s).
 - Written in ReasonML, so the code is (will be) super solid and performant!
 - Using Facebook's React framework.
+- Built with tests first (TDD) using Jest.
 
-## Warning:
-I am learning ReasonML and React at the same time. At some point, I expect this code will be a great example of how ReasonML and React can work together in harmony. But until that day, I this code will be full of horrible structure and smells. If you are a newb like me, and you're looking for some example code, "This is not the repository you're looking for. Move along."
+## Here Be Dragons:
+I am learning ReasonML and React at the same time. At some point, I expect this code will be a great example of how ReasonML and React can work together in harmony. But until that day, I this code will be full of horrible structure and smells. If you are a newb like me, and you're looking for some example code, copy/paste with caution. - Byron

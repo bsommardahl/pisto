@@ -3,23 +3,25 @@ module DatabaseInfo = {
     .
     "db_name": string,
     "doc_count": int,
-    "update_seq": int
+    "update_seq": int,
   };
 };
 
 module GetResponse = {
-  type t;
-  [@bs.get] external id : t => string = "_id";
-  [@bs.get] external rev : t => string = "_rev";
+  type t = {
+    .
+    "_id": string,
+    "_rev": string,
+  };
   /* and more props depending on the type */
 };
 
-module PutResponse = {
+module RevResponse = {
   type t = {
     .
     "ok": bool,
     "id": string,
-    "rev": string
+    "rev": string,
   };
 };
 
@@ -50,32 +52,26 @@ module PouchDBConnection = {
   type t;
   type idObj('a) = {.. "_id": string} as 'a;
   [@bs.send] external info : t => Js.Promise.t(DatabaseInfo.t) = "";
-  [@bs.send.pipe : t]
-  external put : idObj('a) => Js.Promise.t(PutResponse.t) = "";
-  [@bs.send.pipe : t]
+  [@bs.send.pipe: t]
+  external put : idObj('a) => Js.Promise.t(RevResponse.t) = "";
+  [@bs.send.pipe: t]
+  external remove : idObj('a) => Js.Promise.t(RevResponse.t) = "";
+  [@bs.send.pipe: t] external post : 'a => Js.Promise.t(RevResponse.t) = "";
+  [@bs.send.pipe: t]
   external get : string => Js.Promise.t(GetResponse.t) = "";
-  [@bs.send.pipe : t]
+  [@bs.send.pipe: t]
   external find : FindRequest.queryT => Js.Promise.t(FindResponse.t) = "";
+  [@bs.send] external closeConnection : t => Js.Promise.t(unit) = "close";
 };
 
 type t;
 
-[@bs.module "pouchdb"] [@bs.new]
-external connect : string => PouchDBConnection.t = "default";
-
-let db = connect("orders");
-
-/* db */
-/* |> PouchDBConnection.info */
-/* |> Js.Promise.then_(info => { */
-/*      Js.log(info##db_name); */
-/*      Js.Promise.resolve(); */
-/*    }); */
+[@bs.module] [@bs.new]
+external pouchdb : string => PouchDBConnection.t = "pouchdb";
 /* db */
 /* |> PouchDBConnection.put({"_id": "test"}) */
 /* |> Js.Promise.then_(response => { */
 /*      Js.log(response##ok); */
 /*      Js.Promise.resolve(); */
 /*    }); */
-
-let query = FindRequest.query(~selector: {"test": "foo"});
+/* let query = FindRequest.query(~selector: {"test": "foo"}); */

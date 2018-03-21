@@ -2,7 +2,6 @@ open Util;
 
 let component = ReasonReact.statelessComponent("ProductCard");
 
-/* Here, the button should push to /NewOrder?customerName=john and the view changes */
 let make = (~product: Product.t, ~onSelect, _children) => {
   ...component,
   render: _self =>
