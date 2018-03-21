@@ -28,7 +28,9 @@ describe("The PouchDb Wrapper", () => {
       |> PouchDBConnection.post({"name": "byron"})
       |> Js.Promise.then_((response: RevResponse.t) => {
            expect(response##ok) |> toBe(true) |> ignore;
-           finish(expect(response##id |> String.length) |> toEqual(32));
+           finish(
+             expect(response##id |> String.length) |> toBeGreaterThan(30),
+           );
            Js.Promise.resolve();
          })
       |> ignore;

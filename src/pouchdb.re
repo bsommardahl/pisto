@@ -44,6 +44,7 @@ module PouchDBConnection = {
   [@bs.send.pipe: t]
   external find : FindRequest.queryT => Js.Promise.t(Js.t('a)) = "";
   [@bs.send] external closeConnection : t => Js.Promise.t(unit) = "close";
+  [@bs.send.pipe: t] external createIndex : 'a => unit = "";
 };
 
 type t;
@@ -57,9 +58,15 @@ type findPlugin;
 [@bs.module] [@bs.new]
 external pouchdb : string => PouchDBConnection.t = "pouchdb";
 
-let pouchDb = (dbNameOrUrl: string) => {
+let pouchdb = (dbNameOrUrl: string) => {
   plugin(getFindPlugin);
-  pouchdb(dbNameOrUrl);
+  let db = pouchdb(dbNameOrUrl);
+  db |> PouchDBConnection.createIndex({
+          "index": {
+            "fields": ["name"],
+          },
+        });
+  db;
 };
 /* let db = pouchdb("test");
 
