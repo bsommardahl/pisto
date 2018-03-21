@@ -127,11 +127,14 @@ describe("The PouchDb Wrapper", () => {
       let name = string_of_float(Js.Date.now());
       db
       |> PouchDBConnection.post({"name": name})
-      |> Js.Promise.then_((created: RevResponse.t) => {
+      |> Js.Promise.then_((_: RevResponse.t) => {
            db
-           |> PouchDBConnection.find(FindRequest.query(~selector: { name: name}))
+           |> PouchDBConnection.find(
+                FindRequest.query(~selector={"name": name}, ()),
+              )
            |> Js.Promise.then_(response => {
-                finish(expect(response##docs[0].name) |> toEqual("byron"));
+                let docs = response##docs;
+                finish(expect(docs[0]##name) |> toEqual("byron"));
                 db |> PouchDBConnection.closeConnection |> ignore;
                 Js.Promise.resolve();
               })

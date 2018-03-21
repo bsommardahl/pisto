@@ -24,7 +24,8 @@ module FindRequest = {
     (
       ~selector: Js.t({..}),
       ~fields: option(array(string))=?,
-      ~sort: option(array(string))=?
+      ~sort: option(array(string))=?,
+      unit
     ) =>
     queryT =
     "";
