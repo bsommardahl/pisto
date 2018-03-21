@@ -4,7 +4,7 @@ open ExpectJs;
 
 open Pouchdb;
 
-let dbUrl = "http://localhost:5984/test";
+let dbUrl = "http://localhost:5984/testdb";
 
 describe("The PouchDb Wrapper", () => {
   describe("when getting database info", () =>
@@ -13,7 +13,7 @@ describe("The PouchDb Wrapper", () => {
       db
       |> PouchDBConnection.info
       |> Js.Promise.then_((info: DatabaseInfo.t) => {
-           let assertion = expect(info##db_name) |> toEqual("test");
+           let assertion = expect(info##db_name) |> toEqual("testdb");
            finish(assertion);
            Js.Promise.resolve();
          })
@@ -91,6 +91,47 @@ describe("The PouchDb Wrapper", () => {
                 finish(
                   expect(removed##rev) |> not_ |> toEqual(created##rev),
                 );
+                db |> PouchDBConnection.closeConnection |> ignore;
+                Js.Promise.resolve();
+              })
+           |> ignore;
+           Js.Promise.resolve();
+         })
+      |> ignore;
+      ();
+    })
+  );
+  describe("when fetching an existing item from the database", () =>
+    testAsync("it should retrieve the correct item", finish => {
+      let db = pouchdb(dbUrl);
+      db
+      |> PouchDBConnection.post({"name": "byron"})
+      |> Js.Promise.then_((created: RevResponse.t) => {
+           db
+           |> PouchDBConnection.get(created##id)
+           |> Js.Promise.then_(fetched => {
+                finish(expect(fetched##name) |> toEqual("byron"));
+                db |> PouchDBConnection.closeConnection |> ignore;
+                Js.Promise.resolve();
+              })
+           |> ignore;
+           Js.Promise.resolve();
+         })
+      |> ignore;
+      ();
+    })
+  );
+  describe("when querying for existing items in the database", () =>
+    testAsync("it should retrieve the correct items", finish => {
+      let db = pouchdb(dbUrl);
+      let name = string_of_float(Js.Date.now());
+      db
+      |> PouchDBConnection.post({"name": name})
+      |> Js.Promise.then_((created: RevResponse.t) => {
+           db
+           |> PouchDBConnection.find(FindRequest.query(selector: { name: name}))
+           |> Js.Promise.then_(response => {
+                finish(expect(response##docs[0].name) |> toEqual("byron"));
                 db |> PouchDBConnection.closeConnection |> ignore;
                 Js.Promise.resolve();
               })

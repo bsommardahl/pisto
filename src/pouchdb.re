@@ -7,15 +7,6 @@ module DatabaseInfo = {
   };
 };
 
-module GetResponse = {
-  type t = {
-    .
-    "_id": string,
-    "_rev": string,
-  };
-  /* and more props depending on the type */
-};
-
 module RevResponse = {
   type t = {
     .
@@ -25,12 +16,9 @@ module RevResponse = {
   };
 };
 
-module FindResponse = {
-  type t;
-  [@bs.get] external docs : t => array('a) = "";
-  /* Not sure this works because we don't know what 'a is. */
-};
-
+/* module FindResponse = (()) => {
+     type t = {. "docs": array(Js.t({..}))};
+   }; */
 module FindRequest = {
   type t;
   type queryT;
@@ -43,9 +31,6 @@ module FindRequest = {
     ) =>
     queryT =
     "";
-  [@bs.val] external selector : t => Js.Json.t = "";
-  [@bs.val] external fields : t => Js.Array.t(Js.Json.t) = "";
-  [@bs.val] external sort : t => Js.Array.t(Js.Json.t) = "";
 };
 
 module PouchDBConnection = {
@@ -57,10 +42,9 @@ module PouchDBConnection = {
   [@bs.send.pipe: t]
   external remove : idObj('a) => Js.Promise.t(RevResponse.t) = "";
   [@bs.send.pipe: t] external post : 'a => Js.Promise.t(RevResponse.t) = "";
+  [@bs.send.pipe: t] external get : string => Js.Promise.t(Js.t('a)) = "";
   [@bs.send.pipe: t]
-  external get : string => Js.Promise.t(GetResponse.t) = "";
-  [@bs.send.pipe: t]
-  external find : FindRequest.queryT => Js.Promise.t(FindResponse.t) = "";
+  external find : FindRequest.queryT => Js.Promise.t(Js.t('a)) = "";
   [@bs.send] external closeConnection : t => Js.Promise.t(unit) = "close";
 };
 
