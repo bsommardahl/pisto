@@ -12,7 +12,7 @@ describe("The PouchDb Wrapper", () => {
       let db = pouchdb(dbUrl);
       db
       |> PouchDBConnection.info
-      |> Js.Promise.then_((info: DatabaseInfo.t) => {
+      |> Js.Promise.then_((info) => {
            let assertion = expect(info##db_name) |> toEqual("testdb");
            finish(assertion);
            Js.Promise.resolve();
@@ -26,7 +26,7 @@ describe("The PouchDb Wrapper", () => {
       let db = pouchdb(dbUrl);
       db
       |> PouchDBConnection.post({"name": "byron"})
-      |> Js.Promise.then_((response: RevResponse.t) => {
+      |> Js.Promise.then_((response) => {
            expect(response##ok) |> toBe(true) |> ignore;
            finish(
              expect(response##id |> String.length) |> toBeGreaterThan(30),
@@ -43,7 +43,7 @@ describe("The PouchDb Wrapper", () => {
       let db = pouchdb(dbUrl);
       db
       |> PouchDBConnection.put({"_id": id, "name": "byron"})
-      |> Js.Promise.then_((response: RevResponse.t) => {
+      |> Js.Promise.then_((response) => {
            expect(response##ok) |> toBe(true) |> ignore;
            finish(expect(response##id) |> toEqual(id));
            Js.Promise.resolve();
@@ -58,7 +58,7 @@ describe("The PouchDb Wrapper", () => {
       let db = pouchdb(dbUrl);
       db
       |> PouchDBConnection.put({"_id": id, "name": "byron"})
-      |> Js.Promise.then_((response: RevResponse.t) => {
+      |> Js.Promise.then_((response) => {
            let rev = response##rev;
            db
            |> PouchDBConnection.put({
@@ -66,7 +66,7 @@ describe("The PouchDb Wrapper", () => {
                 "name": "george",
                 "_rev": rev,
               })
-           |> Js.Promise.then_((response: RevResponse.t) => {
+           |> Js.Promise.then_((response) => {
                 finish(expect(response##rev) |> not_ |> toEqual(rev));
                 db |> PouchDBConnection.closeConnection |> ignore;
                 Js.Promise.resolve();
@@ -83,13 +83,13 @@ describe("The PouchDb Wrapper", () => {
       let db = pouchdb(dbUrl);
       db
       |> PouchDBConnection.post({"name": "byron"})
-      |> Js.Promise.then_((created: RevResponse.t) => {
+      |> Js.Promise.then_((created) => {
            db
            |> PouchDBConnection.remove({
                 "_id": created##id,
                 "_rev": created##rev,
               })
-           |> Js.Promise.then_((removed: RevResponse.t) => {
+           |> Js.Promise.then_((removed) => {
                 finish(
                   expect(removed##rev) |> not_ |> toEqual(created##rev),
                 );
@@ -108,7 +108,7 @@ describe("The PouchDb Wrapper", () => {
       let db = pouchdb(dbUrl);
       db
       |> PouchDBConnection.post({"name": "byron"})
-      |> Js.Promise.then_((created: RevResponse.t) => {
+      |> Js.Promise.then_((created) => {
            db
            |> PouchDBConnection.get(created##id)
            |> Js.Promise.then_(fetched => {
@@ -129,7 +129,7 @@ describe("The PouchDb Wrapper", () => {
       let name = string_of_float(Js.Date.now());
       db
       |> PouchDBConnection.post({"name": name})
-      |> Js.Promise.then_((created: RevResponse.t) => {
+      |> Js.Promise.then_((created) => {
            expect(created##ok) |> toBeTruthy |> ignore;
            let rev = created##rev;
            db
@@ -153,6 +153,3 @@ describe("The PouchDb Wrapper", () => {
     })
   );
 });
-/* |> Js.Promise.then_(() => {
-           db |> PouchDbConnection.destroy();
-         });         */

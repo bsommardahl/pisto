@@ -23,6 +23,7 @@ open Pouchdb;
 */
  let add = (order: OrderData.Order.order, db: PouchDBConnection.t): Js.Promise.t(OrderData.Order.order) => {
    db |> PouchDBConnection.post(order) |> Js.Promise.then_((response) => {
+     Js.log(response);
       Js.Promise.resolve(order);
    });
  };
