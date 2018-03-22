@@ -1,4 +1,4 @@
-/* open Pouchdb; */
+open Pouchdb;
 /*
  /* not sure this is needed anymore. Depends on how I can generate order ids. */
  let getNextId = () : int => {
@@ -20,11 +20,13 @@
    highestId + 1; */
    1;
  };
-
- let add = (order: OrderData.Order.order, db: PouchDBConnection.t): Js.Promise.t((PutResponse.t)) => {
-   db |> PouchDBConnection.put(order);
+*/
+ let add = (order: OrderData.Order.order, db: PouchDBConnection.t): Js.Promise.t(OrderData.Order.order) => {
+   db |> PouchDBConnection.post(order) |> Js.Promise.then_((response) => {
+      Js.Promise.resolve(order);
+   });
  };
-
+/*
  type selector = { paidOn: option(float) };
 
  type findOrders = {

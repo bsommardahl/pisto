@@ -123,7 +123,7 @@ describe("The PouchDb Wrapper", () => {
       ();
     })
   );
-  Only.describe("when querying for existing items in the database", () =>
+  describe("when querying for existing items in the database", () =>
     testAsync("it should retrieve the correct items", finish => {
       let db = pouchdb(dbUrl);
       let name = string_of_float(Js.Date.now());
@@ -139,7 +139,7 @@ describe("The PouchDb Wrapper", () => {
            |> Js.Promise.then_(response => {
                 let docs = response##docs;
                 expect(docs[0]##_rev) |> toEqual(rev) |> ignore;
-                finish(expect(docs[0]##name) |> toEqual("byron"));
+                finish(expect(docs[0]##name) |> toEqual(name));
                 db |> PouchDBConnection.closeConnection |> ignore;
                 Js.Promise.resolve();
               })
@@ -147,8 +147,12 @@ describe("The PouchDb Wrapper", () => {
            |> ignore;
            Js.Promise.resolve();
          })
+         
       |> ignore;
       ();
     })
   );
 });
+/* |> Js.Promise.then_(() => {
+           db |> PouchDbConnection.destroy();
+         });         */

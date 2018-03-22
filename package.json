@@ -18,7 +18,8 @@
     "re:clean": "bsb -clean-world"
   },
   "devDependencies": {
-    "@glennsl/bs-jest": "^0.4.2",
-    "reason-react": "^0.3.4"
+    "reason-react": "^0.3.4",
+    "bs-jest": "^0.3.2",
+    "wonder-bs-sinon": "^0.1.6"
   }
 }
