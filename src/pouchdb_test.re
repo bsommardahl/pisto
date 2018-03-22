@@ -123,7 +123,7 @@ describe("The PouchDb Wrapper", () => {
       ();
     })
   );
-  describe("when querying for existing items in the database", () =>
+  Only.describe("when querying for existing items in the database", () =>
     testAsync("it should retrieve the correct items", finish => {
       let db = pouchdb(dbUrl);
       let name = string_of_float(Js.Date.now());
@@ -143,9 +143,7 @@ describe("The PouchDb Wrapper", () => {
                 db |> PouchDBConnection.closeConnection |> ignore;
                 Js.Promise.resolve();
               })
-           |> Js.Promise.catch(err
-                /* finish(expect(err##error) |> toEqual("")); */
-                => Js.Promise.resolve(Js.log(err)))
+           |> Js.Promise.catch(err => Js.Promise.resolve(Js.log(err)))
            |> ignore;
            Js.Promise.resolve();
          })

@@ -1,0 +1,6 @@
+version: '3'
+services:
+  pouchdb:
+    image: filiosoft/pouchdb
+    ports:
+      - "5984:5984"
