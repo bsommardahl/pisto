@@ -5,8 +5,7 @@
   ],
   "bs-dependencies": [
     "reason-react",
-    "bs-jest",
-    "wonder-bs-sinon"
+    "bs-jest"
   ],
   "reason": {
     "react-jsx": 2

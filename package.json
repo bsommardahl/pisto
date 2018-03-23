@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bs-platform": "^2.2.3",
     "pouchdb": "^6.4.3",
     "pouchdb-find": "^6.4.3",
     "react": "^16.2.0",
@@ -19,7 +20,6 @@
   },
   "devDependencies": {
     "reason-react": "^0.3.4",
-    "bs-jest": "^0.3.2",
-    "wonder-bs-sinon": "^0.1.6"
+    "bs-jest": "^0.3.2"
   }
 }
