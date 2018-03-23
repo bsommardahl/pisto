@@ -1,4 +1,4 @@
-module type Database = {
+module type DatabaseInterface = {
   module DatabaseInfo: {
     type t = {
       .
