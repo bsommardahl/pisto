@@ -1,108 +1,119 @@
-open Pouchdb;
-/*
- /* not sure this is needed anymore. Depends on how I can generate order ids. */
- let getNextId = () : int => {
-   /* let highestId =
-     switch (allOrders |> List.length) {
-     | 0 => 0
-     | _ =>
-       allOrders
-       |> List.map((o: OrderData.Order.order) =>
-            switch (o.id) {
-            | None => 0
-            | Some(id) => id
-            }
-          )
-       |> List.sort(Js.Math.max_int)
-       |> List.hd
-     };
-   Js.Console.log("new id generated");
-   highestId + 1; */
-   1;
- };
-*/
- let add = (order: OrderData.Order.order, db: PouchDBConnection.t): Js.Promise.t(OrderData.Order.order) => {
-   db |> PouchDBConnection.post(order) |> Js.Promise.then_((response) => {
-     Js.log(response);
-      Js.Promise.resolve(order);
-   });
- };
-/*
- type selector = { paidOn: option(float) };
 
- type findOrders = {
-   selector: selector
- };
 
- let getOpenOrders = (db: PouchDBConnection.t) : list(OrderData.Order.order) => {
-   let orders = PouchDBConnection.find({ selector: { paidOn: None } }, db)
-     |> Js.Promise.then_(o=> {
-       let orders = list(o.docs);
-       order;
+open Js.Promise;
+
+let mapOrderFromJs = d => {
+  let convertFloatOption = d => Js.Nullable.toOption(d);
+  let convertStringOption = s => Js.Nullable.toOption(s);
+  let convertDate = d => float_of_string(d);
+  let mapOrderItemFromJs = i => {
+    let prod = i##product;
+    let product: Product.t = {
+      id: prod##id,
+      name: prod##name,
+      tags: [],
+      suggestedPrice: float_of_string(prod##suggestedPrice),
+    };
+    let item: OrderData.Order.orderItem = {
+      product,
+      addedOn: convertDate(i##addedOn),
+      salePrice: float_of_string(i##salePrice),
+    };
+    item;
+  };
+  let order: OrderData.Order.order = {
+    id: d##_id,
+    customerName: d##customerName,
+    orderItems:
+      d##orderItems |> Array.map(i => mapOrderItemFromJs(i)) |> Array.to_list,
+    createdOn: convertDate(d##createdOn),
+    paidOn: convertFloatOption(d##paidOn),
+    amountPaid: convertFloatOption(d##amountPaid),
+    paymentTakenBy: convertStringOption(d##paymentTakenBy),
+    lastUpdated: convertFloatOption(d##amountPaid),
+    removed: false,
+  };
+  order;
+};
+
+let add =
+    (newOrder: OrderData.Order.newOrder, db: Pouchdb.t)
+    : Js.Promise.t(OrderData.Order.order) => {  
+  db
+  |> Pouchdb.post(newOrder)
+  |> then_(revResponse => {
+        db 
+        |> Pouchdb.get(revResponse##id) 
+        |> then_(order => {
+          resolve(mapOrderFromJs(order));
+        });
+    });
+  };
+
+
+let getOpenOrders = (db: Pouchdb.t) : Js.Promise.t(list(OrderData.Order.order)) =>
+  db
+  |> Pouchdb.find(
+       PouchDbInterface.QueryBuilder.query(
+         ~selector={"paidOn": Js.Nullable.undefined},
+         (),
+       ),
+     )
+  |> Js.Promise.then_(response => Js.Promise.resolve(response##docs))
+  |> Js.Promise.then_(docs => {
+       let mapped: array(OrderData.Order.order) =
+         docs |> Array.map(d => mapOrderFromJs(d));
+       Js.Promise.resolve(mapped);
+     })
+  |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
+
+let getClosedOrders = (db: Pouchdb.t) : Js.Promise.t(list(OrderData.Order.order)) =>
+  db
+  |> Pouchdb.find(
+       PouchDbInterface.QueryBuilder.query(
+         ~selector={
+           "paidOn": {
+             "$not": Js.Nullable.undefined,
+           },
+         },
+         (),
+       ),
+     )
+  |> Js.Promise.then_(response => Js.Promise.resolve(response##docs))
+  |> Js.Promise.then_(docs => {
+       let mapped: array(OrderData.Order.order) =
+         docs |> Array.map(d => mapOrderFromJs(d));
+       Js.Promise.resolve(mapped);
+     })
+  |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
+
+let update = (updateOrder: OrderData.Order.updateOrder, db: Pouchdb.t) : Js.Promise.t(OrderData.Order.order) =>
+  db
+  |> Pouchdb.get(updateOrder.id)
+  |> Js.Promise.then_(orderJs => {
+       let rev = orderJs##rev;
+       db
+       |> Pouchdb.put({
+            "_id": orderJs##id,
+            "_rev": rev,
+            "orderItems": updateOrder.orderItems,
+            "customerName": updateOrder.customerName,
+            "lastUpdated": Js.Date.now,
+          })
+       |> ignore;
+       Js.Promise.resolve(mapOrderFromJs(orderJs));
      });
-   /* Js.Console.log(
-     string_of_int(orders |> List.length) ++ " open orders found.",
-   ); */
-   orders;
- };
 
- /* let getClosedOrders =
-     (db: PouchDBConnection.t)
-     : list(OrderData.Order.order) => {
-   let orders = PouchDBConnection.find({ selector: { paidOn: Some(float) }}, db)
-   |> Js.Promise.then_(o=> {
-     o.docs;
-   });
-   Js.Console.log(
-     string_of_int(orders |> List.length) ++ " open orders found.",
-   );
-   orders;
- }; */
+let get = (orderId: string, db: Pouchdb.t) : Js.Promise.t(OrderData.Order.order) =>
+  db
+  |> Pouchdb.get(orderId)
+  |> then_(order => resolve(mapOrderFromJs(order)));
 
- let update =
-     (order: OrderData.Order.order, db: PouchDBConnection.t) => {
-   let orders =
-     allOrders
-     |> List.map((o: OrderData.Order.order) =>
-          if (Some(o.id) == Some(order.id)) {
-            order;
-          } else {
-            o;
-          }
-        );
-   Js.Console.log("Order updated.");
-   orders;
- };
-
- let find =
-     (orderId: int, db: PouchDBConnection.t)
-     : OrderData.Order.order => {
-   let orders =
-     allOrders
-     |> List.find((o: OrderData.Order.order) => o.id == Some(orderId));
-   switch (orders) {
-   | _ => Js.Console.log("1 order found.")
-   | exception Not_found => Js.Console.log("No orders found.")
-   };
-   orders;
- };
-
- let remove = (orderId: int,  db: PouchDBConnection.t) => {
-   let orders =
-     allOrders
-     |> List.map((o: OrderData.Order.order) =>
-          switch (o.id) {
-          | Some(id) =>
-            if (id == orderId) {
-              {...o, removed: true};
-            } else {
-              o;
-            }
-          | None => o
-          }
-        );
-   Js.Console.log(
-     "Order removed. " ++ string_of_int(orders |> List.length) ++ " left.",
-   );
-   orders;
- }; */
+let remove = (orderId: string, db: Pouchdb.t) : Js.Promise.t(unit) =>
+  db
+  |> Pouchdb.get(orderId)
+  |> then_(order => {
+    db 
+    |> Pouchdb.remove(order) 
+    |> then_(_ => resolve());
+  });

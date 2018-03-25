@@ -1,36 +1,33 @@
 open OrderData;
 
-type state = {orders: list(Order.order)};
+type state = {orders: list(Order.orderVm)};
 
 type action =
-  | SelectOrder(Order.order);
+  | SelectOrder(Order.orderVm);
 
-let getOrders = () => {
-  /* CafeStore.getOpenOrders(CafeStore.retrieveAllOrders()); */
-  []
-};
+let getOrders = () => [];
 
+/* CafeStore.getOpenOrders(CafeStore.retrieveAllOrders()); */
 let component = ReasonReact.reducerComponent("OpenOrders");
 
 let make = _children => {
   ...component,
   initialState: () => {orders: getOrders()},
   reducer: (action, _state) =>
-  switch (action) {
-  | SelectOrder(order) =>
-    ReasonReact.SideEffects(
-      (
-        _self =>
-          switch (order.id) {
-          | Some(id) =>
-            ReasonReact.Router.push("order?orderId=" ++ string_of_int(id))
-          | None => ()
-          }
-      ),
-    )
-  },
+    switch (action) {
+    | SelectOrder(order) =>
+      ReasonReact.SideEffects(
+        (
+          _self =>
+            switch (order.id) {
+            | Some(id) => ReasonReact.Router.push("order?orderId=" ++ id)
+            | None => ()
+            }
+        ),
+      )
+    },
   render: self => {
-    let selectOpenOrder = (order: Order.order) =>
+    let selectOpenOrder = (order: Order.orderVm) =>
       self.send(SelectOrder(order));
     <div className="active-orders">
       (

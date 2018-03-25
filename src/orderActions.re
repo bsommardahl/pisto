@@ -1,38 +1,68 @@
 open Util;
 
-let saveToStore = (order: OrderData.Order.order) => {
-  /* Js.Console.log("Persisting order....");
-  switch (order.id) {
-  | None =>
-    let allOrders = CafeStore.retrieveAllOrders();
-    allOrders
-    |> CafeStore.add({
-         ...order,
-         id: Some(CafeStore.getNextId(allOrders)),
-         createdOn: Js.Date.now(),
-       })
-    |> CafeStore.persistAllOrders;
-    Js.Console.log("Added new order.");
-  | Some(_) =>
-    CafeStore.retrieveAllOrders()
-    |> CafeStore.update({...order, lastUpdated: Some(Js.Date.now())})
-    |> CafeStore.persistAllOrders;
-    Js.Console.log("Modifying order....");
-  }; */
+open CafeStore;
+
+open Pouchdb;
+
+let dbUrl = "http://localhost:5984/orders";
+
+let vmToUpdateOrder =
+    (vm: OrderData.Order.orderVm)
+    : OrderData.Order.updateOrder => {
+  id:
+    switch (vm.id) {
+    | None => ""
+    | Some(id) => id
+    },
+  customerName: vm.customerName,
+  orderItems: vm.orderItems,
+  amountPaid: vm.amountPaid,
+  paymentTakenBy: vm.paymentTakenBy,
+  paidOn: vm.paidOn,
 };
 
-let removeFromStore = (order: OrderData.Order.order) => {
-  /* switch (order.id) {
+let saveToStore = (order: OrderData.Order.orderVm) => {
+  Js.Console.log("Persisting order....");
+  switch (order.id) {
+  | None =>
+    let db = connect(dbUrl);
+    CafeStore.add(
+      {customerName: order.customerName, orderItems: order.orderItems},
+      db,
+    )
+    |> Js.Promise.then_(_order => {
+         Js.Console.log("Added new order.");
+         db |> Pouchdb.closeConnection;
+       });
+  | Some(_id) =>
+    let db = connect(dbUrl);
+    CafeStore.update(vmToUpdateOrder(order), db)
+    |> Js.Promise.then_(_order => {
+         Js.Console.log("Updated existing order.");
+         db |> Pouchdb.closeConnection;
+       });
+  };
+};
+
+let removeFromStore = (order: OrderData.Order.orderVm) =>
+  switch (order.id) {
   | None => ()
   | Some(id) =>
-    CafeStore.retrieveAllOrders()
+    let db = connect(dbUrl);
+    db
     |> CafeStore.remove(id)
-    |> CafeStore.persistAllOrders
-  }; */
-};
+    |> Js.Promise.then_(() => {
+         Js.Console.log("Removed order.");
+         db |> Pouchdb.closeConnection |> ignore;
+         Js.Promise.resolve();
+       })
+    |> ignore;
+    ();
+  };
+
 type state = {
-  order: OrderData.Order.order,
-  onFinish: OrderData.Order.order => unit,
+  order: OrderData.Order.orderVm,
+  onFinish: OrderData.Order.orderVm => unit,
 };
 
 type action =
@@ -42,7 +72,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("OrderItem");
 
-let make = (~order: OrderData.Order.order, ~onFinish, _children) => {
+let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
   ...component,
   initialState: () => {order, onFinish},
   reducer: (action, state) =>

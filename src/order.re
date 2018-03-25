@@ -8,13 +8,14 @@ type state = {
   allProducts: list(Product.t),
   tags: list(string),
   viewing,
-  order: OrderData.Order.order,
+  order: OrderData.Order.orderVm,
 };
 
 type action =
   | SelectTag(string)
   | SelectProduct(Product.t)
   | DeselectTag
+  | LoadOrder(OrderData.Order.orderVm)
   | CloseOrderScreen;
 
 let buildOrderItem = (product: Product.t) : OrderData.Order.orderItem => {
@@ -23,7 +24,7 @@ let buildOrderItem = (product: Product.t) : OrderData.Order.orderItem => {
   salePrice: product.suggestedPrice,
 };
 
-let buildNewOrder = (customerName: string) : OrderData.Order.order => {
+let buildNewOrder = (customerName: string) : OrderData.Order.orderVm => {
   id: None,
   customerName,
   orderItems: [],
@@ -35,25 +36,31 @@ let buildNewOrder = (customerName: string) : OrderData.Order.order => {
   removed: false,
 };
 
-let loadExistingOrder = (orderId: int) : OrderData.Order.order => {
-  id: None,
-  customerName: "Byron",
-  orderItems: [],
-  createdOn: Js.Date.now(),
-  paidOn: None,
-  amountPaid: None,
-  paymentTakenBy: None,
-  lastUpdated: None,
-  removed: false,
+let vmFromExistingOrder = (o: OrderData.Order.order) => {
+  let vm: OrderData.Order.orderVm =
+    OrderData.Order.{
+      id: Some(o.id),
+      customerName: o.customerName,
+      orderItems: o.orderItems,
+      createdOn: o.createdOn,
+      paidOn: o.paidOn,
+      amountPaid: o.amountPaid,
+      paymentTakenBy: o.paymentTakenBy,
+      lastUpdated: o.lastUpdated,
+      removed: false,
+    };
+  vm;
 };
 
+let dbUrl = "http://localhost:5984/orders";
 
 let component = ReasonReact.reducerComponent("Order");
 
-let make = (~finishedWithOrder: OrderData.Order.order => unit, _children) => {
+let make = (~finishedWithOrder: OrderData.Order.orderVm => unit, _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
+    | LoadOrder(order) => ReasonReact.Update({...state, order: order})
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
@@ -79,22 +86,38 @@ let make = (~finishedWithOrder: OrderData.Order.order => unit, _children) => {
       | Some(name) => name
       | None => "Cliente"
       };
-    let orderId =
-      switch (Util.QueryParam.get("orderId", queryString)) {
-      | Some(id) => int_of_string(id)
-      | None => 0
-      };
     let products = Product.getProducts();
     {
       allProducts: products,
       tags: Product.getTags(products),
       viewing: Tags,
-      order:
-        switch (orderId) {
-        | 0 => buildNewOrder(customerName)
-        | _ => loadExistingOrder(orderId)
-        },
+      order: buildNewOrder(customerName),
     };
+  },
+  didMount: ({reduce}) => {
+    let dispatch = (order: OrderData.Order.orderVm) => {
+      Js.Promise.resolve(
+        reduce(() => LoadOrder(order))
+      );
+    };
+    let convertToVm = (order: OrderData.Order.order) => {
+      Js.Promise.resolve(vmFromExistingOrder(order));
+    };
+    let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
+      switch (Util.QueryParam.get("orderId", queryString)) {
+      | None => ReasonReact.NoUpdate
+      | Some(orderId) =>
+        let db = Pouchdb.connect(dbUrl);
+        Js.Promise.(
+          db
+        |> CafeStore.get(orderId)
+        |> then_(convertToVm)
+        |> then_(dispatch)
+        |> ignore
+        );
+        ReasonReact.NoUpdate
+      };
+      /* the error in the compiler is here */
   },
   render: self => {
     let deselectTag = _event => self.send(DeselectTag);
@@ -106,7 +129,7 @@ let make = (~finishedWithOrder: OrderData.Order.order => unit, _children) => {
       (
         switch (self.state.order.id) {
         | None => <div />
-        | Some(id) => <h2> (s("Id:")) (s(string_of_int(id))) </h2>
+        | Some(id) => <h2> (s("Id:")) (s(id)) </h2>
         }
       )
       (
