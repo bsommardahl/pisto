@@ -7,8 +7,6 @@ type existing('existing) =
 
 type docArray('existing) = {. "docs": array('existing)};
 
-module type init = {let connect: string => Pouchdb.t('existing, 'fresh);};
-
 [@bs.send]
 external info :
   Pouchdb.t('existing, 'fresh) => Js.Promise.t(Pouchdb.DatabaseInfo.t) =
@@ -54,10 +52,10 @@ type pouchdb;
 [@bs.module "pouchdb"] external pouchdb : pouchdb = "default";
 
 [@bs.module "pouchdb"] [@bs.new]
-external connect : string => Pouchdb.t('existing, 'fresh) = "default";
+external init : string => Pouchdb.t('existing, 'fresh) = "default";
 
 let connect = (dbNameOrUrl: string) => {
   plugin(pouchdb, pouchdbFind);
-  let db = connect(dbNameOrUrl);
+  let db = init(dbNameOrUrl);
   db;
 };

@@ -68,10 +68,10 @@ module Make = (Db: Pouchdb.init) => {
       : Js.Promise.t(OrderData.Order.order) => {
     let db = Db.connect(dbUrl);
     db
-    |> Pouchdb.post(newOrder)
+    |> post(newOrder)
     |> then_(revResponse =>
          db
-         |> Pouchdb.get(revResponse##id)
+         |> get(revResponse##id)
          |> then_(order => {
               let o = mapOrderFromJs(order);
               resolve(o);
@@ -80,8 +80,8 @@ module Make = (Db: Pouchdb.init) => {
   };
   let getOpenOrders = db : Js.Promise.t(list(OrderData.Order.order)) =>
     db
-    |> Pouchdb.find(
-         PouchDbInterface.QueryBuilder.query(
+    |> find(
+         Pouchdb.QueryBuilder.query(
            ~selector={"paidOn": Js.Nullable.undefined},
            (),
          ),

@@ -9,7 +9,7 @@ let dbUrl = "http://localhost:5984/testdb";
 describe("The PouchDb Wrapper", () => {
   describe("when getting database info", () =>
     testAsync("it should return the database name", finish => {
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       db
       |> info
       |> Js.Promise.then_(info => {
@@ -23,7 +23,7 @@ describe("The PouchDb Wrapper", () => {
   );
   describe("when posting an item into the database", () =>
     testAsync("it should create the record and return a new id", finish => {
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       db
       |> post({"name": "byron"})
       |> Js.Promise.then_(response => {
@@ -40,7 +40,7 @@ describe("The PouchDb Wrapper", () => {
   describe("when upserting a new item in the database", () =>
     testAsync("it should modify the record and return a new rev", finish => {
       let id = "upsert_new_test" ++ string_of_float(Js.Date.now());
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       db
       |> put({"_id": id, "_rev": "some rev", "name": "byron"})
       |> Js.Promise.then_(response => {
@@ -55,7 +55,7 @@ describe("The PouchDb Wrapper", () => {
   describe("when upserting an existing item in the database", () =>
     testAsync("it should modify the record and return a new rev", finish => {
       let name = "upsert_existing_test" ++ string_of_float(Js.Date.now());
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       let newOrder = {"name": name};
       db
       |> post(newOrder)
@@ -79,7 +79,7 @@ describe("The PouchDb Wrapper", () => {
   );
   describe("when deleting an existing item from the database", () =>
     testAsync("it should mark the item as deleted return a new rev", finish => {
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       db
       |> PouchdbImpl.post({"name": "byron"})
       |> Js.Promise.then_(created => {
@@ -101,7 +101,7 @@ describe("The PouchDb Wrapper", () => {
   );
   describe("when fetching an existing item from the database", () =>
     testAsync("it should retrieve the correct item", finish => {
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       db
       |> PouchdbImpl.post({"name": "byron"})
       |> Js.Promise.then_(created => {
@@ -121,16 +121,16 @@ describe("The PouchDb Wrapper", () => {
   );
   describe("when querying for existing items in the database", () =>
     testAsync("it should retrieve the correct items", finish => {
-      let db = connect(dbUrl);
+      let db = init(dbUrl);
       let name = string_of_float(Js.Date.now());
       db
-      |> Pouchdb.post({"name": name})
+      |> post({"name": name})
       |> Js.Promise.then_(created => {
            expect(created##ok) |> toBeTruthy |> ignore;
            let rev = created##rev;
            db
            |> PouchdbImpl.find(
-                PouchDb.QueryBuilder.query(~selector={"name": name}, ()),
+                Pouchdb.QueryBuilder.query(~selector={"name": name}, ()),
               )
            |> Js.Promise.then_(response => {
                 let docs = response##docs;

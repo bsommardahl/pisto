@@ -42,12 +42,18 @@ type docArray('existing) = {. "docs": array('existing)};
 
 type t('existing, 'fresh) = {
   .
-  "info": unit => Js.Promise.t(DatabaseInfo.t),
-  "destroy": unit => Js.Promise.t(unit),
-  "put": existing('existing) => Js.Promise.t(RevResponse.t),
-  "get": string => Js.Promise.t('existing),
-  "post": 'fresh => Js.Promise.t(RevResponse.t),
-  "find": QueryBuilder.queryT => Js.Promise.t(docArray('existing)),
-  "remove": 'existing => Js.Promise.t(RevResponse.t),
-  "closeConnection": unit => Js.Promise.t(unit),
+  "info": t('existing, 'fresh) => Js.Promise.t(DatabaseInfo.t),
+  "destroy": t('existing, 'fresh) => Js.Promise.t(unit),
+  "put":
+    (existing('existing), t('existing, 'fresh)) =>
+    Js.Promise.t(RevResponse.t),
+  "get": (string, t('existing, 'fresh)) => Js.Promise.t('existing),
+  "post": ('fresh, t('existing, 'fresh)) => Js.Promise.t(RevResponse.t),
+  "find":
+    (QueryBuilder.queryT, t('existing, 'fresh)) =>
+    Js.Promise.t(docArray('existing)),
+  "remove": ('existing, t('existing, 'fresh)) => Js.Promise.t(RevResponse.t),
+  "closeConnection": t('existing, 'fresh) => Js.Promise.t(unit),
 };
+
+module type init = {let connect: string => t('existing, 'fresh);};
