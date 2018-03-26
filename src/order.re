@@ -60,7 +60,7 @@ let make = (~finishedWithOrder: OrderData.Order.orderVm => unit, _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
-    | LoadOrder(order) => ReasonReact.Update({...state, order: order})
+    | LoadOrder(order) => ReasonReact.Update({...state, order})
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
@@ -95,29 +95,25 @@ let make = (~finishedWithOrder: OrderData.Order.orderVm => unit, _children) => {
     };
   },
   didMount: ({reduce}) => {
-    let dispatch = (order: OrderData.Order.orderVm) => {
-      Js.Promise.resolve(
-        reduce(() => LoadOrder(order))
-      );
-    };
-    let convertToVm = (order: OrderData.Order.order) => {
+    let dispatch = (order: OrderData.Order.orderVm) =>
+      Js.Promise.resolve(reduce(() => LoadOrder(order)));
+    let convertToVm = (order: OrderData.Order.order) =>
       Js.Promise.resolve(vmFromExistingOrder(order));
-    };
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
-      switch (Util.QueryParam.get("orderId", queryString)) {
-      | None => ReasonReact.NoUpdate
-      | Some(orderId) =>
-        let db = Pouchdb.connect(dbUrl);
-        Js.Promise.(
-          db
-        |> CafeStore.get(orderId)
+    switch (Util.QueryParam.get("orderId", queryString)) {
+    | None => ReasonReact.NoUpdate
+    | Some(orderId) =>
+      let db = Pouchdb.connect(dbUrl);
+      Js.Promise.(
+        db
+        |> OrderActions.RealCafeStore.get(orderId)
         |> then_(convertToVm)
         |> then_(dispatch)
         |> ignore
-        );
-        ReasonReact.NoUpdate
-      };
-      /* the error in the compiler is here */
+      );
+      ReasonReact.NoUpdate;
+    };
+    /* the error in the compiler is here */
   },
   render: self => {
     let deselectTag = _event => self.send(DeselectTag);

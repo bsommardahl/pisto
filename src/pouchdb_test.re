@@ -2,7 +2,7 @@ open Jest;
 
 open ExpectJs;
 
-open Pouchdb;
+open PouchdbImpl;
 
 let dbUrl = "http://localhost:5984/testdb";
 
@@ -11,21 +11,21 @@ describe("The PouchDb Wrapper", () => {
     testAsync("it should return the database name", finish => {
       let db = connect(dbUrl);
       db
-      |> Pouchdb.info
+      |> info
       |> Js.Promise.then_(info => {
            let assertion = expect(info##db_name) |> toEqual("testdb");
            finish(assertion);
            Js.Promise.resolve();
          })
       |> ignore;
-      db |> Pouchdb.closeConnection |> ignore;
+      db |> closeConnection |> ignore;
     })
   );
   describe("when posting an item into the database", () =>
     testAsync("it should create the record and return a new id", finish => {
       let db = connect(dbUrl);
       db
-      |> Pouchdb.post({"name": "byron"})
+      |> post({"name": "byron"})
       |> Js.Promise.then_(response => {
            expect(response##ok) |> toBe(true) |> ignore;
            finish(
@@ -34,7 +34,7 @@ describe("The PouchDb Wrapper", () => {
            Js.Promise.resolve();
          })
       |> ignore;
-      db |> Pouchdb.closeConnection |> ignore;
+      db |> closeConnection |> ignore;
     })
   );
   describe("when upserting a new item in the database", () =>
@@ -42,29 +42,32 @@ describe("The PouchDb Wrapper", () => {
       let id = "upsert_new_test" ++ string_of_float(Js.Date.now());
       let db = connect(dbUrl);
       db
-      |> Pouchdb.put({"_id": id, "name": "byron"})
+      |> put({"_id": id, "_rev": "some rev", "name": "byron"})
       |> Js.Promise.then_(response => {
            expect(response##ok) |> toBe(true) |> ignore;
            finish(expect(response##id) |> toEqual(id));
            Js.Promise.resolve();
          })
       |> ignore;
-      db |> Pouchdb.closeConnection |> ignore;
+      db |> closeConnection |> ignore;
     })
   );
   describe("when upserting an existing item in the database", () =>
     testAsync("it should modify the record and return a new rev", finish => {
-      let id = "upsert_existing_test" ++ string_of_float(Js.Date.now());
+      let name = "upsert_existing_test" ++ string_of_float(Js.Date.now());
       let db = connect(dbUrl);
+      let newOrder = {"name": name};
       db
-      |> Pouchdb.put({"_id": id, "name": "byron"})
+      |> post(newOrder)
       |> Js.Promise.then_(response => {
            let rev = response##rev;
+           let id = response##id;
+           let modification = {"_id": id, "name": "george", "_rev": rev};
            db
-           |> Pouchdb.put({"_id": id, "name": "george", "_rev": rev})
+           |> put(modification)
            |> Js.Promise.then_(response => {
                 finish(expect(response##rev) |> not_ |> toEqual(rev));
-                db |> Pouchdb.closeConnection |> ignore;
+                db |> closeConnection |> ignore;
                 Js.Promise.resolve();
               })
            |> ignore;
@@ -78,15 +81,15 @@ describe("The PouchDb Wrapper", () => {
     testAsync("it should mark the item as deleted return a new rev", finish => {
       let db = connect(dbUrl);
       db
-      |> Pouchdb.post({"name": "byron"})
+      |> PouchdbImpl.post({"name": "byron"})
       |> Js.Promise.then_(created => {
            db
-           |> Pouchdb.remove({"_id": created##id, "_rev": created##rev})
+           |> PouchdbImpl.remove({"_id": created##id, "_rev": created##rev})
            |> Js.Promise.then_(removed => {
                 finish(
                   expect(removed##rev) |> not_ |> toEqual(created##rev),
                 );
-                db |> Pouchdb.closeConnection |> ignore;
+                db |> PouchdbImpl.closeConnection |> ignore;
                 Js.Promise.resolve();
               })
            |> ignore;
@@ -100,13 +103,13 @@ describe("The PouchDb Wrapper", () => {
     testAsync("it should retrieve the correct item", finish => {
       let db = connect(dbUrl);
       db
-      |> Pouchdb.post({"name": "byron"})
+      |> PouchdbImpl.post({"name": "byron"})
       |> Js.Promise.then_(created => {
            db
-           |> Pouchdb.get(created##id)
+           |> PouchdbImpl.get(created##id)
            |> Js.Promise.then_(fetched => {
                 finish(expect(fetched##name) |> toEqual("byron"));
-                db |> Pouchdb.closeConnection |> ignore;
+                db |> PouchdbImpl.closeConnection |> ignore;
                 Js.Promise.resolve();
               })
            |> ignore;
@@ -126,17 +129,14 @@ describe("The PouchDb Wrapper", () => {
            expect(created##ok) |> toBeTruthy |> ignore;
            let rev = created##rev;
            db
-           |> Pouchdb.find(
-                PouchDbInterface.QueryBuilder.query(
-                  ~selector={"name": name},
-                  (),
-                ),
+           |> PouchdbImpl.find(
+                PouchDb.QueryBuilder.query(~selector={"name": name}, ()),
               )
            |> Js.Promise.then_(response => {
                 let docs = response##docs;
                 expect(docs[0]##_rev) |> toEqual(rev) |> ignore;
                 finish(expect(docs[0]##name) |> toEqual(name));
-                db |> Pouchdb.closeConnection |> ignore;
+                db |> PouchdbImpl.closeConnection |> ignore;
                 Js.Promise.resolve();
               })
            |> Js.Promise.catch(err => Js.Promise.resolve(Js.log(err)))
