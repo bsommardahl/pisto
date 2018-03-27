@@ -48,9 +48,9 @@ type t('existing, 'fresh) = {
     Js.Promise.t(RevResponse.t),
   get: (string, t('existing, 'fresh)) => Js.Promise.t('existing),
   post: ('fresh, t('existing, 'fresh)) => Js.Promise.t(RevResponse.t),
-  /* find:
+  find:
     (QueryBuilder.queryT, t('existing, 'fresh)) =>
-    Js.Promise.t(docArray('existing)), */
+    Js.Promise.t(docArray('existing)),
   remove: ('existing, t('existing, 'fresh)) => Js.Promise.t(RevResponse.t),
   closeConnection: t('existing, 'fresh) => Js.Promise.t(unit),
 };

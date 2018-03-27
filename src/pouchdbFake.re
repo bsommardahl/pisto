@@ -40,7 +40,7 @@ let connect = (_dbNameOrUrl: string) : Pouchdb.t('existing, 'fresh) => {
   put,
   get,
   post,
-  /* find, */
+  find,
   remove,
   closeConnection,
 };
