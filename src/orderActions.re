@@ -70,7 +70,7 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
         (
           _self => {
             saveToStore(
-              {...order, paidOn: Some(Js.Date.now())},
+              {...state.order, paidOn: Some(Js.Date.now())},
               state.onFinish,
             )
             |> ignore;
@@ -103,8 +103,8 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
         (s("Guardar"))
       </button>
       <button onClick=((_) => self.send(PayOrder))> (s("Pagar")) </button>
-      <button onClick=((_) => self.send(RemoveOrder))>
-        (s("Borrar"))
-      </button>
     </div>,
+  /* <button onClick=((_) => self.send(RemoveOrder))>
+       (s("Borrar"))
+     </button> */
 };

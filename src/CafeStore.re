@@ -83,15 +83,8 @@ let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.order) => {
   |> get(updateOrder.id)
   |> Js.Promise.then_(orderJs => {
        let rev = orderJs##_rev;
-       db
-       |> put({
-            "_id": orderJs##_id,
-            "_rev": rev,
-            "orderItems": updateOrder.orderItems,
-            "customerName": updateOrder.customerName,
-            "lastUpdated": Js.Date.now,
-          })
-       |> ignore;
+       let id = orderJs##_id;
+       db |> put(updateOrderToJs(id, rev, updateOrder)) |> ignore;
        Js.log("orderStore:: updated order for " ++ orderJs##customerName);
        Js.Promise.resolve(mapOrderFromJs(orderJs));
      });

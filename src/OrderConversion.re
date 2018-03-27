@@ -6,23 +6,21 @@ let convertStringOption = s => Js.Nullable.toOption(s);
 
 let convertDate = d => d;
 
-let mapProductFromJs = prod : Product.t => {
-  id: prod##id,
-  name: prod##name,
-  tags: prod##tags |> Array.to_list,
-  suggestedPrice: prod##suggestedPrice,
-};
-
-let mapOrderItemFromJs = item : OrderData.Order.orderItem => {
-  product: mapProductFromJs(item##product),
-  addedOn: convertDate(item##addedOn),
-  salePrice: item##salePrice,
+let mapOrderItemFromJs = itemJs : OrderData.Order.orderItem => {
+  productId: itemJs##productId,
+  name: itemJs##name,
+  suggestedPrice: itemJs##suggestedPrice,
+  addedOn: convertDate(itemJs##addedOn),
+  salePrice: itemJs##salePrice,
 };
 
 let mapOrderFromJs = orderJs : OrderData.Order.order => {
   id: orderJs##_id,
   customerName: orderJs##customerName,
-  orderItems: orderJs##orderItems |> List.map(i => mapOrderItemFromJs(i)),
+  orderItems:
+    orderJs##orderItems
+    |> Array.map(i => mapOrderItemFromJs(i))
+    |> Array.to_list,
   createdOn: convertDate(orderJs##createdOn),
   paidOn: convertFloatOption(orderJs##paidOn),
   amountPaid: convertFloatOption(orderJs##amountPaid),
@@ -60,17 +58,25 @@ let vmToUpdateOrder = (vm: Order.orderVm) : Order.updateOrder => {
   paidOn: vm.paidOn,
 };
 
-let productToJs = (product: Product.t) => {
-  "id": product.id,
-  "name": product.name,
-  "tags": product.tags |> Array.of_list,
-  "suggestedPrice": product.suggestedPrice,
-};
-
 let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
-  "product": productToJs(orderItem.product),
+  "productId": orderItem.productId,
+  "name": orderItem.name,
+  "suggestedPrice": orderItem.suggestedPrice,
   "addedOn": orderItem.addedOn,
   "salePrice": orderItem.salePrice,
+};
+
+let updateOrderToJs =
+    (id: string, rev: string, updateOrder: OrderData.Order.updateOrder) => {
+  "_id": id,
+  "_rev": rev,
+  "orderItems":
+    updateOrder.orderItems |> List.map(i => orderItemToJs(i)) |> Array.of_list,
+  "customerName": updateOrder.customerName,
+  "lastUpdated": Js.Date.now(),
+  "paidOn": Js.Nullable.fromOption(updateOrder.paidOn),
+  "amountPaid": Js.Nullable.fromOption(updateOrder.amountPaid),
+  "paymentTakenBy": Js.Nullable.fromOption(updateOrder.paymentTakenBy),
 };
 
 let newOrderToJs = (order: OrderData.Order.newOrder) => {

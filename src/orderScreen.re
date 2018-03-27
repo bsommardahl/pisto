@@ -23,7 +23,9 @@ type action =
   | CloseOrderScreen;
 
 let buildOrderItem = (product: Product.t) : Order.orderItem => {
-  product,
+  productId: product.id,
+  name: product.name,
+  suggestedPrice: product.suggestedPrice,
   addedOn: Js.Date.now(),
   salePrice: product.suggestedPrice,
 };
