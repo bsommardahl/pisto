@@ -4,61 +4,48 @@ open CafeStore;
 
 open Pouchdb;
 
+open OrderConversion;
+
 let dbUrl = "http://localhost:5984/orders";
 
-let vmToUpdateOrder =
-    (vm: OrderData.Order.orderVm)
-    : OrderData.Order.updateOrder => {
-  id:
-    switch (vm.id) {
-    | None => ""
-    | Some(id) => id
-    },
-  customerName: vm.customerName,
-  orderItems: vm.orderItems,
-  amountPaid: vm.amountPaid,
-  paymentTakenBy: vm.paymentTakenBy,
-  paidOn: vm.paidOn,
-};
-
-module RealCafeStore =
-  CafeStore.Make(
-    {
-      let connect = PouchdbImpl.connect;
-    },
-  );
-
-let saveToStore = (order: OrderData.Order.orderVm) => {
-  Js.Console.log("Persisting order....");
+let saveToStore =
+    (
+      order: OrderData.Order.orderVm,
+      onFinish: OrderData.Order.orderVm => unit,
+    ) => {
+  Js.Console.log("orderActions:: Persisting order....");
   switch (order.id) {
   | None =>
-    /* RealCafeStore.add({
+    CafeStore.add({
       customerName: order.customerName,
       orderItems: order.orderItems,
     })
-    
-     |> Js.Promise.then_(_order =>
-         Js.Promise.resolve(Js.Console.log("Added new order."))
-       ) */
-       ();
+    |> Js.Promise.then_(freshOrder => {
+         onFinish(freshOrder |> OrderConversion.vmFromExistingOrder);
+         Js.Promise.resolve(
+           Js.Console.log("orderActions:: Added new order."),
+         );
+       })
   | Some(_id) =>
-    /* let o: OrderData.Order.order = vmToUpdateOrder(order);
-    RealCafeStore.update(o) */
-    /* |> Js.Promise.then_(_order =>
-         Js.Promise.resolve(Js.Console.log("Updated existing order."))
-       ) */
-       ();
+    let o: OrderData.Order.updateOrder = vmToUpdateOrder(order);
+    CafeStore.update(o)
+    |> Js.Promise.then_(updatedOrder => {
+         onFinish(updatedOrder |> OrderConversion.vmFromExistingOrder);
+         Js.Promise.resolve(
+           Js.Console.log("orderActions:: Updated existing order."),
+         );
+       });
   };
 };
 
 let removeFromStore = (order: OrderData.Order.orderVm) =>
   switch (order.id) {
   | None => ()
-  | Some(id) =>
+  | Some(_id) =>
     /* RealCafeStore.remove(id)
-    |> Js.Promise.then_(() => Js.Console.log("Removed order."))
-    |> ignore; */
-    ();
+       |> Js.Promise.then_(() => Js.Console.log("Removed order."))
+       |> ignore; */
+    ()
   };
 
 type state = {
@@ -82,8 +69,12 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
       ReasonReact.SideEffects(
         (
           _self => {
-            saveToStore({...order, paidOn: Some(Js.Date.now())});
-            state.onFinish(order);
+            saveToStore(
+              {...order, paidOn: Some(Js.Date.now())},
+              state.onFinish,
+            )
+            |> ignore;
+            ();
           }
         ),
       )
@@ -91,8 +82,8 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
       ReasonReact.SideEffects(
         (
           _self => {
-            saveToStore(order);
-            state.onFinish(order);
+            saveToStore(order, state.onFinish) |> ignore;
+            ();
           }
         ),
       )

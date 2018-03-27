@@ -31,28 +31,15 @@ module QueryBuilder: {
     "";
 };
 
-type existing('existing) =
-  {
-    ..
-    "_id": string,
-    "_rev": string,
-  } as 'existing;
-
-type docArray('existing) = {. "docs": array('existing)};
-
-type t('existing, 'fresh) = {
-  info: t('existing, 'fresh) => Js.Promise.t(DatabaseInfo.t),
-  destroy: t('existing, 'fresh) => Js.Promise.t(unit),
-  put:
-    (existing('existing), t('existing, 'fresh)) =>
-    Js.Promise.t(RevResponse.t),
-  get: (string, t('existing, 'fresh)) => Js.Promise.t('existing),
-  post: ('fresh, t('existing, 'fresh)) => Js.Promise.t(RevResponse.t),
-  find:
-    (QueryBuilder.queryT, t('existing, 'fresh)) =>
-    Js.Promise.t(docArray('existing)),
-  remove: ('existing, t('existing, 'fresh)) => Js.Promise.t(RevResponse.t),
-  closeConnection: t('existing, 'fresh) => Js.Promise.t(unit),
-};
-
-module type init = {let connect: string => t('existing, 'fresh);};
+type t;
+let info: t => Js.Promise.t(DatabaseInfo.t);
+let destroy: t => Js.Promise.t(unit);
+let put: ('a, t) => Js.Promise.t(RevResponse.t);
+let remove: ('a, t) => Js.Promise.t(RevResponse.t);
+let post: ('fresh, t) => Js.Promise.t(RevResponse.t);
+let get: (string, t) => Js.Promise.t('existing');
+let find: (QueryBuilder.queryT, t) => Js.Promise.t('a);
+let closeConnection: t => Js.Promise.t(unit);
+let createIndex: ('a, t) => unit;
+let connect: string => t;
+module type init = {let connect: string => t;};

@@ -1,11 +1,8 @@
 open Util;
 
-module RealCafeStore =
-  CafeStore.Make(
-    {
-      let connect = PouchdbImpl.connect;
-    },
-  );
+open OrderData;
+
+open OrderConversion;
 
 type viewing =
   | Tags
@@ -15,23 +12,23 @@ type state = {
   allProducts: list(Product.t),
   tags: list(string),
   viewing,
-  order: OrderData.Order.orderVm,
+  order: Order.orderVm,
 };
 
 type action =
   | SelectTag(string)
   | SelectProduct(Product.t)
   | DeselectTag
-  | LoadOrder(OrderData.Order.orderVm)
+  | LoadOrder(Order.orderVm)
   | CloseOrderScreen;
 
-let buildOrderItem = (product: Product.t) : OrderData.Order.orderItem => {
+let buildOrderItem = (product: Product.t) : Order.orderItem => {
   product,
   addedOn: Js.Date.now(),
   salePrice: product.suggestedPrice,
 };
 
-let buildNewOrder = (customerName: string) : OrderData.Order.orderVm => {
+let buildNewOrder = (customerName: string) : Order.orderVm => {
   id: None,
   customerName,
   orderItems: [],
@@ -43,27 +40,18 @@ let buildNewOrder = (customerName: string) : OrderData.Order.orderVm => {
   removed: false,
 };
 
-let vmFromExistingOrder = (o: OrderData.Order.order) => {
-  let vm: OrderData.Order.orderVm =
-    OrderData.Order.{
-      id: Some(o.id),
-      customerName: o.customerName,
-      orderItems: o.orderItems,
-      createdOn: o.createdOn,
-      paidOn: o.paidOn,
-      amountPaid: o.amountPaid,
-      paymentTakenBy: o.paymentTakenBy,
-      lastUpdated: o.lastUpdated,
-      removed: false,
-    };
-  vm;
-};
+let getOrderVm = orderId =>
+  CafeStore.get(orderId)
+  |> Js.Promise.then_(order => {
+       let vm = vmFromExistingOrder(order);
+       Js.Promise.resolve(vm);
+     });
 
 let dbUrl = "http://localhost:5984/orders";
 
 let component = ReasonReact.reducerComponent("Order");
 
-let make = (~finishedWithOrder: OrderData.Order.orderVm => unit, _children) => {
+let make = (~finishedWithOrder: Order.orderVm => unit, _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
@@ -101,24 +89,19 @@ let make = (~finishedWithOrder: OrderData.Order.orderVm => unit, _children) => {
       order: buildNewOrder(customerName),
     };
   },
-  didMount: ({reduce}) => {
-    let dispatch = (order: OrderData.Order.orderVm) =>
-      Js.Promise.resolve(reduce(() => LoadOrder(order)));
-    let convertToVm = (order: OrderData.Order.order) =>
-      Js.Promise.resolve(vmFromExistingOrder(order));
+  didMount: self => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
     switch (Util.QueryParam.get("orderId", queryString)) {
     | None => ReasonReact.NoUpdate
     | Some(orderId) =>
-      /* Js.Promise.(
-        RealCafeStore.get(orderId)
-        |> then_(convertToVm)
-        |> then_(dispatch)
-        |> ignore
-      ); */
+      getOrderVm(orderId)
+      |> Js.Promise.then_(vm => {
+           self.send(LoadOrder(vm));
+           Js.Promise.resolve();
+         })
+      |> ignore;
       ReasonReact.NoUpdate;
     };
-    /* the error in the compiler is here */
   },
   render: self => {
     let deselectTag = _event => self.send(DeselectTag);
