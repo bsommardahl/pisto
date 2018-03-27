@@ -24,7 +24,7 @@ let vmToUpdateOrder =
 module RealCafeStore =
   CafeStore.Make(
     {
-      let connect = connect;
+      let connect = PouchdbImpl.connect;
     },
   );
 
@@ -32,22 +32,22 @@ let saveToStore = (order: OrderData.Order.orderVm) => {
   Js.Console.log("Persisting order....");
   switch (order.id) {
   | None =>
-    let db = connect(dbUrl);
-    RealCafeStore.add({
+    /* RealCafeStore.add({
       customerName: order.customerName,
       orderItems: order.orderItems,
     })
-    |> Js.Promise.then_(_order => {
-         Js.Console.log("Added new order.");
-         db |> Pouchdb.closeConnection;
-       });
+    
+     |> Js.Promise.then_(_order =>
+         Js.Promise.resolve(Js.Console.log("Added new order."))
+       ) */
+       ();
   | Some(_id) =>
-    let db = connect(dbUrl);
-    RealCafeStore.update(vmToUpdateOrder(order), db)
-    |> Js.Promise.then_(_order => {
-         Js.Console.log("Updated existing order.");
-         db |> Pouchdb.closeConnection;
-       });
+    /* let o: OrderData.Order.order = vmToUpdateOrder(order);
+    RealCafeStore.update(o) */
+    /* |> Js.Promise.then_(_order =>
+         Js.Promise.resolve(Js.Console.log("Updated existing order."))
+       ) */
+       ();
   };
 };
 
@@ -55,15 +55,9 @@ let removeFromStore = (order: OrderData.Order.orderVm) =>
   switch (order.id) {
   | None => ()
   | Some(id) =>
-    let db = connect(dbUrl);
-    db
-    |> RealCafeStore.remove(id)
-    |> Js.Promise.then_(() => {
-         Js.Console.log("Removed order.");
-         db |> Pouchdb.closeConnection |> ignore;
-         Js.Promise.resolve();
-       })
-    |> ignore;
+    /* RealCafeStore.remove(id)
+    |> Js.Promise.then_(() => Js.Console.log("Removed order."))
+    |> ignore; */
     ();
   };
 

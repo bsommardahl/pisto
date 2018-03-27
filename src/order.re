@@ -1,5 +1,12 @@
 open Util;
 
+module RealCafeStore =
+  CafeStore.Make(
+    {
+      let connect = PouchdbImpl.connect;
+    },
+  );
+
 type viewing =
   | Tags
   | Products(string);
@@ -103,14 +110,12 @@ let make = (~finishedWithOrder: OrderData.Order.orderVm => unit, _children) => {
     switch (Util.QueryParam.get("orderId", queryString)) {
     | None => ReasonReact.NoUpdate
     | Some(orderId) =>
-      let db = Pouchdb.connect(dbUrl);
-      Js.Promise.(
-        db
-        |> OrderActions.RealCafeStore.get(orderId)
+      /* Js.Promise.(
+        RealCafeStore.get(orderId)
         |> then_(convertToVm)
         |> then_(dispatch)
         |> ignore
-      );
+      ); */
       ReasonReact.NoUpdate;
     };
     /* the error in the compiler is here */

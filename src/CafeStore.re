@@ -68,19 +68,20 @@ module Make = (Db: Pouchdb.init) => {
       : Js.Promise.t(OrderData.Order.order) => {
     let db = Db.connect(dbUrl);
     db
-    |> post(newOrder)
+    |> db.post(newOrder)
     |> then_(revResponse =>
          db
-         |> get(revResponse##id)
+         |> db.get(revResponse##id)
          |> then_(order => {
               let o = mapOrderFromJs(order);
               resolve(o);
             })
        );
   };
-  let getOpenOrders = db : Js.Promise.t(list(OrderData.Order.order)) =>
+  let getOpenOrders = db : Js.Promise.t(list(OrderData.Order.order)) => {
+    /* let db = Db.connect(dbUrl);
     db
-    |> find(
+    |> db.find(
          Pouchdb.QueryBuilder.query(
            ~selector={"paidOn": Js.Nullable.undefined},
            (),
@@ -92,11 +93,13 @@ module Make = (Db: Pouchdb.init) => {
            docs |> Array.map(d => mapOrderFromJs(d));
          Js.Promise.resolve(mapped);
        })
-    |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
+    |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders))); */
+    Js.Promise.resolve([]);
+  };
   let getClosedOrders = db : Js.Promise.t(list(OrderData.Order.order)) =>
-    db
-    |> Pouchdb.find(
-         PouchDbInterface.QueryBuilder.query(
+    /* db
+    |> db##find(
+         Pouchdb.QueryBuilder.query(
            ~selector={
              "paidOn": {
                "$not": Js.Nullable.undefined,
@@ -111,16 +114,17 @@ module Make = (Db: Pouchdb.init) => {
            docs |> Array.map(d => mapOrderFromJs(d));
          Js.Promise.resolve(mapped);
        })
-    |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
+    |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders))); */
+    Js.Promise.resolve([]);
   let update =
       (updateOrder: OrderData.Order.updateOrder, db)
       : Js.Promise.t(OrderData.Order.order) =>
     db
-    |> Pouchdb.get(updateOrder.id)
+    |> db##get(updateOrder.id)
     |> Js.Promise.then_((orderJs: orderJs) => {
          let rev = orderJs##_rev;
          db
-         |> Pouchdb.put({
+         |> db##put({
               "_id": orderJs##_id,
               "_rev": rev,
               "orderItems": updateOrder.orderItems,
@@ -131,11 +135,9 @@ module Make = (Db: Pouchdb.init) => {
          Js.Promise.resolve(mapOrderFromJs(orderJs));
        });
   let get = (orderId: string, db) : Js.Promise.t(OrderData.Order.order) =>
-    db
-    |> Pouchdb.get(orderId)
-    |> then_(order => resolve(mapOrderFromJs(order)));
+    db |> db##get(orderId) |> then_(order => resolve(mapOrderFromJs(order)));
   let remove = (orderId: string, db) : Js.Promise.t(unit) =>
     db
-    |> Pouchdb.get(orderId)
-    |> then_(order => db |> Pouchdb.remove(order) |> then_((_) => resolve()));
+    |> db##get(orderId)
+    |> then_(order => db |> db##remove(order) |> then_((_) => resolve()));
 };

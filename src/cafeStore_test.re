@@ -2,7 +2,7 @@ open Jest;
 
 open Expect;
 
-module FakeCafeStore = CafeStore.Make(FakePouchDb);
+module FakeCafeStore = CafeStore.Make(PouchdbFake);
 
 let buildOrder = name => {
   let order: OrderData.Order.newOrder = {customerName: name, orderItems: []};

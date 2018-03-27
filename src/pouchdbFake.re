@@ -1,12 +1,3 @@
-type existing('existing) =
-  {
-    ..
-    "_id": string,
-    "_rev": string,
-  } as 'existing;
-
-type docArray('existing) = {. "docs": array('existing)};
-
 let info = (_db: Pouchdb.t('existing, 'fresh)) => {
   let dbInfo = {"db_name": "fakedb", "doc_count": 1, "update_seq": 2};
   Js.Promise.resolve(dbInfo);
@@ -23,21 +14,19 @@ let remove = (_item, _db: Pouchdb.t('existing, 'fresh)) =>
 let post = (_item, _db: Pouchdb.t('existing, 'fresh)) =>
   Js.Promise.resolve({"ok": true, "id": "123", "rev": "3456"});
 
-let get = (_id: string, _db: Pouchdb.t('existing, 'fresh)) =>
-  Js.Promise.resolve(
-    {"_id": "get", "_rev": "some rev", "name": "something"}:
-                                                              existing(
-                                                                'existing,
-                                                              ),
-  );
+
+type monkey = Pouchdb.existing({."_id": string, "_rev": string, "monkey": string});
+
+let get = (_id: string, _db: Pouchdb.t('existing, 'fresh)) =>{
+ let monkey: monkey = {"_id": "get", "_rev": "some rev", "monkey": "something"};
+  Js.Promise.resolve(monkey);
+};
+
+type house = Pouchdb.existing({."_id": string, "_rev": string, "house": string});
 
 let find = (_query, _db: Pouchdb.t('existing, 'fresh)) => {
-  let sample: existing('existing) = {
-    "_id": "find",
-    "_rev": "rev",
-    "name": "something",
-  };
-  let docArr: docArray('existing) = {"docs": [|sample|]};
+  let sample: house = {"_id": "find", "_rev": "rev", "house": "tester"};
+  let docArr: Pouchdb.docArray('existing) = {"docs": [|sample|]};
   Js.Promise.resolve(docArr);
 };
 
@@ -46,12 +35,12 @@ let closeConnection = (_db: Pouchdb.t('existing, 'fresh)) =>
 
 /* let createIndex = (_index: 'a) => db; */
 let connect = (_dbNameOrUrl: string) : Pouchdb.t('existing, 'fresh) => {
-  "info": info,
-  "destroy": destroy,
-  "put": put,
-  "get": get,
-  "post": post,
-  "find": find,
-  "remove": remove,
-  "closeConnection": closeConnection,
+  info,
+  destroy,
+  put,
+  get,
+  post,
+  /* find, */
+  remove,
+  closeConnection,
 };
