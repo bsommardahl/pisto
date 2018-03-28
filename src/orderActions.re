@@ -38,14 +38,21 @@ let saveToStore =
   };
 };
 
-let removeFromStore = (order: OrderData.Order.orderVm) =>
+let removeFromStore =
+    (
+      order: OrderData.Order.orderVm,
+      onFinish: OrderData.Order.orderVm => unit,
+    ) =>
   switch (order.id) {
-  | None => ()
-  | Some(_id) =>
-    /* RealCafeStore.remove(id)
-       |> Js.Promise.then_(() => Js.Console.log("Removed order."))
-       |> ignore; */
-    ()
+  | None => onFinish(order)
+  | Some(id) =>
+    CafeStore.remove(id)
+    |> Js.Promise.then_(() => {
+         onFinish(order);
+         Js.Promise.resolve(Js.Console.log("Removed order."));
+       })
+    |> ignore;
+    ();
   };
 
 type state = {
@@ -70,7 +77,7 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
         (
           _self => {
             saveToStore(
-              {...state.order, paidOn: Some(Js.Date.now())},
+              {...order, paidOn: Some(Js.Date.now())},
               state.onFinish,
             )
             |> ignore;
@@ -91,20 +98,26 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
       ReasonReact.SideEffects(
         (
           _self => {
-            removeFromStore(order);
-            state.onFinish(order);
+            removeFromStore(order, state.onFinish);
+            ();
           }
         ),
       )
     },
-  render: self =>
+  render: self => {
+    let items = order.orderItems |> Array.of_list;
+    let disablePayButton: Js.boolean =
+      items |> Array.length > 0 ? Js.false_ : Js.true_;
     <div className="order-actions">
       <button onClick=((_) => self.send(SaveOrder))>
         (s("Guardar"))
       </button>
-      <button onClick=((_) => self.send(PayOrder))> (s("Pagar")) </button>
-    </div>,
-  /* <button onClick=((_) => self.send(RemoveOrder))>
-       (s("Borrar"))
-     </button> */
+      <button disabled=disablePayButton onClick=((_) => self.send(PayOrder))>
+        (s("Pagar"))
+      </button>
+      <button onClick=((_) => self.send(RemoveOrder))>
+        (s("Borrar"))
+      </button>
+    </div>;
+  },
 };
