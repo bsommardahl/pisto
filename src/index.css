@@ -2,4 +2,106 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  background-color: #DDDDDD
+}
+
+.start-new-order {
+  padding: 15px;
+  background-color:#CCC;
+}
+.start-new-order input {
+  font-size: 20px;
+  
+}
+.start-new-order button {
+  font-size: 20px;
+  margin-left: 10px;
+}
+.open-orders {
+  margin: 10px;  
+}
+
+.card {
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 10px; 
+  margin: 10px;
+  background-color: lightblue;
+  float: left;
+  width: 80px;
+  text-align: center;
+}
+
+.open-order-card {
+
+}
+
+
+.order .left-side {
+  
+}
+.order .right-side {
+  width: 300px;
+  background-color: #BBBBBB;
+  float: right;
+  padding: 10px;
+}
+
+.back-button-card {
+  background-color: blueviolet;
+  color: white; 
+}
+.order-items table { width: 100%; }
+.order-items table tbody th { text-align: right; }
+.order-items table tbody td { text-align: right; }
+
+.product-card {
+  background-color: goldenrod;
+  
+}
+.tag-card {
+  background-color: cornflowerblue;
+  color: white;
+}
+.tags {
+
+}
+
+.products {
+
+}
+
+.order-items {
+}
+
+.order-header {
+  background-color: #CCC;
+  padding: 15px;
+  height: 40px;
+}
+.order-header .customer-name {
+  font-size: 30px;
+}
+.order-actions{
+  float: right;
+}
+.save-button-card{
+  background-color: darkblue;
+  color: white;
+
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.pay-button-card{
+  background-color: green;
+  color: white;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+.remove-button-card{
+  background-color: darkred;
+  color: white;
+
+  margin-top: 0px;
+  margin-bottom: 0px;
 }

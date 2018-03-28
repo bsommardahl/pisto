@@ -6,10 +6,9 @@ open OrderConversion;
 
 open OrderData;
 
-let dbUrl = "http://localhost:5984/orders";
+let db = connect("orders");
 
-let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.order) => {
-  let db = connect(dbUrl);
+let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.order) =>
   db
   |> post(newOrder |> newOrderToJs)
   |> then_(revResponse =>
@@ -23,10 +22,8 @@ let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.order) => {
             resolve(o);
           })
      );
-};
 
-let getOpenOrders = () => {
-  let db = connect(dbUrl);
+let getOpenOrders = () =>
   db
   |> find(
        Pouchdb.QueryBuilder.query(
@@ -49,10 +46,8 @@ let getOpenOrders = () => {
        Js.Promise.resolve(mapped);
      })
   |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
-};
 
-let getClosedOrders = () => {
-  let db = connect(dbUrl);
+let getClosedOrders = () =>
   db
   |> find(
        Pouchdb.QueryBuilder.query(
@@ -75,10 +70,8 @@ let getClosedOrders = () => {
        Js.Promise.resolve(mapped);
      })
   |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
-};
 
-let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.order) => {
-  let db = connect(dbUrl);
+let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.order) =>
   db
   |> get(updateOrder.id)
   |> Js.Promise.then_(orderJs => {
@@ -88,10 +81,8 @@ let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.order) => {
        Js.log("orderStore:: updated order for " ++ orderJs##customerName);
        Js.Promise.resolve(mapOrderFromJs(orderJs));
      });
-};
 
-let get = (orderId: string) => {
-  let db = connect(dbUrl);
+let get = (orderId: string) =>
   db
   |> get(orderId)
   |> then_(js => {
@@ -99,10 +90,8 @@ let get = (orderId: string) => {
        Js.log("orderStore:: got order for " ++ js##customerName);
        Js.Promise.resolve(order);
      });
-};
 
-let remove = (orderId: string) : Js.Promise.t(unit) => {
-  let db = connect(dbUrl);
+let remove = (orderId: string) : Js.Promise.t(unit) =>
   db
   |> PouchdbImpl.get(orderId)
   |> then_(order =>
@@ -113,4 +102,3 @@ let remove = (orderId: string) : Js.Promise.t(unit) => {
             resolve();
           })
      );
-};

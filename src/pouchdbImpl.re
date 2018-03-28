@@ -48,6 +48,8 @@ external init : string => Pouchdb.t = "default";
 
 let connect = (dbNameOrUrl: string) => {
   plugin(pouchdb, pouchdbFind);
-  let db = init(dbNameOrUrl);
-  db;
+  let localDb = init(dbNameOrUrl);
+  /* let remoteDb = init(Config.remoteDb ++ dbNameOrUrl); */
+  /* localDb.sync(remoteDb); */
+  localDb;
 };

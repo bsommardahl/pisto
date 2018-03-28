@@ -6,8 +6,6 @@ open Pouchdb;
 
 open OrderConversion;
 
-let dbUrl = "http://localhost:5984/orders";
-
 let saveToStore =
     (
       order: OrderData.Order.orderVm,
@@ -109,15 +107,22 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
     let disablePayButton: Js.boolean =
       items |> Array.length > 0 ? Js.false_ : Js.true_;
     <div className="order-actions">
-      <button onClick=((_) => self.send(SaveOrder))>
+      <div
+        className="save-button-card card"
+        onClick=((_) => self.send(SaveOrder))>
         (s("Guardar"))
-      </button>
-      <button disabled=disablePayButton onClick=((_) => self.send(PayOrder))>
+      </div>
+      <div
+        className="pay-button-card card"
+        disabled=disablePayButton
+        onClick=((_) => self.send(PayOrder))>
         (s("Pagar"))
-      </button>
-      <button onClick=((_) => self.send(RemoveOrder))>
+      </div>
+      <div
+        className="remove-button-card card"
+        onClick=((_) => self.send(RemoveOrder))>
         (s("Borrar"))
-      </button>
+      </div>
     </div>;
   },
 };

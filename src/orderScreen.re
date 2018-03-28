@@ -109,42 +109,48 @@ let make = (~finishedWithOrder: Order.orderVm => unit, _children) => {
     let deselectTag = _event => self.send(DeselectTag);
     let selectTag = tag => self.send(SelectTag(tag));
     let selectProduct = product => self.send(SelectProduct(product));
-    <div className="Order">
-      <h1> (s("Order")) </h1>
-      <h2> (s("Name:")) (s(self.state.order.customerName)) </h2>
-      (
-        switch (self.state.order.id) {
-        | None => <div />
-        | Some(id) => <h2> (s("Id:")) (s(id)) </h2>
-        }
-      )
-      (
-        switch (self.state.viewing) {
-        | Tags =>
-          self.state.tags
-          |> List.map(tag => <div> <TagCard onSelect=selectTag tag /> </div>)
-          |> Array.of_list
-          |> ReasonReact.arrayToElement
-        | Products(tag) =>
-          <div>
-            <button onClick=deselectTag> (s("Atras")) </button>
-            (
-              Product.filterProducts(tag, self.state.allProducts)
-              |> List.map(product =>
-                   <ProductCard onSelect=selectProduct product />
-                 )
-              |> Array.of_list
-              |> ReasonReact.arrayToElement
-            )
-          </div>
-        }
-      )
-      <OrderItems orderItems=self.state.order.orderItems />
-      <OrderTotals orderItems=self.state.order.orderItems />
-      <OrderActions
-        order=self.state.order
-        onFinish=((_) => self.send(CloseOrderScreen))
-      />
+    <div className="order">
+      <div className="order-header">
+        <OrderActions
+          order=self.state.order
+          onFinish=((_) => self.send(CloseOrderScreen))
+        />
+        <div className="customer-name">
+          (s(self.state.order.customerName))
+        </div>
+      </div>
+      <div className="left-side">
+        (
+          switch (self.state.viewing) {
+          | Tags =>
+            <div className="tags">
+              (
+                self.state.tags
+                |> List.map(tag => <TagCard onSelect=selectTag tag />)
+                |> Array.of_list
+                |> ReasonReact.arrayToElement
+              )
+            </div>
+          | Products(tag) =>
+            <div className="products">
+              <div className="back-button-card card" onClick=deselectTag>
+                (s("Atras"))
+              </div>
+              (
+                Product.filterProducts(tag, self.state.allProducts)
+                |> List.map(product =>
+                     <ProductCard onSelect=selectProduct product />
+                   )
+                |> Array.of_list
+                |> ReasonReact.arrayToElement
+              )
+            </div>
+          }
+        )
+      </div>
+      <div className="right-side">
+        <OrderItems orderItems=self.state.order.orderItems />
+      </div>
     </div>;
   },
 };

@@ -20,16 +20,18 @@ let make = (~onStartNewOrder, _children) => {
       let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(event))##value;
       send(UpdateCustomerName(value));
     };
-    <div className="Home">
-      <input
-        _type="text"
-        value=self.state.customerName
-        name="customerName"
-        onChange=(handleChange(self))
-      />
-      <button onClick=(_event => onStartNewOrder(self.state.customerName))>
-        (s("Start Order"))
-      </button>
+    <div className="home">
+      <div className="start-new-order">
+        <input
+          _type="text"
+          value=self.state.customerName
+          name="customerName"
+          onChange=(handleChange(self))
+        />
+        <button onClick=(_event => onStartNewOrder(self.state.customerName))>
+          (s("Start Order"))
+        </button>
+      </div>
       <OpenOrders />
     </div>;
   },
