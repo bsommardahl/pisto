@@ -1,6 +1,7 @@
 type view =
   | Home
-  | Order;
+  | Order
+  | AllOrders;
 
 type customerName = string;
 
@@ -8,7 +9,8 @@ type state = {currentView: view};
 
 type action =
   | ShowHome
-  | ShowOrder;
+  | ShowOrder
+  | ShowAllOrders;
 
 let component = ReasonReact.reducerComponent("CafeRouter");
 
@@ -21,6 +23,7 @@ let make = _children => {
     switch (action) {
     | ShowHome => ReasonReact.Update({currentView: Home})
     | ShowOrder => ReasonReact.Update({currentView: Order})
+    | ShowAllOrders => ReasonReact.Update({currentView: AllOrders})
     },
   subscriptions: self => [
     Sub(
@@ -29,6 +32,7 @@ let make = _children => {
           switch (url.path) {
           | [] => self.send(ShowHome)
           | ["order"] => self.send(ShowOrder)
+          | ["orders"] => self.send(ShowAllOrders)
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -38,12 +42,14 @@ let make = _children => {
   render: self => {
     let onStartNewOrder = customerName =>
       ReasonReact.Router.push("order?customerName=" ++ customerName);
-    let finishedWithOrder = (_) => ReasonReact.Router.push("/");
+    let onViewPaidOrders = () => ReasonReact.Router.push("orders");
+    let goBack = (_) => ReasonReact.Router.push("/");
     <div>
       (
         switch (self.state.currentView) {
-        | Home => <Home onStartNewOrder />
-        | Order => <OrderScreen finishedWithOrder />
+        | Home => <Home onStartNewOrder onViewPaidOrders />
+        | Order => <OrderScreen goBack />
+        | AllOrders => <AllOrders goBack />
         }
       )
     </div>;

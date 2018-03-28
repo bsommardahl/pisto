@@ -5,10 +5,28 @@ body {
   background-color: #DDDDDD
 }
 
-.start-new-order {
-  padding: 15px;
+.header {
   background-color:#CCC;
+  height: 60px;
+  margin-bottom: 15px;
 }
+
+.header-options {
+  width: 400px;
+  padding: 15px;
+  
+}
+
+.header-menu {
+  float: right;
+  width: 400px;
+
+}
+
+.header-menu .card {
+  float: right;
+}
+
 .start-new-order input {
   font-size: 20px;
   
@@ -33,10 +51,16 @@ body {
   cursor: pointer;
 }
 
+.quiet-card {
+  background-color: #888;
+  color: #444;
+}
+.wide-card {
+  width: 100px;
+}
 .small-card {
   padding: 5px;
   margin: 5px;
-  
   font-size: 13px;
 }
 
@@ -112,4 +136,8 @@ body {
 
   margin-top: 0px;
   margin-bottom: 0px;
+}
+
+table.order-list {
+  width: 100%;
 }

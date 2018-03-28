@@ -55,7 +55,7 @@ let dbUrl = "http://localhost:5984/orders";
 
 let component = ReasonReact.reducerComponent("Order");
 
-let make = (~finishedWithOrder: Order.orderVm => unit, _children) => {
+let make = (~goBack, _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
@@ -63,8 +63,7 @@ let make = (~finishedWithOrder: Order.orderVm => unit, _children) => {
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
-    | CloseOrderScreen =>
-      ReasonReact.SideEffects((_self => finishedWithOrder(state.order)))
+    | CloseOrderScreen => ReasonReact.SideEffects((_self => goBack()))
     | RemoveOrderItem(orderItem) =>
       ReasonReact.Update({
         ...state,

@@ -7,7 +7,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("Home");
 
-let make = (~onStartNewOrder, _children) => {
+let make = (~onStartNewOrder, ~onViewPaidOrders, _children) => {
   ...component,
   initialState: () => {customerName: ""},
   reducer: (action, _state) =>
@@ -21,16 +21,26 @@ let make = (~onStartNewOrder, _children) => {
       send(UpdateCustomerName(value));
     };
     <div className="home">
-      <div className="start-new-order">
-        <input
-          _type="text"
-          value=self.state.customerName
-          name="customerName"
-          onChange=(handleChange(self))
-        />
-        <button onClick=(_event => onStartNewOrder(self.state.customerName))>
-          (s("Start Order"))
-        </button>
+      <div className="header">
+        <div className="header-menu">
+          <div
+            className="card wide-card quiet-card"
+            onClick=((_) => onViewPaidOrders())>
+            (s("Ver Ordenes"))
+          </div>
+        </div>
+        <div className="start-new-order header-options">
+          <input
+            _type="text"
+            value=self.state.customerName
+            name="customerName"
+            onChange=(handleChange(self))
+          />
+          <button
+            onClick=(_event => onStartNewOrder(self.state.customerName))>
+            (s("Start Order"))
+          </button>
+        </div>
       </div>
       <OpenOrders />
     </div>;

@@ -47,13 +47,14 @@ let getOpenOrders = () =>
      })
   |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
 
-let getClosedOrders = () =>
+let getClosedOrders = (startDate: float, endDate: float) =>
   db
   |> find(
        Pouchdb.QueryBuilder.query(
          ~selector={
            "paidOn": {
-             "$not": Js.Nullable.undefined,
+             "$gt": startDate,
+             "$lt": endDate,
            },
          },
          (),
