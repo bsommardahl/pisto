@@ -1,17 +1,25 @@
 open OrderData;
 
-let convertFloatOption = d => Js.Nullable.toOption(d);
+let convertFloatOption = d : option(float) => Js.Nullable.toOption(d);
 
-let convertStringOption = s => Js.Nullable.toOption(s);
+let convertIntOption = d : option(int) => Js.Nullable.toOption(d);
+
+let convertStringOption = s : option(string) => Js.Nullable.toOption(s);
 
 let convertDate = d => d;
 
 let mapOrderItemFromJs = itemJs : OrderData.Order.orderItem => {
-  productId: itemJs##productId,
+  productCode: itemJs##productCode,
   name: itemJs##name,
   suggestedPrice: itemJs##suggestedPrice,
   addedOn: convertDate(itemJs##addedOn),
   salePrice: itemJs##salePrice,
+  taxCalculation:
+    switch (itemJs##taxCalculation |> Js.String.split("|")) {
+    | [|"totalFirst", rate|] => Tax.TotalFirst(int_of_string(rate))
+    | [|"subTotalFirst", rate|] => Tax.SubTotalFirst(int_of_string(rate))
+    | _ => Tax.Exempt
+    },
 };
 
 let mapOrderFromJs = orderJs : OrderData.Order.order => {
@@ -23,7 +31,7 @@ let mapOrderFromJs = orderJs : OrderData.Order.order => {
     |> Array.to_list,
   createdOn: convertDate(orderJs##createdOn),
   paidOn: convertFloatOption(orderJs##paidOn),
-  amountPaid: convertFloatOption(orderJs##amountPaid),
+  amountPaid: convertIntOption(orderJs##amountPaid),
   paymentTakenBy: convertStringOption(orderJs##paymentTakenBy),
   lastUpdated: convertFloatOption(orderJs##lastUpdated),
   removed: false,
@@ -59,11 +67,17 @@ let vmToUpdateOrder = (vm: Order.orderVm) : Order.updateOrder => {
 };
 
 let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
-  "productId": orderItem.productId,
+  "productCode": orderItem.productCode,
   "name": orderItem.name,
   "suggestedPrice": orderItem.suggestedPrice,
   "addedOn": orderItem.addedOn,
   "salePrice": orderItem.salePrice,
+  "taxCalculation":
+    switch (orderItem.taxCalculation) {
+    | TotalFirst(rate) => "totalFirst|" ++ string_of_int(rate)
+    | SubTotalFirst(rate) => "subTotalFirst|" ++ string_of_int(rate)
+    | Exempt => "exempt|"
+    },
 };
 
 let updateOrderToJs =

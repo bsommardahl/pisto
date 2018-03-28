@@ -20,14 +20,16 @@ type action =
   | SelectProduct(Product.t)
   | DeselectTag
   | LoadOrder(Order.orderVm)
-  | CloseOrderScreen;
+  | CloseOrderScreen
+  | RemoveOrderItem(Order.orderItem);
 
 let buildOrderItem = (product: Product.t) : Order.orderItem => {
-  productId: product.id,
+  productCode: product.code,
   name: product.name,
   suggestedPrice: product.suggestedPrice,
   addedOn: Js.Date.now(),
   salePrice: product.suggestedPrice,
+  taxCalculation: product.taxCalculation,
 };
 
 let buildNewOrder = (customerName: string) : Order.orderVm => {
@@ -63,6 +65,15 @@ let make = (~finishedWithOrder: Order.orderVm => unit, _children) => {
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
     | CloseOrderScreen =>
       ReasonReact.SideEffects((_self => finishedWithOrder(state.order)))
+    | RemoveOrderItem(orderItem) =>
+      ReasonReact.Update({
+        ...state,
+        order: {
+          ...state.order,
+          orderItems:
+            state.order.orderItems |> List.filter(i => i !== orderItem),
+        },
+      })
     | SelectProduct(product) =>
       ReasonReact.Update({
         ...state,
@@ -149,7 +160,10 @@ let make = (~finishedWithOrder: Order.orderVm => unit, _children) => {
         )
       </div>
       <div className="right-side">
-        <OrderItems orderItems=self.state.order.orderItems />
+        <OrderItems
+          order=self.state.order
+          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
+        />
       </div>
     </div>;
   },

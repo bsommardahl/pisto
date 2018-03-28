@@ -41,6 +41,8 @@ type pouchdb;
 
 [@bs.send] external plugin : (pouchdb, pouchdbFind) => unit = "plugin";
 
+[@bs.send.pipe: Pouchdb.t] external sync : (Pouchdb.t, 'a) => unit = "";
+
 [@bs.module "pouchdb"] external pouchdb : pouchdb = "default";
 
 [@bs.module "pouchdb"] [@bs.new]
@@ -49,7 +51,7 @@ external init : string => Pouchdb.t = "default";
 let connect = (dbNameOrUrl: string) => {
   plugin(pouchdb, pouchdbFind);
   let localDb = init(dbNameOrUrl);
-  /* let remoteDb = init(Config.remoteDb ++ dbNameOrUrl); */
-  /* localDb.sync(remoteDb); */
+  let remoteDb = init(Config.remoteDb ++ dbNameOrUrl);
+  localDb |> sync(remoteDb, {"live": true, "retry": true});
   localDb;
 };

@@ -2,41 +2,48 @@ open Util;
 
 let component = ReasonReact.statelessComponent("OrderItems");
 
-let make = (~orderItems: list(OrderData.Order.orderItem), _children) => {
+let make = (~order: OrderData.Order.orderVm, ~onRemoveItem, _children) => {
   ...component,
-  render: _self =>{
-    let subTotal = "L0.0";
-    let tax = "L0.0";
-    let listOfPrices =
-      orderItems |> List.map((i: OrderData.Order.orderItem) => i.salePrice);
-    let total =
-      Belt.List.reduce(listOfPrices, 0.0, (acc, curr) => acc +. curr)
-      |> string_of_float;
-    
-  (
+  render: _self => {
+    let totals = order.orderItems |> OrderItemCalculation.getTotals;
     <div className="order-items">
       <h2> (s("Order Items")) </h2>
       <table>
         <tbody>
           (
-            orderItems
-            |> List.map((i:OrderData.Order.orderItem) =>
+            order.orderItems
+            |> List.map((i: OrderData.Order.orderItem) =>
                  <tr>
+                   <td>
+                     <div
+                       className="card small-card danger-card"
+                       onClick=((_) => onRemoveItem(i))>
+                       (s("Eliminar"))
+                     </div>
+                   </td>
                    <td> (s(i.name)) </td>
-                   <td> (s(string_of_float(i.salePrice))) </td>
+                   <td> (s(string_of_int(i.salePrice))) </td>
                  </tr>
                )
             |> Array.of_list
             |> ReasonReact.arrayToElement
           )
-          <tr><th>(s("Sub-total"))</th><td>(s("0.0"))</td></tr>
-
-          <tr><th>(s("Impuesto"))</th><td>(s("0.0"))</td></tr>
-
-          <tr><th>(s("Total"))</th><td>(s(total))</td></tr>
         </tbody>
+        <tfoot>
+          <tr className="divider">
+            <th colSpan=2> (s("Sub-total")) </th>
+            <td> (s(totals.subTotal |> string_of_int)) </td>
+          </tr>
+          <tr>
+            <th colSpan=2> (s("Impuesto")) </th>
+            <td> (s(totals.tax |> string_of_int)) </td>
+          </tr>
+          <tr>
+            <th colSpan=2> (s("Total")) </th>
+            <td> (s(totals.total |> string_of_int)) </td>
+          </tr>
+        </tfoot>
       </table>
-    </div>
-  )
-  }
+    </div>;
+  },
 };

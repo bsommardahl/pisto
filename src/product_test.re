@@ -3,10 +3,11 @@ open Jest;
 open Expect;
 
 let buildProduct = (name: string, tags: list(string)) : Product.t => {
-  id: "123",
+  code: "123",
   name,
   tags,
-  suggestedPrice: 10.00,
+  suggestedPrice: 1000,
+  taxCalculation: Exempt,
 };
 
 describe("product data functions", () => {
@@ -39,7 +40,7 @@ describe("product data functions", () => {
           buildProduct("black", ["b"]),
           buildProduct("au lait", ["a"]),
         ]);
-      expect(result |> List.length) |> toBe(4);
+      expect(result |> List.length) |> toBe(4) |> ignore;
       expect(result) |> toEqual(["a", "b", "c", "d"]);
     })
   );

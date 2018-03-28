@@ -1,23 +1,24 @@
 module Order = {
   type orderItem = {
-    productId: string,
+    productCode: string,
     name: string,
-    suggestedPrice: float,
+    suggestedPrice: int,
     addedOn: float,
-    salePrice: float,
+    salePrice: int,
+    taxCalculation: Tax.taxCalculationMethod,
   };
   type updateOrder = {
     id: string,
     customerName: string,
     orderItems: list(orderItem),
-    amountPaid: option(float),
+    amountPaid: option(int),
     paymentTakenBy: option(string),
     paidOn: option(float),
   };
   type order = {
     id: string,
     customerName: string,
-    amountPaid: option(float),
+    amountPaid: option(int),
     orderItems: list(orderItem),
     paymentTakenBy: option(string),
     paidOn: option(float),
@@ -28,7 +29,7 @@ module Order = {
   type orderVm = {
     id: option(string),
     customerName: string,
-    amountPaid: option(float),
+    amountPaid: option(int),
     orderItems: list(orderItem),
     paymentTakenBy: option(string),
     paidOn: option(float),

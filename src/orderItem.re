@@ -8,7 +8,7 @@ let make = (~orderItem: OrderData.Order.orderItem, _children) => {
     <div className="order-item">
       <div className="order-item-name"> (s(orderItem.name)) </div>
       <div className="order-item-price">
-        (s(string_of_float(orderItem.salePrice)))
+        (s(string_of_int(orderItem.salePrice)))
       </div>
     </div>,
 };

@@ -23,22 +23,26 @@ body {
 
 .card {
   border: 1px solid black;
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px; 
   margin: 10px;
   background-color: lightblue;
   float: left;
   width: 80px;
   text-align: center;
+  cursor: pointer;
 }
 
-.open-order-card {
-
-}
-
-
-.order .left-side {
+.small-card {
+  padding: 5px;
+  margin: 5px;
   
+  font-size: 13px;
+}
+
+.danger-card { 
+  background-color: darkred;
+  color: #DDDDDD;
 }
 .order .right-side {
   width: 300px;
@@ -51,9 +55,13 @@ body {
   background-color: blueviolet;
   color: white; 
 }
-.order-items table { width: 100%; }
-.order-items table tbody th { text-align: right; }
-.order-items table tbody td { text-align: right; }
+.order-items table { width: 100%; border-collapse: collapse; text-align: right; }
+.order-items table tbody td { height: 30px; }
+
+.order-items table tfoot th { height: 30px; }
+.order-items table tfoot td { width: 75px; }
+.order-items table tfoot tr.divider td { border-top: 2px solid black; }
+.order-items table tfoot tr.divider th { border-top: 2px solid black; }
 
 .product-card {
   background-color: goldenrod;
