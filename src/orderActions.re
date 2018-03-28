@@ -65,7 +65,8 @@ type action =
 
 let component = ReasonReact.reducerComponent("OrderItem");
 
-let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
+let make =
+    (~closed: bool, ~order: OrderData.Order.orderVm, ~onFinish, _children) => {
   ...component,
   initialState: () => {order, onFinish},
   reducer: (action, state) =>
@@ -112,12 +113,18 @@ let make = (~order: OrderData.Order.orderVm, ~onFinish, _children) => {
         onClick=((_) => self.send(SaveOrder))>
         (s("Guardar"))
       </div>
-      <div
-        className="pay-button-card card"
-        disabled=disablePayButton
-        onClick=((_) => self.send(PayOrder))>
-        (s("Pagar"))
-      </div>
+      (
+        if (! closed) {
+          <div
+            className="pay-button-card card"
+            disabled=disablePayButton
+            onClick=((_) => self.send(PayOrder))>
+            (s("Pagar"))
+          </div>;
+        } else {
+          ReasonReact.nullElement;
+        }
+      )
       <div
         className="remove-button-card card"
         onClick=((_) => self.send(RemoveOrder))>

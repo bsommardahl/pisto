@@ -17,7 +17,7 @@ let component = ReasonReact.reducerComponent("AllOrders");
 let make = (~goBack, _children) => {
   ...component,
   initialState: () => {
-    startDate: Date.now() |> Date.oneMonthBefore,
+    startDate: Date.oneMonthBefore(Date.now()),
     endDate: Date.now(),
     orders: [],
   },
@@ -36,7 +36,7 @@ let make = (~goBack, _children) => {
     | LoadOrders(orders) => ReasonReact.Update({...state, orders})
     | ViewOrder(id) =>
       ReasonReact.SideEffects(
-        (_self => ReasonReact.Router.push("order?orderid=" ++ id)),
+        (_self => ReasonReact.Router.push("order?orderId=" ++ id)),
       )
     },
   render: self =>

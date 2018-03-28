@@ -11,6 +11,7 @@ let headerRow = () =>
     <th> (s("Subtotal")) </th>
     <th> (s("Impuesto")) </th>
     <th> (s("Total")) </th>
+    <th> (s("Fecha")) </th>
     <th> (s("Hora")) </th>
   </tr>;
 
@@ -29,7 +30,8 @@ let row = (o: Order.orderVm, onSelect) => {
     <td> (s(totals.subTotal |> Money.toDisplay)) </td>
     <td> (s(totals.tax |> Money.toDisplay)) </td>
     <td> (s(totals.total |> Money.toDisplay)) </td>
-    <td> (s(paidOn |> Date.toDisplay)) </td>
+    <td> (s(paidOn |> Date.toDisplayDate)) </td>
+    <td> (s(paidOn |> Date.toDisplayTime)) </td>
   </tr>;
 };
 

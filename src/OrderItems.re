@@ -2,7 +2,8 @@ open Util;
 
 let component = ReasonReact.statelessComponent("OrderItems");
 
-let make = (~order: OrderData.Order.orderVm, ~onRemoveItem, _children) => {
+let make =
+    (~closed: bool, ~order: OrderData.Order.orderVm, ~onRemoveItem, _children) => {
   ...component,
   render: _self => {
     let totals = order.orderItems |> OrderItemCalculation.getTotals;
@@ -15,11 +16,17 @@ let make = (~order: OrderData.Order.orderVm, ~onRemoveItem, _children) => {
             |> List.map((i: OrderData.Order.orderItem) =>
                  <tr>
                    <td>
-                     <div
-                       className="card small-card danger-card"
-                       onClick=((_) => onRemoveItem(i))>
-                       (s("Eliminar"))
-                     </div>
+                     (
+                       if (! closed) {
+                         <div
+                           className="card small-card danger-card"
+                           onClick=((_) => onRemoveItem(i))>
+                           (s("Eliminar"))
+                         </div>;
+                       } else {
+                         ReasonReact.nullElement;
+                       }
+                     )
                    </td>
                    <td> (s(i.name)) </td>
                    <td> (s(i.salePrice |> Money.toDisplay)) </td>
