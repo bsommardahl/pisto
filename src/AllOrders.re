@@ -59,7 +59,7 @@ let make = (~goBack, _children) => {
       <div className="header">
         <div className="header-menu">
           <div className="card wide-card quiet-card" onClick=goBack>
-            (s("Regresar"))
+            (s("Atras"))
           </div>
         </div>
         <div className="header-options">

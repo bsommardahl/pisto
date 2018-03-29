@@ -7,7 +7,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("Home");
 
-let make = (~onStartNewOrder, ~onViewPaidOrders, _children) => {
+let make = (~onStartNewOrder, ~goToAdmin, _children) => {
   ...component,
   initialState: () => {customerName: ""},
   reducer: (action, _state) =>
@@ -25,8 +25,8 @@ let make = (~onStartNewOrder, ~onViewPaidOrders, _children) => {
         <div className="header-menu">
           <div
             className="card wide-card quiet-card"
-            onClick=((_) => onViewPaidOrders())>
-            (s("Ver Ordenes"))
+            onClick=((_) => goToAdmin())>
+            (s("Gestion"))
           </div>
         </div>
         <div className="start-new-order header-options customer-name">
