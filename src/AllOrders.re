@@ -47,7 +47,9 @@ let make = (~goBack, _children) => {
             (s("Regresar"))
           </div>
         </div>
-        <div className="header-options"> (s("date filters here")) </div>
+        <div className="header-options">
+          (s("Ordenes de los ultimos 30 dias"))
+        </div>
       </div>
       <OrderList
         orders=self.state.orders

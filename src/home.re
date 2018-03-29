@@ -29,7 +29,7 @@ let make = (~onStartNewOrder, ~onViewPaidOrders, _children) => {
             (s("Ver Ordenes"))
           </div>
         </div>
-        <div className="start-new-order header-options">
+        <div className="start-new-order header-options customer-name">
           <input
             _type="text"
             value=self.state.customerName

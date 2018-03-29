@@ -8,12 +8,17 @@ type viewing =
   | Tags
   | Products(string);
 
+type modifying =
+  | Nothing
+  | CustomerName;
+
 type state = {
   allProducts: list(Product.t),
   tags: list(string),
   viewing,
   order: Order.orderVm,
   closedOrder: bool,
+  modifying,
 };
 
 type action =
@@ -22,7 +27,10 @@ type action =
   | DeselectTag
   | LoadOrder(Order.orderVm)
   | CloseOrderScreen
-  | RemoveOrderItem(Order.orderItem);
+  | RemoveOrderItem(Order.orderItem)
+  | EnableModCustomerName
+  | DisableModCustomerName
+  | ChangeCustomerName(string);
 
 let buildOrderItem = (product: Product.t) : Order.orderItem => {
   productCode: product.code,
@@ -70,6 +78,18 @@ let make = (~goBack, _children) => {
           | None => false
           },
       })
+    | EnableModCustomerName =>
+      ReasonReact.Update({...state, modifying: CustomerName})
+    | DisableModCustomerName =>
+      ReasonReact.Update({...state, modifying: Nothing})
+    | ChangeCustomerName(name) =>
+      ReasonReact.Update({
+        ...state,
+        order: {
+          ...state.order,
+          customerName: name,
+        },
+      })
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
@@ -105,11 +125,12 @@ let make = (~goBack, _children) => {
       };
     let products = Product.getProducts();
     {
-      closedOrder: true,
+      closedOrder: false,
       allProducts: products,
       tags: Product.getTags(products),
       viewing: Tags,
       order: buildNewOrder(customerName),
+      modifying: Nothing,
     };
   },
   didMount: self => {
@@ -130,6 +151,12 @@ let make = (~goBack, _children) => {
     let deselectTag = _event => self.send(DeselectTag);
     let selectTag = tag => self.send(SelectTag(tag));
     let selectProduct = product => self.send(SelectProduct(product));
+    let enableModificationCustomerName = () =>
+      self.send(EnableModCustomerName);
+    let onCustomerNameChange = ev => {
+      let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
+      self.send(ChangeCustomerName(value));
+    };
     <div className="order">
       <div className="order-header">
         <OrderActions
@@ -137,9 +164,26 @@ let make = (~goBack, _children) => {
           order=self.state.order
           onFinish=((_) => self.send(CloseOrderScreen))
         />
-        <div className="customer-name">
-          (s(self.state.order.customerName))
-        </div>
+        (
+          switch (self.state.modifying) {
+          | CustomerName =>
+            <div className="customer-name">
+              <input
+                value=self.state.order.customerName
+                onChange=onCustomerNameChange
+              />
+              <button onClick=((_) => self.send(DisableModCustomerName))>
+                (s("Cambiar"))
+              </button>
+            </div>
+          | _ =>
+            <div
+              className="customer-name"
+              onClick=((_) => enableModificationCustomerName())>
+              (s(self.state.order.customerName))
+            </div>
+          }
+        )
       </div>
       <div className="left-side">
         (
