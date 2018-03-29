@@ -11,9 +11,9 @@ type totalCalculator = (int, Order.orderItem) => totals;
 let totalFirstCalculator: totalCalculator =
   (taxPercent: int, item: Order.orderItem) => {
     let total = item.salePrice;
-    let realSalePrice = total * 100 / (100 + taxPercent);
-    let tax = total - realSalePrice;
-    {subTotal: realSalePrice, tax, total};
+    let subTotal = total * 100 / (100 + taxPercent);
+    let tax = total - subTotal;
+    {subTotal, tax, total};
   };
 
 let subTotalFirstCalculator: totalCalculator =

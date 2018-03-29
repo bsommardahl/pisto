@@ -1,9 +1,5 @@
 open Util;
 
-open CafeStore;
-
-open Pouchdb;
-
 open OrderConversion;
 
 let saveToStore =

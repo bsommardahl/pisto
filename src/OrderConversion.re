@@ -9,7 +9,7 @@ let convertStringOption = s : option(string) => Js.Nullable.toOption(s);
 let convertDate = d => d;
 
 let mapOrderItemFromJs = itemJs : OrderData.Order.orderItem => {
-  productCode: itemJs##productCode,
+  sku: itemJs##sku,
   name: itemJs##name,
   suggestedPrice: itemJs##suggestedPrice,
   addedOn: convertDate(itemJs##addedOn),
@@ -67,7 +67,7 @@ let vmToUpdateOrder = (vm: Order.orderVm) : Order.updateOrder => {
 };
 
 let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
-  "productCode": orderItem.productCode,
+  "sku": orderItem.sku,
   "name": orderItem.name,
   "suggestedPrice": orderItem.suggestedPrice,
   "addedOn": orderItem.addedOn,

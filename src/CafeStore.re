@@ -6,7 +6,7 @@ open OrderConversion;
 
 open OrderData;
 
-let db = connect("orders");
+let db = PouchdbImpl.connect("orders", Config.Database.livePouchDbConfig);
 
 let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.order) =>
   db

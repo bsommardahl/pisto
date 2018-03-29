@@ -22,9 +22,24 @@ let make = (~goBack, _children) => {
     orders: [],
   },
   didMount: self => {
+    let getFloatFromOpt = (fl: option(float)) =>
+      switch (fl) {
+      | None => 0.0
+      | Some(n) => n
+      };
     CafeStore.getClosedOrders(self.state.startDate, self.state.endDate)
     |> Js.Promise.then_(orders => {
-         let vms = orders |> List.map(OrderConversion.vmFromExistingOrder);
+         let vms =
+           orders
+           |> List.map(OrderConversion.vmFromExistingOrder)
+           |> List.fast_sort((a, b) =>
+                OrderData.Order.(
+                  compare(
+                    getFloatFromOpt(b.paidOn),
+                    getFloatFromOpt(a.paidOn),
+                  )
+                )
+              );
          self.send(LoadOrders(vms));
          Js.Promise.resolve();
        })

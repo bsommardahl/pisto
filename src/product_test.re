@@ -3,7 +3,7 @@ open Jest;
 open Expect;
 
 let buildProduct = (name: string, tags: list(string)) : Product.t => {
-  code: "123",
+  sku: "123",
   name,
   tags,
   suggestedPrice: 1000,

@@ -28,12 +28,11 @@ type action =
   | LoadOrder(Order.orderVm)
   | CloseOrderScreen
   | RemoveOrderItem(Order.orderItem)
-  | EnableModCustomerName
-  | DisableModCustomerName
+  | ChangePaidDate(float)
   | ChangeCustomerName(string);
 
 let buildOrderItem = (product: Product.t) : Order.orderItem => {
-  productCode: product.code,
+  sku: product.sku,
   name: product.name,
   suggestedPrice: product.suggestedPrice,
   addedOn: Js.Date.now(),
@@ -74,20 +73,24 @@ let make = (~goBack, _children) => {
         order,
         closedOrder:
           switch (order.paidOn) {
-          | Some(d) => true
+          | Some(_) => true
           | None => false
           },
       })
-    | EnableModCustomerName =>
-      ReasonReact.Update({...state, modifying: CustomerName})
-    | DisableModCustomerName =>
-      ReasonReact.Update({...state, modifying: Nothing})
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
         ...state,
         order: {
           ...state.order,
           customerName: name,
+        },
+      })
+    | ChangePaidDate(date) =>
+      ReasonReact.Update({
+        ...state,
+        order: {
+          ...state.order,
+          paidOn: Some(date),
         },
       })
     | SelectTag(tag) =>
@@ -121,7 +124,7 @@ let make = (~goBack, _children) => {
     let customerName =
       switch (Util.QueryParam.get("customerName", queryString)) {
       | Some(name) => name
-      | None => "Cliente"
+      | None => "Amado Cliente"
       };
     let products = Product.getProducts();
     {
@@ -148,15 +151,10 @@ let make = (~goBack, _children) => {
     };
   },
   render: self => {
+    Js.log("orderscreen:: " ++ self.state.order.customerName);
     let deselectTag = _event => self.send(DeselectTag);
     let selectTag = tag => self.send(SelectTag(tag));
     let selectProduct = product => self.send(SelectProduct(product));
-    let enableModificationCustomerName = () =>
-      self.send(EnableModCustomerName);
-    let onCustomerNameChange = ev => {
-      let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
-      self.send(ChangeCustomerName(value));
-    };
     <div className="order">
       <div className="order-header">
         <OrderActions
@@ -164,31 +162,33 @@ let make = (~goBack, _children) => {
           order=self.state.order
           onFinish=((_) => self.send(CloseOrderScreen))
         />
-        (
-          switch (self.state.modifying) {
-          | CustomerName =>
-            <div className="customer-name">
-              <input
-                value=self.state.order.customerName
-                onChange=onCustomerNameChange
-              />
-              <button onClick=((_) => self.send(DisableModCustomerName))>
-                (s("Cambiar"))
-              </button>
-            </div>
-          | _ =>
-            <div
-              className="customer-name"
-              onClick=((_) => enableModificationCustomerName())>
-              (s(self.state.order.customerName))
-            </div>
-          }
-        )
+        <div className="customer-name">
+          <EditableText
+            text=self.state.order.customerName
+            onChange=(newName => self.send(ChangeCustomerName(newName)))
+          />
+        </div>
       </div>
       <div className="left-side">
         (
           if (self.state.closedOrder) {
-            <div> (s("Pagado")) </div>;
+            <div>
+              <h2> (s("Pagado")) </h2>
+              <div className="paid-date">
+                (
+                  switch (self.state.order.paidOn) {
+                  | None => <div />
+                  | Some(date) =>
+                    <EditableDate
+                      date
+                      onChange=(
+                        newDate => self.send(ChangePaidDate(newDate))
+                      )
+                    />
+                  }
+                )
+              </div>
+            </div>;
           } else {
             switch (self.state.viewing) {
             | Tags =>

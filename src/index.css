@@ -31,6 +31,13 @@ body {
   font-size: 20px;
   
 }
+.paid-date input {
+  font-size: 20px; width: 400px;
+}
+.paid-date button {
+  font-size: 20px;
+  margin-left: 10px;
+}
 .start-new-order button {
   font-size: 20px;
   margin-left: 10px;
@@ -141,3 +148,6 @@ body {
 table.order-list {
   width: 100%;
 }
+
+.valid { color: darkgreen; }
+.invalid {color: darkred;}

@@ -1,6 +1,6 @@
 module Order = {
   type orderItem = {
-    productCode: string,
+    sku: string,
     name: string,
     suggestedPrice: Money.t,
     addedOn: float,
