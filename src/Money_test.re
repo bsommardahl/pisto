@@ -17,4 +17,18 @@ describe("Money functions", () => {
       expect(display) |> toEqual("L.10.00");
     })
   );
+  describe("when converting a valid money display string to int", () =>
+    test("it should return the correct int", () => {
+      let display = "L.10.00";
+      let amount = display |> Money.toT;
+      expect(amount) |> toEqual(1000);
+    })
+  );
+  describe("when converting an invalid money display string to int", () =>
+    test("it should return the correct int", () => {
+      let display = "N.10.000";
+      let amount = display |> Money.toT;
+      expect(amount) |> toEqual(1000);
+    })
+  );
 });

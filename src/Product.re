@@ -35,7 +35,7 @@ let mapFromJs = prodJs : t => {
 
 let mapToJsWithRev = (id: string, rev: option(string), prod: t) => {
   "_id": id,
-  "_rev": Js.Null.fromOption(rev),
+  "_rev": Js.Nullable.return(rev),
   "sku": prod.sku,
   "name": prod.name,
   "suggestedPrice": prod.suggestedPrice,

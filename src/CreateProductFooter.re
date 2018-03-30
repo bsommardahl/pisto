@@ -74,6 +74,7 @@ let make = (~createProduct, _children) => {
         </td>
         <td>
           <input
+            _type="number"
             value=self.state.newPrice
             onChange=(ev => self.send(ChangeNewPrice(getVal(ev))))
           />

@@ -1,8 +1,4 @@
-let s = str =>
-  switch (str) {
-  | thing => ReasonReact.stringToElement(thing)
-  | _ => ReasonReact.stringToElement("")
-  };
+let s = (str: string) => ReasonReact.stringToElement(str);
 
 let sopt = (str: option(string)) =>
   switch (str) {
@@ -29,7 +25,7 @@ module QueryParam = {
             };
           switch (pair) {
           | Some(p) =>
-            Js.Array.push(p, result);
+            Js.Array.push(p, result) |> ignore;
             result;
           | None => result
           };
@@ -39,7 +35,7 @@ module QueryParam = {
       );
     };
     let getQueryParam = (key: string, qArr: array(t)) : option(string) => {
-      let pair = Js.Array.find(((k, _v)) => k === key, qArr);
+      let pair = Js.Array.find(((k, v)) => k === key && v !== "", qArr);
       switch (pair) {
       | Some(p) =>
         let (_, v) = p;

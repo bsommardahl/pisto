@@ -37,7 +37,7 @@ let make = _children => {
       ReasonReact.Update({
         products:
           state.products
-          |> List.map((p: Product.t) => p.id == product.id ? product : p),
+          |> List.map((p: Product.t) => p.id === product.id ? product : p),
       })
     | NewProductCreated(newProduct) =>
       ReasonReact.Update({
@@ -57,7 +57,7 @@ let make = _children => {
     };
     let modifyProduct = (modifiedProduct: Product.t) =>
       ProductStore.update(modifiedProduct)
-      |> then_(rev => {
+      |> then_((_) => {
            self.send(ProductModified(modifiedProduct));
            resolve();
          })

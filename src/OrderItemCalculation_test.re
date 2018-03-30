@@ -29,7 +29,7 @@ let buildNewOrder = (customerName: string, orderItems) : Order.orderVm => {
 
 describe("order item calculation", () =>
   describe("when calculating order item totals", () => {
-    Only.describe("with several items", () => {
+    describe("with several items", () => {
       let orderItems: list(OrderData.Order.orderItem) = [
         {
           sku: "PizzaPep",
