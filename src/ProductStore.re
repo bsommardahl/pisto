@@ -53,14 +53,6 @@ let update = (prod: Product.t) : t(Product.t) =>
           });
      });
 
-/* let get = (orderId: string) =>
-   db
-   |> get(orderId)
-   |> then_(js => {
-        let order = mapOrderFromJs(js);
-        Js.log("orderStore:: got order for " ++ js##customerName);
-        resolve(order);
-      }); */
 let remove = (productId: string) : t(unit) =>
   db
   |> PouchdbImpl.get(productId)

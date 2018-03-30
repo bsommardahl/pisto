@@ -56,7 +56,7 @@ let connect = (dbName: string, dbConfig: Config.Database.pouchDbConfig) => {
   switch (dbConfig.remote) {
   | Some(remoteDbConfig) =>
     let remote =
-      connect(remoteDbConfig.host ++ dbName, remoteDbConfig.options);
+      connect(remoteDbConfig.host ++ "/" ++ dbName, remoteDbConfig.options);
     local |> sync(remote, remoteDbConfig.syncOptions);
   | None => ()
   };

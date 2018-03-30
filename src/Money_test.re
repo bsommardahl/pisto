@@ -28,7 +28,7 @@ describe("Money functions", () => {
     test("it should return the correct int", () => {
       let display = "N.10.000";
       let amount = display |> Money.toT;
-      expect(amount) |> toEqual(1000);
+      expect(amount) |> toEqual(10000);
     })
   );
 });
