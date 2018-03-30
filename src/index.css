@@ -151,3 +151,14 @@ table.order-list {
 
 .valid { color: darkgreen; }
 .invalid {color: darkred;}
+
+table.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+table.admin-table thead th {
+  background-color: #BBBBBB;
+  padding: 5px 0 5px 0;
+}

@@ -2,7 +2,8 @@ type view =
   | Home
   | Order
   | AllOrders
-  | Admin;
+  | Admin
+  | Products;
 
 type customerName = string;
 
@@ -12,7 +13,8 @@ type action =
   | ShowHome
   | ShowOrder
   | ShowAllOrders
-  | ShowAdmin;
+  | ShowAdmin
+  | ShowProducts;
 
 let component = ReasonReact.reducerComponent("CafeRouter");
 
@@ -27,6 +29,7 @@ let make = _children => {
     | ShowOrder => ReasonReact.Update({currentView: Order})
     | ShowAllOrders => ReasonReact.Update({currentView: AllOrders})
     | ShowAdmin => ReasonReact.Update({currentView: Admin})
+    | ShowProducts => ReasonReact.Update({currentView: Products})
     },
   subscriptions: self => [
     Sub(
@@ -37,6 +40,7 @@ let make = _children => {
           | ["order"] => self.send(ShowOrder)
           | ["orders"] => self.send(ShowAllOrders)
           | ["admin"] => self.send(ShowAdmin)
+          | ["products"] => self.send(ShowProducts)
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -55,6 +59,7 @@ let make = _children => {
         | Order => <OrderScreen goBack />
         | AllOrders => <AllOrders goBack=((_) => goToAdmin()) />
         | Admin => <Admin />
+        | Products => <ProductManagement />
         }
       )
     </div>;

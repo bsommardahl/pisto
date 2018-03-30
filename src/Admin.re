@@ -17,6 +17,21 @@ let make = _children => {
         <div className="card" onClick=((_) => go("orders"))>
           (s("Ver Ordenes"))
         </div>
+        <div className="card" onClick=((_) => go("products"))>
+          (s("Productos"))
+        </div>
+        <div className="card" onClick=((_) => go("discounts"))>
+          (s("Descuentos"))
+        </div>
+        <div className="card wide-card" onClick=((_) => go("sync"))>
+          (s("Syncronizacion"))
+        </div>
+        <div className="card" onClick=((_) => go("webhooks"))>
+          (s("Webhooks"))
+        </div>
+        <div className="card" onClick=((_) => go("users"))>
+          (s("Usuarios"))
+        </div>
       </div>
     </div>;
   },

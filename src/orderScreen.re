@@ -4,6 +4,8 @@ open OrderData;
 
 open OrderConversion;
 
+open Js.Promise;
+
 type viewing =
   | Tags
   | Products(string);
@@ -29,7 +31,8 @@ type action =
   | CloseOrderScreen
   | RemoveOrderItem(Order.orderItem)
   | ChangePaidDate(float)
-  | ChangeCustomerName(string);
+  | ChangeCustomerName(string)
+  | ProductsLoaded(list(Product.t));
 
 let buildOrderItem = (product: Product.t) : Order.orderItem => {
   sku: product.sku,
@@ -67,6 +70,9 @@ let make = (~goBack, _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
+    | ProductsLoaded(products) =>
+      let tags = Product.getTags(products);
+      ReasonReact.Update({...state, tags, allProducts: products});
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
@@ -126,17 +132,22 @@ let make = (~goBack, _children) => {
       | Some(name) => name
       | None => "Amado Cliente"
       };
-    let products = Product.getProducts();
     {
       closedOrder: false,
-      allProducts: products,
-      tags: Product.getTags(products),
+      allProducts: [],
+      tags: [],
       viewing: Tags,
       order: buildNewOrder(customerName),
       modifying: Nothing,
     };
   },
   didMount: self => {
+    ProductStore.getAll()
+    |> then_(prods => {
+         self.send(ProductsLoaded(prods));
+         resolve();
+       })
+    |> ignore;
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
     switch (Util.QueryParam.get("orderId", queryString)) {
     | None => ReasonReact.NoUpdate

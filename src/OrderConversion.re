@@ -14,12 +14,7 @@ let mapOrderItemFromJs = itemJs : OrderData.Order.orderItem => {
   suggestedPrice: itemJs##suggestedPrice,
   addedOn: convertDate(itemJs##addedOn),
   salePrice: itemJs##salePrice,
-  taxCalculation:
-    switch (itemJs##taxCalculation |> Js.String.split("|")) {
-    | [|"totalFirst", rate|] => Tax.TotalFirst(int_of_string(rate))
-    | [|"subTotalFirst", rate|] => Tax.SubTotalFirst(int_of_string(rate))
-    | _ => Tax.Exempt
-    },
+  taxCalculation: itemJs##taxCalculation |> Tax.Calculation.toMethod,
 };
 
 let mapOrderFromJs = orderJs : OrderData.Order.order => {
@@ -73,11 +68,7 @@ let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
   "addedOn": orderItem.addedOn,
   "salePrice": orderItem.salePrice,
   "taxCalculation":
-    switch (orderItem.taxCalculation) {
-    | TotalFirst(rate) => "totalFirst|" ++ string_of_int(rate)
-    | SubTotalFirst(rate) => "subTotalFirst|" ++ string_of_int(rate)
-    | Exempt => "exempt|"
-    },
+    orderItem.taxCalculation |> Tax.Calculation.toDelimitedString,
 };
 
 let updateOrderToJs =
