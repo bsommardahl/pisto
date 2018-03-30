@@ -6,12 +6,17 @@ describe("Date functions", () => {
   describe("when converting", () => {
     let unixTime = 1522350507000.;
     let formatted = "Thu Mar 29 2018 13:08:27 GMT-0600 (CST)";
-    describe("when converting a formatted date/time to a float", () =>
+    describe("a float to a short time", () =>
+      test("it should give only the time in short format", () =>
+        expect(1522433031521. |> Date.toShortTime) |> toEqual("12:03 PM")
+      )
+    );
+    describe("a formatted date/time to a float", () =>
       test("it should parse the string to the correct float", () =>
         expect(formatted |> Date.toFloat) |> toEqual(unixTime)
       )
     );
-    describe("when converting a float to a formatted date/time", () =>
+    describe("a float to a formatted date/time", () =>
       test("it should format the float to a human readable format", () =>
         expect(unixTime |> Date.toDisplay) |> toEqual(formatted)
       )

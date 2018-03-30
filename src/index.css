@@ -46,6 +46,15 @@ body {
   margin: 10px;  
 }
 
+.open-order-card .time {
+  font-size: 11px;
+  color: darkblue;
+  margin-top: 5px;
+}
+.open-order-card .customer-name {  
+  color: darkblue;
+  margin-bottom: 5px;
+}
 .card {
   border: 1px solid black;
   border-radius: 8px;
@@ -53,7 +62,7 @@ body {
   margin: 10px;
   background-color: lightblue;
   float: left;
-  width: 80px;
+  min-width: 80px;
   text-align: center;
   cursor: pointer;
 }

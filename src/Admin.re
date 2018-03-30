@@ -11,7 +11,7 @@ let make = _children => {
         <div className="header-options"> (s("Gestion del Programa")) </div>
       </div>
       <div className="admin-menu-buttons">
-        <div className="card wide-card quiet-card" onClick=((_) => go("/"))>
+        <div className="card quiet-card" onClick=((_) => go("/"))>
           (s("Atras"))
         </div>
         <div className="card" onClick=((_) => go("orders"))>
@@ -23,7 +23,7 @@ let make = _children => {
         <div className="card" onClick=((_) => go("discounts"))>
           (s("Descuentos"))
         </div>
-        <div className="card wide-card" onClick=((_) => go("sync"))>
+        <div className="card" onClick=((_) => go("sync"))>
           (s("Syncronizacion"))
         </div>
         <div className="card" onClick=((_) => go("webhooks"))>

@@ -78,7 +78,16 @@ let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.order) =>
   |> Js.Promise.then_(orderJs => {
        let rev = orderJs##_rev;
        let id = orderJs##_id;
-       db |> put(updateOrderToJs(id, rev, updateOrder)) |> ignore;
+       db
+       |> put(
+            updateOrderToJs(
+              id,
+              rev,
+              orderJs |> OrderConversion.mapOrderFromJs,
+              updateOrder,
+            ),
+          )
+       |> ignore;
        Js.log("orderStore:: updated order for " ++ orderJs##customerName);
        Js.Promise.resolve(mapOrderFromJs(orderJs));
      });

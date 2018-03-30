@@ -72,7 +72,12 @@ let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
 };
 
 let updateOrderToJs =
-    (id: string, rev: string, updateOrder: OrderData.Order.updateOrder) => {
+    (
+      id: string,
+      rev: string,
+      originalOrder: OrderData.Order.order,
+      updateOrder: OrderData.Order.updateOrder,
+    ) => {
   "_id": id,
   "_rev": rev,
   "orderItems":
@@ -82,6 +87,7 @@ let updateOrderToJs =
   "paidOn": Js.Nullable.fromOption(updateOrder.paidOn),
   "amountPaid": Js.Nullable.fromOption(updateOrder.amountPaid),
   "paymentTakenBy": Js.Nullable.fromOption(updateOrder.paymentTakenBy),
+  "createdOn": originalOrder.createdOn,
 };
 
 let newOrderToJs = (order: OrderData.Order.newOrder) => {
