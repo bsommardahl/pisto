@@ -8,7 +8,9 @@
     "pouchdb-find": "^6.4.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "reason-scripts": "0.8.0"
+    "reason-scripts": "0.8.0",
+    "reason-react": "^0.3.4",
+    "bs-jest": "^0.3.2"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -18,8 +20,5 @@
     "prepare": "npm link bs-platform",
     "re:clean": "bsb -clean-world"
   },
-  "devDependencies": {
-    "reason-react": "^0.3.4",
-    "bs-jest": "^0.3.2"
-  }
+  "devDependencies": {}
 }
