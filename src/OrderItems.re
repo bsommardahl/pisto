@@ -3,10 +3,17 @@ open Util;
 let component = ReasonReact.statelessComponent("OrderItems");
 
 let make =
-    (~closed: bool, ~order: OrderData.Order.orderVm, ~onRemoveItem, _children) => {
+    (
+      ~closed: bool,
+      ~order: OrderData.Order.orderVm,
+      ~deselectDiscount,
+      ~onRemoveItem,
+      _children,
+    ) => {
   ...component,
   render: _self => {
-    let totals = order.orderItems |> OrderItemCalculation.getTotals;
+    let totals =
+      order.orderItems |> OrderItemCalculation.getTotals(order.discounts);
     <div className="order-items">
       <h2> (s("Order Items")) </h2>
       <table>
@@ -51,6 +58,18 @@ let make =
           </tr>
         </tfoot>
       </table>
+      (
+        order.discounts
+        |> List.map((d: Discount.t) =>
+             <div
+               className="card small-card"
+               onClick=((_) => deselectDiscount(d))>
+               (s(d.name))
+             </div>
+           )
+        |> Array.of_list
+        |> ReasonReact.arrayToElement
+      )
     </div>;
   },
 };

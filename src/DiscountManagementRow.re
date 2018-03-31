@@ -77,7 +77,15 @@ let make = (~discount, ~remove, ~modify, _children) => {
         <td> (s(self.state.originalDiscount.name)) </td>
         <td> (s(self.state.originalDiscount.percent |> string_of_int)) </td>
         <td>
-          <button onClick=((_) => remove(self.state.originalDiscount))>
+          <button
+            onClick=(
+              (_) => {
+                Js.log(
+                  "row:: eliminating " ++ self.state.originalDiscount.id,
+                );
+                remove(self.state.originalDiscount);
+              }
+            )>
             (s("Eliminar"))
           </button>
         </td>

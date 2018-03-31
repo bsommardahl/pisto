@@ -11,6 +11,7 @@ let saveToStore =
   switch (order.id) {
   | None =>
     CafeStore.add({
+      discounts: order.discounts,
       customerName: order.customerName,
       orderItems: order.orderItems,
     })

@@ -4,16 +4,19 @@ type totals = {
   subTotal: int,
   tax: int,
   total: int,
+  discounts: int,
 };
 
 type totalCalculator = (int, Order.orderItem) => totals;
+
+let discounts = 0;
 
 let totalFirstCalculator: totalCalculator =
   (taxPercent: int, item: Order.orderItem) => {
     let total = item.salePrice;
     let subTotal = total * 100 / (100 + taxPercent);
     let tax = total - subTotal;
-    {subTotal, tax, total};
+    {subTotal, discounts, tax, total};
   };
 
 let subTotalFirstCalculator: totalCalculator =
@@ -22,16 +25,18 @@ let subTotalFirstCalculator: totalCalculator =
       let salePrice = item.salePrice;
       let tax = salePrice * taxPercent / 100;
       let total = salePrice + tax;
-      {subTotal: salePrice, tax, total};
+      {subTotal: salePrice, discounts, tax, total};
     }: totals
   );
 
 let exemptCalculator: totalCalculator =
   (_tax, item: Order.orderItem) => (
-    {subTotal: item.salePrice, tax: 0, total: item.salePrice}: totals
+    {subTotal: item.salePrice, discounts, tax: 0, total: item.salePrice}: totals
   );
 
-let getTotals = (orderItems: list(Order.orderItem)) : totals => {
+let getTotals =
+    (discounts: list(Discount.t), orderItems: list(Order.orderItem))
+    : totals => {
   let itemTotals =
     orderItems
     |> List.map(item =>
@@ -47,5 +52,5 @@ let getTotals = (orderItems: list(Order.orderItem)) : totals => {
     Belt.List.reduce(itemTotals, 0, (acc, totals) => acc + totals.tax);
   let total =
     Belt.List.reduce(itemTotals, 0, (acc, totals) => acc + totals.total);
-  {subTotal, tax, total};
+  {subTotal, tax, discounts: 0, total};
 };

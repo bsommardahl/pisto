@@ -21,6 +21,7 @@ type state = {
   order: Order.orderVm,
   closedOrder: bool,
   modifying,
+  allDiscounts: list(Discount.t),
 };
 
 type action =
@@ -32,7 +33,10 @@ type action =
   | RemoveOrderItem(Order.orderItem)
   | ChangePaidDate(float)
   | ChangeCustomerName(string)
-  | ProductsLoaded(list(Product.t));
+  | ProductsLoaded(list(Product.t))
+  | DiscountsLoaded(list(Discount.t))
+  | ApplyDiscount(Discount.t)
+  | RemoveDiscount(Discount.t);
 
 let buildOrderItem = (product: Product.t) : Order.orderItem => {
   sku: product.sku,
@@ -49,6 +53,7 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
   orderItems: [],
   createdOn: Js.Date.now(),
   paidOn: None,
+  discounts: [],
   amountPaid: None,
   paymentTakenBy: None,
   lastUpdated: None,
@@ -73,6 +78,8 @@ let make = (~goBack, _children) => {
     | ProductsLoaded(products) =>
       let tags = Product.getTags(products);
       ReasonReact.Update({...state, tags, allProducts: products});
+    | DiscountsLoaded(discounts) =>
+      ReasonReact.Update({...state, allDiscounts: discounts})
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
@@ -82,6 +89,24 @@ let make = (~goBack, _children) => {
           | Some(_) => true
           | None => false
           },
+      })
+    | ApplyDiscount(dis) =>
+      ReasonReact.Update({
+        ...state,
+        order: {
+          ...state.order,
+          discounts: List.concat([state.order.discounts, [dis]]),
+        },
+      })
+    | RemoveDiscount(dis) =>
+      ReasonReact.Update({
+        ...state,
+        order: {
+          ...state.order,
+          discounts:
+            state.order.discounts
+            |> List.filter((d: Discount.t) => d.id !== dis.id),
+        },
       })
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
@@ -139,9 +164,16 @@ let make = (~goBack, _children) => {
       viewing: Tags,
       order: buildNewOrder(customerName),
       modifying: Nothing,
+      allDiscounts: [],
     };
   },
   didMount: self => {
+    DiscountStore.getAll()
+    |> then_(discounts => {
+         self.send(DiscountsLoaded(discounts));
+         resolve();
+       })
+    |> ignore;
     ProductStore.getAll()
     |> then_(prods => {
          self.send(ProductsLoaded(prods));
@@ -166,6 +198,8 @@ let make = (~goBack, _children) => {
     let deselectTag = _event => self.send(DeselectTag);
     let selectTag = tag => self.send(SelectTag(tag));
     let selectProduct = product => self.send(SelectProduct(product));
+    let discountSelected = discount => self.send(ApplyDiscount(discount));
+    let discountDeselected = discount => self.send(RemoveDiscount(discount));
     <div className="order">
       <div className="order-header">
         <OrderActions
@@ -201,31 +235,39 @@ let make = (~goBack, _children) => {
               </div>
             </div>;
           } else {
-            switch (self.state.viewing) {
-            | Tags =>
-              <div className="tags">
-                (
-                  self.state.tags
-                  |> List.map(tag => <TagCard onSelect=selectTag tag />)
-                  |> Array.of_list
-                  |> ReasonReact.arrayToElement
-                )
-              </div>
-            | Products(tag) =>
-              <div className="products">
-                <div className="back-button-card card" onClick=deselectTag>
-                  (s("Atras"))
-                </div>
-                (
-                  Product.filterProducts(tag, self.state.allProducts)
-                  |> List.map(product =>
-                       <ProductCard onSelect=selectProduct product />
-                     )
-                  |> Array.of_list
-                  |> ReasonReact.arrayToElement
-                )
-              </div>
-            };
+            <div>
+              (
+                switch (self.state.viewing) {
+                | Tags =>
+                  <div className="tags">
+                    (
+                      self.state.tags
+                      |> List.map(tag => <TagCard onSelect=selectTag tag />)
+                      |> Array.of_list
+                      |> ReasonReact.arrayToElement
+                    )
+                  </div>
+                | Products(tag) =>
+                  <div className="products">
+                    <div className="back-button-card card" onClick=deselectTag>
+                      (s("Atras"))
+                    </div>
+                    (
+                      Product.filterProducts(tag, self.state.allProducts)
+                      |> List.map(product =>
+                           <ProductCard onSelect=selectProduct product />
+                         )
+                      |> Array.of_list
+                      |> ReasonReact.arrayToElement
+                    )
+                  </div>
+                }
+              )
+              <DiscountSelector
+                discounts=self.state.allDiscounts
+                selected=discountSelected
+              />
+            </div>;
           }
         )
       </div>
@@ -233,6 +275,7 @@ let make = (~goBack, _children) => {
         <OrderItems
           closed=self.state.closedOrder
           order=self.state.order
+          deselectDiscount=discountDeselected
           onRemoveItem=(i => self.send(RemoveOrderItem(i)))
         />
       </div>

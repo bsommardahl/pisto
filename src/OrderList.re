@@ -16,7 +16,7 @@ let headerRow = () =>
   </tr>;
 
 let row = (o: Order.orderVm, onSelect) => {
-  let totals = o.orderItems |> OrderItemCalculation.getTotals;
+  let totals = o.orderItems |> OrderItemCalculation.getTotals(o.discounts);
   let paidOn =
     switch (o.paidOn) {
     | Some(d) => d

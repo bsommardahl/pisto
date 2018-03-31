@@ -27,3 +27,8 @@ let mapToJsWithRev = (id: string, rev: option(string), discount: t) => {
   "name": discount.name,
   "percent": discount.percent,
 };
+
+let mapToJs = (discount: t) => {
+  "name": discount.name,
+  "percent": discount.percent,
+};

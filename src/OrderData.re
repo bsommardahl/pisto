@@ -11,6 +11,7 @@ module Order = {
     id: string,
     customerName: string,
     orderItems: list(orderItem),
+    discounts: list(Discount.t),
     amountPaid: option(Money.t),
     paymentTakenBy: option(string),
     paidOn: option(float),
@@ -22,6 +23,7 @@ module Order = {
     orderItems: list(orderItem),
     paymentTakenBy: option(string),
     paidOn: option(float),
+    discounts: list(Discount.t),
     createdOn: float,
     lastUpdated: option(float),
     removed: bool,
@@ -32,6 +34,7 @@ module Order = {
     amountPaid: option(Money.t),
     orderItems: list(orderItem),
     paymentTakenBy: option(string),
+    discounts: list(Discount.t),
     paidOn: option(float),
     createdOn: float,
     lastUpdated: option(float),
@@ -40,5 +43,6 @@ module Order = {
   type newOrder = {
     customerName: string,
     orderItems: list(orderItem),
+    discounts: list(Discount.t),
   };
 };
