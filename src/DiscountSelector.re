@@ -7,7 +7,9 @@ let make = (~discounts: list(Discount.t), ~selected, _children) => {
   render: _self =>
     discounts
     |> List.map((d: Discount.t) =>
-         <div onClick=((_) => selected(d)) className="card card-discount">
+         <div
+           onClick=((_) => selected(d))
+           className="card small-card card-discount">
            (s(d.name))
          </div>
        )

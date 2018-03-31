@@ -97,6 +97,9 @@ let make = (~goBack, _children) => {
           ...state.order,
           discounts: List.concat([state.order.discounts, [dis]]),
         },
+        allDiscounts:
+          state.allDiscounts
+          |> List.filter((d: Discount.t) => d.id !== dis.id),
       })
     | RemoveDiscount(dis) =>
       ReasonReact.Update({
@@ -107,6 +110,7 @@ let make = (~goBack, _children) => {
             state.order.discounts
             |> List.filter((d: Discount.t) => d.id !== dis.id),
         },
+        allDiscounts: List.concat([state.allDiscounts, [dis]]),
       })
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
@@ -263,10 +267,12 @@ let make = (~goBack, _children) => {
                   </div>
                 }
               )
-              <DiscountSelector
-                discounts=self.state.allDiscounts
-                selected=discountSelected
-              />
+              <div className="discounts">
+                <DiscountSelector
+                  discounts=self.state.allDiscounts
+                  selected=discountSelected
+                />
+              </div>
             </div>;
           }
         )

@@ -62,7 +62,7 @@ let make =
         order.discounts
         |> List.map((d: Discount.t) =>
              <div
-               className="card small-card"
+               className="card small-card card-discount"
                onClick=((_) => deselectDiscount(d))>
                (s(d.name))
              </div>
