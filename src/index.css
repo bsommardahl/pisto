@@ -172,5 +172,5 @@ table.admin-table thead th {
   padding: 5px 0 5px 0;
 }
 
-.discounts { clear: both; margin-left: 5px;}
+.discounts { clear: left; margin-left: 5px;}
 .card-discount { background-color: #CCC;}

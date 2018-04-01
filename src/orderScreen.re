@@ -218,6 +218,14 @@ let make = (~goBack, _children) => {
           />
         </div>
       </div>
+      <div className="right-side">
+        <OrderItems
+          closed=self.state.closedOrder
+          order=self.state.order
+          deselectDiscount=discountDeselected
+          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
+        />
+      </div>
       <div className="left-side">
         (
           if (self.state.closedOrder) {
@@ -276,14 +284,6 @@ let make = (~goBack, _children) => {
             </div>;
           }
         )
-      </div>
-      <div className="right-side">
-        <OrderItems
-          closed=self.state.closedOrder
-          order=self.state.order
-          deselectDiscount=discountDeselected
-          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
-        />
       </div>
     </div>;
   },
