@@ -46,20 +46,20 @@ let make =
           )
         </tbody>
         <tfoot>
+          <tr className="divider">
+            <th colSpan=2> (s("Sub-total")) </th>
+            <td> (s(totals.subTotal |> Money.toDisplay)) </td>
+          </tr>
           (
             if (order.discounts |> List.length > 0) {
               <tr>
-                <td colSpan=2> (s("Descuento")) </td>
-                <td> (s("-" ++ (totals.discounts |> Money.toDisplay))) </td>
+                <th colSpan=2> (s("Descuento")) </th>
+                <td> (s(totals.discounts |> Money.toDisplay)) </td>
               </tr>;
             } else {
               <tr />;
             }
           )
-          <tr className="divider">
-            <th colSpan=2> (s("Sub-total")) </th>
-            <td> (s(totals.subTotal |> Money.toDisplay)) </td>
-          </tr>
           <tr>
             <th colSpan=2> (s("Impuesto")) </th>
             <td> (s(totals.tax |> Money.toDisplay)) </td>
