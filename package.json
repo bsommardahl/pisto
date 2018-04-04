@@ -18,7 +18,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "prepare": "npm link bs-platform",
-    "re:clean": "bsb -clean-world"
+    "re:clean": "bsb -clean-world",
+    "deploy": "heroku container:push web --app cafe-new"
   },
   "devDependencies": {}
 }

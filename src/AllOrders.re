@@ -6,6 +6,7 @@ type state = {
   startDate: float,
   endDate: float,
   orders: list(Order.orderVm),
+  interval: int,
 };
 
 type actions =
@@ -14,36 +15,41 @@ type actions =
 
 let component = ReasonReact.reducerComponent("AllOrders");
 
+let loadClosedOrders = (state, send) => {
+  let getFloatFromOpt = (fl: option(float)) =>
+    switch (fl) {
+    | None => 0.0
+    | Some(n) => n
+    };
+  CafeStore.getClosedOrders(state.startDate, state.endDate)
+  |> Js.Promise.then_(orders => {
+       let vms =
+         orders
+         |> List.map(OrderConversion.vmFromExistingOrder)
+         |> List.fast_sort((a, b) =>
+              OrderData.Order.(
+                compare(
+                  getFloatFromOpt(b.paidOn),
+                  getFloatFromOpt(a.paidOn),
+                )
+              )
+            );
+       send(LoadOrders(vms));
+       Js.Promise.resolve();
+     })
+  |> ignore;
+};
+
 let make = (~goBack, _children) => {
   ...component,
   initialState: () => {
     startDate: Date.oneMonthBefore(Date.now()),
     endDate: Date.now(),
     orders: [],
+    interval: (-1),
   },
   didMount: self => {
-    let getFloatFromOpt = (fl: option(float)) =>
-      switch (fl) {
-      | None => 0.0
-      | Some(n) => n
-      };
-    CafeStore.getClosedOrders(self.state.startDate, self.state.endDate)
-    |> Js.Promise.then_(orders => {
-         let vms =
-           orders
-           |> List.map(OrderConversion.vmFromExistingOrder)
-           |> List.fast_sort((a, b) =>
-                OrderData.Order.(
-                  compare(
-                    getFloatFromOpt(b.paidOn),
-                    getFloatFromOpt(a.paidOn),
-                  )
-                )
-              );
-         self.send(LoadOrders(vms));
-         Js.Promise.resolve();
-       })
-    |> ignore;
+    loadClosedOrders(self.state, self.send);
     ReasonReact.NoUpdate;
   },
   reducer: (action, state) =>
@@ -54,6 +60,16 @@ let make = (~goBack, _children) => {
         (_self => ReasonReact.Router.push("order?orderId=" ++ id)),
       )
     },
+  subscriptions: self => [
+    Sub(
+      () =>
+        Js.Global.setInterval(
+          () => loadClosedOrders(self.state, self.send),
+          5000,
+        ),
+      Js.Global.clearInterval,
+    ),
+  ],
   render: self =>
     <div className="all-orders">
       <div className="header">

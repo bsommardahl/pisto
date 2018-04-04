@@ -8,20 +8,29 @@ type action =
 
 let component = ReasonReact.reducerComponent("OpenOrders");
 
+let loadOpenOrders = send =>
+  CafeStore.getOpenOrders()
+  |> Js.Promise.then_(orders => {
+       let vms = orders |> List.map(OrderConversion.vmFromExistingOrder);
+       Js.log("Dispatching orders: " ++ string_of_int(vms |> List.length));
+       send(OrdersLoaded(vms));
+       Js.Promise.resolve();
+     })
+  |> ignore;
+
 let make = _children => {
   ...component,
   initialState: () => {orders: []},
   didMount: self => {
-    CafeStore.getOpenOrders()
-    |> Js.Promise.then_(orders => {
-         let vms = orders |> List.map(OrderConversion.vmFromExistingOrder);
-         Js.log("Dispatching orders: " ++ string_of_int(vms |> List.length));
-         self.send(OrdersLoaded(vms));
-         Js.Promise.resolve();
-       })
-    |> ignore;
+    loadOpenOrders(self.send);
     ReasonReact.NoUpdate;
   },
+  subscriptions: self => [
+    Sub(
+      () => Js.Global.setInterval(() => loadOpenOrders(self.send), 5000),
+      Js.Global.clearInterval,
+    ),
+  ],
   reducer: (action, _state) =>
     switch (action) {
     | OrdersLoaded(orders) =>
