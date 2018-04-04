@@ -21,14 +21,18 @@ let mapOrderFromJs = orderJs : OrderData.Order.order => {
   id: orderJs##_id,
   customerName: orderJs##customerName,
   orderItems:
-    orderJs##orderItems
-    |> Array.map(i => mapOrderItemFromJs(i))
-    |> Array.to_list,
+    switch (Js.Nullable.toOption(orderJs##orderItems)) {
+    | Some(orderItems) =>
+      orderItems |> Array.map(i => mapOrderItemFromJs(i)) |> Array.to_list
+    | None => []
+    },
   createdOn: convertDate(orderJs##createdOn),
   discounts:
-    orderJs##discounts
-    |> Array.map(d => d |> Discount.mapFromJs)
-    |> Array.to_list,
+    switch (Js.Nullable.toOption(orderJs##discounts)) {
+    | Some(discounts) =>
+      discounts |> Array.map(d => d |> Discount.mapFromJs) |> Array.to_list
+    | None => []
+    },
   paidOn: convertFloatOption(orderJs##paidOn),
   amountPaid: convertIntOption(orderJs##amountPaid),
   paymentTakenBy: convertStringOption(orderJs##paymentTakenBy),
