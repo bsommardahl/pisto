@@ -107,7 +107,6 @@ let make = _children => {
             <th> (s("Password")) </th>
             <td>
               <input
-                _type="password"
                 value=self.state.password
                 onChange=(
                   ev => self.send(RemotePasswordChanged(getVal(ev)))
