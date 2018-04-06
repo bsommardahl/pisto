@@ -9,7 +9,7 @@ type action =
 let component = ReasonReact.reducerComponent("OpenOrders");
 
 let loadOpenOrders = send =>
-  CafeStore.getOpenOrders()
+  OrderStore.getOpenOrders()
   |> Js.Promise.then_(orders => {
        let vms = orders |> List.map(OrderConversion.vmFromExistingOrder);
        Js.log("Dispatching orders: " ++ string_of_int(vms |> List.length));

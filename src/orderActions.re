@@ -10,7 +10,7 @@ let saveToStore =
   Js.Console.log("orderActions:: Persisting order....");
   switch (order.id) {
   | None =>
-    CafeStore.add({
+    OrderStore.add({
       discounts: order.discounts,
       customerName: order.customerName,
       orderItems: order.orderItems,
@@ -23,7 +23,7 @@ let saveToStore =
        })
   | Some(_id) =>
     let o: OrderData.Order.updateOrder = vmToUpdateOrder(order);
-    CafeStore.update(o)
+    OrderStore.update(o)
     |> Js.Promise.then_(updatedOrder => {
          onFinish(updatedOrder |> OrderConversion.vmFromExistingOrder);
          Js.Promise.resolve(
@@ -41,7 +41,7 @@ let removeFromStore =
   switch (order.id) {
   | None => onFinish(order)
   | Some(id) =>
-    CafeStore.remove(id)
+    OrderStore.remove(id)
     |> Js.Promise.then_(() => {
          onFinish(order);
          Js.Promise.resolve(Js.Console.log("Removed order."));
@@ -69,18 +69,34 @@ let make =
   reducer: (action, state) =>
     switch (action) {
     | PayOrder =>
+      let totals =
+        OrderItemCalculation.getTotals(
+          state.order.discounts,
+          state.order.orderItems,
+        );
       ReasonReact.SideEffects(
         (
           _self => {
             saveToStore(
-              {...order, paidOn: Some(Js.Date.now())},
+              {
+                ...order,
+                paid:
+                  Some({
+                    on: Date.now(),
+                    by: "",
+                    subTotal: totals.subTotal,
+                    tax: totals.tax,
+                    discount: totals.discounts,
+                    total: totals.total,
+                  }),
+              },
               state.onFinish,
             )
             |> ignore;
             ();
           }
         ),
-      )
+      );
     | SaveOrder =>
       ReasonReact.SideEffects(
         (

@@ -18,8 +18,8 @@ let headerRow = () =>
 let row = (o: Order.orderVm, onSelect) => {
   let totals = o.orderItems |> OrderItemCalculation.getTotals(o.discounts);
   let paidOn =
-    switch (o.paidOn) {
-    | Some(d) => d
+    switch (o.paid) {
+    | Some(paid) => paid.on
     | None => 0.0
     };
   <tr>

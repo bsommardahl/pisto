@@ -16,24 +16,23 @@ type actions =
 let component = ReasonReact.reducerComponent("AllOrders");
 
 let loadClosedOrders = (state, send) => {
-  let getFloatFromOpt = (fl: option(float)) =>
+  let getPaidDateForComparison = (fl: option(Paid.t)) =>
     switch (fl) {
     | None => 0.0
-    | Some(n) => n
+    | Some(n) => n.on
     };
-  CafeStore.getClosedOrders(state.startDate, state.endDate)
+  OrderStore.getClosedOrders(state.startDate, state.endDate)
   |> Js.Promise.then_(orders => {
        let vms =
          orders
-         |> List.map(OrderConversion.vmFromExistingOrder)
-         |> List.fast_sort((a, b) =>
-              OrderData.Order.(
-                compare(
-                  getFloatFromOpt(b.paidOn),
-                  getFloatFromOpt(a.paidOn),
-                )
+         |> List.fast_sort(
+              (a: OrderData.Order.order, b: OrderData.Order.order) =>
+              compare(
+                getPaidDateForComparison(b.paid),
+                getPaidDateForComparison(a.paid),
               )
-            );
+            )
+         |> List.map(OrderConversion.vmFromExistingOrder);
        send(LoadOrders(vms));
        Js.Promise.resolve();
      })

@@ -33,9 +33,11 @@ let mapOrderFromJs = orderJs : OrderData.Order.order => {
       discounts |> Array.map(d => d |> Discount.mapFromJs) |> Array.to_list
     | None => []
     },
-  paidOn: convertFloatOption(orderJs##paidOn),
-  amountPaid: convertIntOption(orderJs##amountPaid),
-  paymentTakenBy: convertStringOption(orderJs##paymentTakenBy),
+  paid:
+    switch (Js.Nullable.toOption(orderJs##paid)) {
+    | None => None
+    | Some(js) => Some(js |> Paid.fromJs)
+    },
   lastUpdated: convertFloatOption(orderJs##lastUpdated),
   removed: false,
 };
@@ -47,10 +49,8 @@ let vmFromExistingOrder = (o: OrderData.Order.order) => {
       customerName: o.customerName,
       orderItems: o.orderItems,
       createdOn: o.createdOn,
-      paidOn: o.paidOn,
       discounts: o.discounts,
-      amountPaid: o.amountPaid,
-      paymentTakenBy: o.paymentTakenBy,
+      paid: o.paid,
       lastUpdated: o.lastUpdated,
       removed: false,
     };
@@ -66,9 +66,7 @@ let vmToUpdateOrder = (vm: Order.orderVm) : Order.updateOrder => {
   customerName: vm.customerName,
   orderItems: vm.orderItems,
   discounts: vm.discounts,
-  amountPaid: vm.amountPaid,
-  paymentTakenBy: vm.paymentTakenBy,
-  paidOn: vm.paidOn,
+  paid: vm.paid,
 };
 
 let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
@@ -98,9 +96,11 @@ let updateOrderToJs =
     updateOrder.discounts
     |> List.map(d => d |> Discount.mapToJs)
     |> Array.of_list,
-  "paidOn": Js.Nullable.fromOption(updateOrder.paidOn),
-  "amountPaid": Js.Nullable.fromOption(updateOrder.amountPaid),
-  "paymentTakenBy": Js.Nullable.fromOption(updateOrder.paymentTakenBy),
+  "paid":
+    switch (updateOrder.paid) {
+    | None => Js.Nullable.null
+    | Some(paid) => Js.Nullable.return(paid |> Paid.toJs)
+    },
   "createdOn": originalOrder.createdOn,
 };
 

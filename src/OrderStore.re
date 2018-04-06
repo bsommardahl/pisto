@@ -23,18 +23,17 @@ let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.order) =>
           })
      );
 
+type paidExists = {. "paid": {. "$exists": bool}};
+
+let orderIsPaid = (existing: bool) : paidExists => {
+  "paid": {
+    "$exists": existing,
+  },
+};
+
 let getOpenOrders = () =>
   db
-  |> find(
-       Pouchdb.QueryBuilder.query(
-         ~selector={
-           "paidOn": {
-             "$exists": false,
-           },
-         },
-         (),
-       ),
-     )
+  |> find(Pouchdb.QueryBuilder.query(~selector=orderIsPaid(false), ()))
   |> Js.Promise.then_(response => Js.Promise.resolve(response##docs))
   |> Js.Promise.then_(docs => {
        let mapped: array(Order.order) =
@@ -47,15 +46,38 @@ let getOpenOrders = () =>
      })
   |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
 
+type paidInDateRange = {
+  .
+  "paid": {
+    .
+    "on": {
+      .
+      "$gt": float,
+      "$lt": float,
+    },
+  },
+};
+
+let orderPaidDateInRange =
+    (startDate: float, endDate: float)
+    : paidInDateRange => {
+  "paid": {
+    "on": {
+      "$gt": startDate,
+      "$lt": endDate,
+    },
+  },
+};
+
 let getClosedOrders = (startDate: float, endDate: float) =>
   db
   |> find(
        Pouchdb.QueryBuilder.query(
          ~selector={
-           "paidOn": {
-             "$gt": startDate,
-             "$lt": endDate,
-           },
+           "$and": [
+             orderIsPaid(true),
+             orderPaidDateInRange(startDate, endDate),
+           ],
          },
          (),
        ),

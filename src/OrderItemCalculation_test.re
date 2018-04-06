@@ -15,21 +15,6 @@ let buildOrderItem = (price: int, taxMethod) : OrderData.Order.orderItem => {
   salePrice: 0,
 };
 
-let buildNewOrder =
-    (customerName: string, orderItems, discounts)
-    : Order.orderVm => {
-  id: None,
-  customerName,
-  orderItems,
-  createdOn: Js.Date.now(),
-  discounts,
-  paidOn: None,
-  amountPaid: None,
-  paymentTakenBy: None,
-  lastUpdated: None,
-  removed: false,
-};
-
 describe("order item calculation", () => {
   describe("when calculating totals for an entire order", () => {
     describe("with several items", () => {

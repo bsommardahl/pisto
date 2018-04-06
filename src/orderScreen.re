@@ -52,16 +52,14 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
   customerName,
   orderItems: [],
   createdOn: Js.Date.now(),
-  paidOn: None,
   discounts: [],
-  amountPaid: None,
-  paymentTakenBy: None,
+  paid: None,
   lastUpdated: None,
   removed: false,
 };
 
 let getOrderVm = orderId =>
-  CafeStore.get(orderId)
+  OrderStore.get(orderId)
   |> Js.Promise.then_(order => {
        let vm = vmFromExistingOrder(order);
        Js.Promise.resolve(vm);
@@ -85,7 +83,7 @@ let make = (~goBack, _children) => {
         ...state,
         order,
         closedOrder:
-          switch (order.paidOn) {
+          switch (order.paid) {
           | Some(_) => true
           | None => false
           },
@@ -125,7 +123,11 @@ let make = (~goBack, _children) => {
         ...state,
         order: {
           ...state.order,
-          paidOn: Some(date),
+          paid:
+            switch (state.order.paid) {
+            | None => None
+            | Some(paid) => Some({...paid, on: date})
+            },
         },
       })
     | SelectTag(tag) =>
@@ -233,11 +235,11 @@ let make = (~goBack, _children) => {
               <h2> (s("Pagado")) </h2>
               <div className="paid-date">
                 (
-                  switch (self.state.order.paidOn) {
+                  switch (self.state.order.paid) {
                   | None => <div />
-                  | Some(date) =>
+                  | Some(paid) =>
                     <EditableDate
-                      date
+                      date=paid.on
                       onChange=(
                         newDate => self.send(ChangePaidDate(newDate))
                       )
