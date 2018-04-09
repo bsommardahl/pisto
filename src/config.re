@@ -1,5 +1,3 @@
-open Js.Promise;
-
 let setValue = (key: string, value: string) =>
   Dom.Storage.localStorage |> Dom.Storage.setItem(key, value);
 
