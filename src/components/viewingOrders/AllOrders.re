@@ -1,5 +1,3 @@
-open OrderData;
-
 open Util;
 
 type state = {
@@ -25,8 +23,7 @@ let loadClosedOrders = (state, send) => {
   |> Js.Promise.then_(orders => {
        let vms =
          orders
-         |> List.fast_sort(
-              (a: OrderData.Order.order, b: OrderData.Order.order) =>
+         |> List.fast_sort((a: Order.t, b: Order.t) =>
               compare(
                 getPaidDateForComparison(b.paid),
                 getPaidDateForComparison(a.paid),

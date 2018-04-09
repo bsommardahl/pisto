@@ -1,5 +1,3 @@
-open OrderData;
-
 type state = {orders: list(Order.orderVm)};
 
 type action =
@@ -61,7 +59,7 @@ let make = _children => {
     <div className="open-orders">
       (
         self.state.orders
-        |> List.map((o: OrderData.Order.orderVm) =>
+        |> List.map((o: Order.orderVm) =>
              <OpenOrderCard order=o onSelect=(_event => selectOpenOrder(o)) />
            )
         |> Array.of_list

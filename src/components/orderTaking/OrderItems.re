@@ -5,7 +5,7 @@ let component = ReasonReact.statelessComponent("OrderItems");
 let make =
     (
       ~closed: bool,
-      ~order: OrderData.Order.orderVm,
+      ~order: Order.orderVm,
       ~deselectDiscount,
       ~onRemoveItem,
       _children,
@@ -20,7 +20,7 @@ let make =
         <tbody>
           (
             order.orderItems
-            |> List.map((i: OrderData.Order.orderItem) => {
+            |> List.map((i: OrderItem.t) => {
                  let totals =
                    OrderItemCalculation.getTotals(order.discounts, [i]);
                  <tr>

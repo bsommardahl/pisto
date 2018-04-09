@@ -1,5 +1,3 @@
-open OrderData;
-
 let convertFloatOption = d : option(float) => Js.Nullable.toOption(d);
 
 let convertIntOption = d : option(int) => Js.Nullable.toOption(d);
@@ -8,7 +6,7 @@ let convertStringOption = s : option(string) => Js.Nullable.toOption(s);
 
 let convertDate = d => d;
 
-let mapOrderItemFromJs = itemJs : OrderData.Order.orderItem => {
+let mapOrderItemFromJs = itemJs : OrderItem.t => {
   sku: itemJs##sku,
   name: itemJs##name,
   suggestedPrice: itemJs##suggestedPrice,
@@ -17,7 +15,7 @@ let mapOrderItemFromJs = itemJs : OrderData.Order.orderItem => {
   taxCalculation: itemJs##taxCalculation |> Tax.Calculation.toMethod,
 };
 
-let mapOrderFromJs = orderJs : OrderData.Order.order => {
+let mapOrderFromJs = orderJs : Order.t => {
   id: orderJs##_id,
   customerName: orderJs##customerName,
   orderItems:
@@ -42,9 +40,9 @@ let mapOrderFromJs = orderJs : OrderData.Order.order => {
   removed: false,
 };
 
-let vmFromExistingOrder = (o: OrderData.Order.order) => {
-  let vm: OrderData.Order.orderVm =
-    OrderData.Order.{
+let vmFromExistingOrder = (o: Order.t) => {
+  let vm: Order.orderVm =
+    Order.{
       id: Some(o.id),
       customerName: o.customerName,
       orderItems: o.orderItems,
@@ -69,7 +67,7 @@ let vmToUpdateOrder = (vm: Order.orderVm) : Order.updateOrder => {
   paid: vm.paid,
 };
 
-let orderItemToJs = (orderItem: OrderData.Order.orderItem) => {
+let orderItemToJs = (orderItem: OrderItem.t) => {
   "sku": orderItem.sku,
   "name": orderItem.name,
   "suggestedPrice": orderItem.suggestedPrice,
@@ -83,8 +81,8 @@ let updateOrderToJs =
     (
       id: string,
       rev: string,
-      originalOrder: OrderData.Order.order,
-      updateOrder: OrderData.Order.updateOrder,
+      originalOrder: Order.t,
+      updateOrder: Order.updateOrder,
     ) => {
   "_id": id,
   "_rev": rev,
@@ -104,7 +102,7 @@ let updateOrderToJs =
   "createdOn": originalOrder.createdOn,
 };
 
-let newOrderToJs = (order: OrderData.Order.newOrder) => {
+let newOrderToJs = (order: Order.newOrder) => {
   "customerName": order.customerName,
   "orderItems":
     order.orderItems |> List.map(i => orderItemToJs(i)) |> Array.of_list,

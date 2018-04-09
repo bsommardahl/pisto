@@ -2,7 +2,7 @@ open Util;
 
 let component = ReasonReact.statelessComponent("OpenOrderCard");
 
-let make = (~order: OrderData.Order.orderVm, ~onSelect, _children) => {
+let make = (~order: Order.orderVm, ~onSelect, _children) => {
   ...component,
   render: _self => {
     let totals =

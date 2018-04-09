@@ -1,7 +1,5 @@
 open Util;
 
-open OrderData;
-
 open OrderConversion;
 
 open Js.Promise;
@@ -30,7 +28,7 @@ type action =
   | DeselectTag
   | LoadOrder(Order.orderVm)
   | CloseOrderScreen
-  | RemoveOrderItem(Order.orderItem)
+  | RemoveOrderItem(OrderItem.t)
   | ChangePaidDate(float)
   | ChangeCustomerName(string)
   | ProductsLoaded(list(Product.t))
@@ -38,7 +36,7 @@ type action =
   | ApplyDiscount(Discount.t)
   | RemoveDiscount(Discount.t);
 
-let buildOrderItem = (product: Product.t) : Order.orderItem => {
+let buildOrderItem = (product: Product.t) : OrderItem.t => {
   sku: product.sku,
   name: product.name,
   suggestedPrice: product.suggestedPrice,

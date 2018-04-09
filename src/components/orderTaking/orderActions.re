@@ -2,11 +2,7 @@ open Util;
 
 open OrderConversion;
 
-let saveToStore =
-    (
-      order: OrderData.Order.orderVm,
-      onFinish: OrderData.Order.orderVm => unit,
-    ) => {
+let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
   Js.Console.log("orderActions:: Persisting order....");
   switch (order.id) {
   | None =>
@@ -22,7 +18,7 @@ let saveToStore =
          );
        })
   | Some(_id) =>
-    let o: OrderData.Order.updateOrder = vmToUpdateOrder(order);
+    let o: Order.updateOrder = vmToUpdateOrder(order);
     OrderStore.update(o)
     |> Js.Promise.then_(updatedOrder => {
          onFinish(updatedOrder |> OrderConversion.vmFromExistingOrder);
@@ -33,11 +29,7 @@ let saveToStore =
   };
 };
 
-let removeFromStore =
-    (
-      order: OrderData.Order.orderVm,
-      onFinish: OrderData.Order.orderVm => unit,
-    ) =>
+let removeFromStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
   switch (order.id) {
   | None => onFinish(order)
   | Some(id) =>
@@ -51,8 +43,8 @@ let removeFromStore =
   };
 
 type state = {
-  order: OrderData.Order.orderVm,
-  onFinish: OrderData.Order.orderVm => unit,
+  order: Order.orderVm,
+  onFinish: Order.orderVm => unit,
 };
 
 type action =
@@ -62,8 +54,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("OrderItem");
 
-let make =
-    (~closed: bool, ~order: OrderData.Order.orderVm, ~onFinish, _children) => {
+let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
   initialState: () => {order, onFinish},
   reducer: (action, state) =>

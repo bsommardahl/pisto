@@ -1,5 +1,3 @@
-open OrderData;
-
 type orderItemTotals = {
   subTotal: float,
   tax: float,
@@ -15,11 +13,9 @@ type roundedTotals = {
 };
 
 type totalCalculator =
-  (Money.t, list(Discount.t), Order.orderItem) => orderItemTotals;
+  (Money.t, list(Discount.t), OrderItem.t) => orderItemTotals;
 
-let calcDiscount =
-    (item: Order.orderItem, discounts: list(Discount.t))
-    : float =>
+let calcDiscount = (item: OrderItem.t, discounts: list(Discount.t)) : float =>
   Belt.List.reduce(
     discounts,
     0.,
@@ -31,7 +27,7 @@ let calcDiscount =
   );
 
 let totalFirstCalculator: totalCalculator =
-  (taxPercent: int, discounts: list(Discount.t), item: Order.orderItem) => {
+  (taxPercent: int, discounts: list(Discount.t), item: OrderItem.t) => {
     let discountCalc = discounts |> calcDiscount(item);
     let total = float_of_int(item.suggestedPrice) /. 100. -. discountCalc;
     let taxRate = (100. +. float_of_int(taxPercent)) /. 100.;
@@ -41,7 +37,7 @@ let totalFirstCalculator: totalCalculator =
   };
 
 let subTotalFirstCalculator: totalCalculator =
-  (taxPercent: int, discounts: list(Discount.t), item: Order.orderItem) => {
+  (taxPercent: int, discounts: list(Discount.t), item: OrderItem.t) => {
     let discountCalc = discounts |> calcDiscount(item);
     let taxRate = float_of_int(taxPercent) /. 100.;
     let subTotal = float_of_int(item.suggestedPrice) /. 100. -. discountCalc;
@@ -51,19 +47,19 @@ let subTotalFirstCalculator: totalCalculator =
   };
 
 let exemptCalculator: totalCalculator =
-  (_tax, discounts: list(Discount.t), item: Order.orderItem) => {
+  (_tax, discounts: list(Discount.t), item: OrderItem.t) => {
     let discountCalc = discounts |> calcDiscount(item);
     let subTotal = float_of_int(item.suggestedPrice) /. 100. -. discountCalc;
     {subTotal, discounts: discountCalc, tax: 0., total: subTotal};
   };
 
 let getTotals =
-    (discounts: list(Discount.t), orderItems: list(Order.orderItem))
+    (discounts: list(Discount.t), orderItems: list(OrderItem.t))
     : roundedTotals => {
   let itemTotals =
     orderItems
     |> List.map(item =>
-         switch (Order.(item.taxCalculation)) {
+         switch (OrderItem.(item.taxCalculation)) {
          | Tax.TotalFirst(rate) =>
            item |> totalFirstCalculator(rate, discounts)
          | Tax.SubTotalFirst(rate) =>

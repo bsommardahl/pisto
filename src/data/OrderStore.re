@@ -4,11 +4,9 @@ open PouchdbImpl;
 
 open OrderConversion;
 
-open OrderData;
-
 let db = PouchdbImpl.connect("orders", Config.Database.livePouchDbConfig);
 
-let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.order) =>
+let add = (newOrder: Order.newOrder) : Js.Promise.t(Order.t) =>
   db
   |> post(newOrder |> newOrderToJs)
   |> then_(revResponse =>
@@ -63,7 +61,7 @@ let getOpenOrders = () =>
      )
   |> Js.Promise.then_(response => Js.Promise.resolve(response##docs))
   |> Js.Promise.then_(docs => {
-       let mapped: array(Order.order) =
+       let mapped: array(Order.t) =
          docs |> Array.map(d => mapOrderFromJs(d));
        Js.log(
          "orderStore:: got open orders: "
@@ -85,7 +83,7 @@ let getClosedOrders = (startDate: float, endDate: float) => {
   |> find(Pouchdb.QueryBuilder.query(~selector=sel, ()))
   |> Js.Promise.then_(response => Js.Promise.resolve(response##docs))
   |> Js.Promise.then_(docs => {
-       let mapped: array(Order.order) =
+       let mapped: array(Order.t) =
          docs |> Array.map(d => mapOrderFromJs(d));
        Js.log(
          "orderStore:: got closed orders: "
@@ -96,7 +94,7 @@ let getClosedOrders = (startDate: float, endDate: float) => {
   |> Js.Promise.then_(orders => Js.Promise.resolve(Array.to_list(orders)));
 };
 
-let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.order) =>
+let update = (updateOrder: Order.updateOrder) : Js.Promise.t(Order.t) =>
   db
   |> get(updateOrder.id)
   |> Js.Promise.then_(orderJs => {

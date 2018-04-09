@@ -2,11 +2,9 @@ open Jest;
 
 open Expect;
 
-open OrderData;
-
 open OrderItemCalculation;
 
-let buildOrderItem = (price: int, taxMethod) : OrderData.Order.orderItem => {
+let buildOrderItem = (price: int, taxMethod) : OrderItem.t => {
   sku: "t",
   name: "t",
   suggestedPrice: price,
@@ -18,7 +16,7 @@ let buildOrderItem = (price: int, taxMethod) : OrderData.Order.orderItem => {
 describe("order item calculation", () => {
   describe("when calculating totals for an entire order", () => {
     describe("with several items", () => {
-      let orderItems: list(OrderData.Order.orderItem) = [
+      let orderItems: list(OrderItem.t) = [
         {
           sku: "PizzaPep",
           name: "Pizza Peperoni",
@@ -52,7 +50,7 @@ describe("order item calculation", () => {
       });
     });
     describe("with several items and a discount", () => {
-      let orderItems: list(OrderData.Order.orderItem) = [
+      let orderItems: list(OrderItem.t) = [
         {
           sku: "PizzaPep",
           name: "Pizza Peperoni",
@@ -107,11 +105,7 @@ describe("order item calculation", () => {
     let orderItem1 = buildOrderItem(price1, TotalFirst(123));
     let orderItem2 = buildOrderItem(price2, SubTotalFirst(187));
     let orderItem3 = buildOrderItem(price3, Exempt);
-    let orderItems: list(OrderData.Order.orderItem) = [
-      orderItem1,
-      orderItem2,
-      orderItem3,
-    ];
+    let orderItems: list(OrderItem.t) = [orderItem1, orderItem2, orderItem3];
     let expectedTotals: list(OrderItemCalculation.orderItemTotals) = [
       OrderItemCalculation.totalFirstCalculator(123, discounts, orderItem1),
       OrderItemCalculation.subTotalFirstCalculator(
@@ -156,7 +150,7 @@ describe("order item calculation", () => {
   describe("when calculating order item totals", () => {
     describe("when exempt tax calculation", () => {
       describe("and with a discount", () => {
-        let orderItem: Order.orderItem = {
+        let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
           suggestedPrice: 1000,
@@ -184,7 +178,7 @@ describe("order item calculation", () => {
         );
       });
       describe("and with no discounts", () => {
-        let orderItem: Order.orderItem = {
+        let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
           suggestedPrice: 100,
@@ -209,7 +203,7 @@ describe("order item calculation", () => {
     });
     describe("with total first tax calculation", () => {
       describe("and no discount", () => {
-        let orderItem: Order.orderItem = {
+        let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
           suggestedPrice: 100,
@@ -232,7 +226,7 @@ describe("order item calculation", () => {
         );
       });
       describe("and with a discount", () => {
-        let orderItem: Order.orderItem = {
+        let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
           suggestedPrice: 1000,
@@ -263,7 +257,7 @@ describe("order item calculation", () => {
     });
     describe("with subtotal first tax calculation", () => {
       describe("with no discount", () => {
-        let orderItem: Order.orderItem = {
+        let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
           suggestedPrice: 100,
@@ -286,7 +280,7 @@ describe("order item calculation", () => {
         );
       });
       describe("with one discount", () => {
-        let orderItem: Order.orderItem = {
+        let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
           suggestedPrice: 1036,

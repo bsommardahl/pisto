@@ -2,7 +2,7 @@ open Util;
 
 let component = ReasonReact.statelessComponent("OrderItem");
 
-let make = (~orderItem: OrderData.Order.orderItem, _children) => {
+let make = (~orderItem: OrderItem.t, _children) => {
   ...component,
   render: _self =>
     <div className="order-item">

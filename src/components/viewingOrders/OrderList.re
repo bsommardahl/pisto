@@ -1,7 +1,5 @@
 open Util;
 
-open OrderData;
-
 let component = ReasonReact.statelessComponent("OrderList");
 
 let headerRow = () =>
