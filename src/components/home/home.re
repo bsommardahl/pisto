@@ -22,26 +22,27 @@ let make = (~onStartNewOrder, ~goToAdmin, _children) => {
     };
     <div className="home">
       <div className="header">
-        <div className="header-menu">
-          <div
-            className="card wide-card quiet-card"
-            onClick=((_) => goToAdmin())>
-            (s("Gestion"))
+        /* <div className="header-menu">
+             <div
+               className="card wide-card quiet-card"
+               onClick=((_) => goToAdmin())>
+               (s("Gestion"))
+             </div>
+           </div> */
+
+          <div className="start-new-order header-options customer-name">
+            <input
+              _type="text"
+              value=self.state.customerName
+              name="customerName"
+              onChange=(handleChange(self))
+            />
+            <button
+              onClick=(_event => onStartNewOrder(self.state.customerName))>
+              (s("Start Order"))
+            </button>
           </div>
         </div>
-        <div className="start-new-order header-options customer-name">
-          <input
-            _type="text"
-            value=self.state.customerName
-            name="customerName"
-            onChange=(handleChange(self))
-          />
-          <button
-            onClick=(_event => onStartNewOrder(self.state.customerName))>
-            (s("Start Order"))
-          </button>
-        </div>
-      </div>
       <OpenOrders />
     </div>;
   },
