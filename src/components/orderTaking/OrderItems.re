@@ -13,7 +13,7 @@ let make =
   ...component,
   render: _self => {
     let totals =
-      order.orderItems |> OrderItemCalculation.getTotals(order.discounts);
+      OrderItemCalculation.getTotals(order.discounts, order.orderItems);
     <div className="order-items">
       <h2> (s("Order Items")) </h2>
       <table>
@@ -38,7 +38,7 @@ let make =
                      )
                    </td>
                    <td> (s(i.name)) </td>
-                   <td> (s(totals.total |> Money.toDisplay)) </td>
+                   <td> (s(totals.subTotal |> Money.toDisplay)) </td>
                  </tr>;
                })
             |> Array.of_list

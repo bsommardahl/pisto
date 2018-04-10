@@ -2,13 +2,17 @@ open Util;
 
 open Js.Promise;
 
-type state = {products: list(Product.t)};
+type state = {
+  products: list(Product.t),
+  bulkImport: string,
+};
 
 type action =
   | LoadProducts(list(Product.t))
   | NewProductCreated(Product.t)
   | ProductRemoved(Product.t)
-  | ProductModified(Product.t);
+  | ProductModified(Product.t)
+  | UpdateBulkImport(string);
 
 let component = ReasonReact.reducerComponent("ProductManagement");
 
@@ -23,28 +27,36 @@ let make = _children => {
     |> ignore;
     ReasonReact.NoUpdate;
   },
-  initialState: () => {products: []},
+  initialState: () => {products: [], bulkImport: ""},
   reducer: (action, state) =>
     switch (action) {
     | LoadProducts(productsLoaded) =>
-      ReasonReact.Update({products: productsLoaded})
+      ReasonReact.Update({...state, products: productsLoaded})
     | ProductRemoved(product) =>
       ReasonReact.Update({
+        ...state,
         products:
           state.products |> List.filter((p: Product.t) => p.id !== product.id),
       })
     | ProductModified(product) =>
       ReasonReact.Update({
+        ...state,
         products:
           state.products
           |> List.map((p: Product.t) => p.id === product.id ? product : p),
       })
     | NewProductCreated(newProduct) =>
       ReasonReact.Update({
+        ...state,
         products: List.concat([state.products, [newProduct]]),
       })
+    | UpdateBulkImport(newVal) =>
+      ReasonReact.Update({...state, bulkImport: newVal})
     },
   render: self => {
+    let getVal = ev => ReactDOMRe.domElementToObj(
+                         ReactEventRe.Form.target(ev),
+                       )##value;
     let goBack = (_) => ReasonReact.Router.push("/admin");
     let removeProduct = (p: Product.t) => {
       ProductStore.remove(p.id)
@@ -71,6 +83,22 @@ let make = _children => {
       |> ignore;
       ();
     };
+    let importBulkProducts = blob =>
+      blob
+      |> Js.String.split("\n")
+      |> Array.to_list
+      |> List.map((line: string) => {
+           let arr = line |> Js.String.split("\t") |> Array.to_list;
+           let newProd: Product.NewProduct.t = {
+             sku: List.nth(arr, 0),
+             name: List.nth(arr, 1),
+             suggestedPrice: List.nth(arr, 2) |> Money.toT,
+             taxCalculation: List.nth(arr, 3) |> Tax.Calculation.toMethod,
+             tags: List.nth(arr, 4) |> Js.String.split(",") |> Array.to_list,
+           };
+           newProd;
+         })
+      |> List.iter(p => createProduct(p));
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
@@ -109,6 +137,17 @@ let make = _children => {
           </tbody>
           <CreateProductFooter createProduct />
         </table>
+        <h3> (s("Bulk Import")) </h3>
+        <textArea
+          className="bulk-import"
+          value=self.state.bulkImport
+          onChange=(ev => self.send(UpdateBulkImport(getVal(ev))))
+        />
+        <p>
+          <button onClick=((_) => importBulkProducts(self.state.bulkImport))>
+            (s("Import All"))
+          </button>
+        </p>
       </div>
     </div>;
   },

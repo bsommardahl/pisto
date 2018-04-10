@@ -171,3 +171,5 @@ table.admin-table thead th {
 .card-discount { background-color: #CCC;}
 
 .no-float { clear:both;}
+
+.bulk-import {width: 100%; height: 100px;}

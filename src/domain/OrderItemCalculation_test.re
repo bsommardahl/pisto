@@ -94,6 +94,35 @@ describe("order item calculation", () => {
         expect(totals.total) |> toEqual(56700)
       );
     });
+    describe("with one pizza and a discount", () => {
+      let orderItems: list(OrderItem.t) = [
+        {
+          sku: "PizzaCheese",
+          name: "Pizza Queso",
+          suggestedPrice: 12500,
+          taxCalculation: TotalFirst(15),
+          addedOn: 1.1,
+          salePrice: 0,
+        },
+      ];
+      let totals =
+        orderItems
+        |> OrderItemCalculation.getTotals([
+             {id: "test", name: "test", percent: 25},
+           ]);
+      test("the discount should be 25% of the subtotal", () =>
+        expect(totals.discounts) |> toEqual(2500)
+      );
+      test("the discount should be applied to the subtotal", () =>
+        expect(totals.subTotal) |> toEqual(8696)
+      );
+      test("the the tax should be calcualted per item and then rounded", () =>
+        expect(totals.tax) |> toEqual(1304)
+      );
+      test("the total should be the sum of all other subtotals", () =>
+        expect(totals.total) |> toEqual(10000)
+      );
+    });
   });
   describe("with weird numbers and two discounts", () => {
     let discount1: Discount.t = {id: "test", name: "test", percent: 33};
@@ -149,7 +178,7 @@ describe("order item calculation", () => {
   });
   describe("when calculating order item totals", () => {
     describe("when exempt tax calculation", () => {
-      describe("and with a discount", () => {
+      Only.describe("and with a discount", () => {
         let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
@@ -165,13 +194,13 @@ describe("order item calculation", () => {
             orderItem,
           );
         test("the subtotal should be 900", () =>
-          expect(totals.subTotal) |> toEqual(9.)
+          expect(totals.subTotal) |> toEqual(9.09090909090909)
         );
         test("the total should be equal to the subtotal", () =>
           expect(totals.subTotal) |> toEqual(totals.total)
         );
         test("it should have a 100 lemp discount", () =>
-          expect(totals.discounts) |> toEqual(1.)
+          expect(totals.discounts) |> toEqual(0.90909090909091)
         );
         test("it should return zero tax", () =>
           expect(totals.tax) |> toEqual(0.)
@@ -229,9 +258,9 @@ describe("order item calculation", () => {
         let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
-          suggestedPrice: 1000,
+          suggestedPrice: 1100,
           addedOn: 0.0,
-          salePrice: 1000,
+          salePrice: 0,
           taxCalculation: Tax.TotalFirst(15),
         };
         let totals =
@@ -242,16 +271,16 @@ describe("order item calculation", () => {
           );
         test(
           "the subtotal should be discounted and derrived from the total", () =>
-          expect(totals.subTotal) |> toEqual(7.82608695652174)
+          expect(totals.subTotal) |> toEqual(8.695652173913043)
         );
         test("the total should be the discounted suggested price", () =>
-          expect(totals.total) |> toEqual(9.)
+          expect(totals.total) |> toEqual(9.999999999999998)
         );
         test("it should have a discount", () =>
-          expect(totals.discounts) |> toEqual(1.)
+          expect(totals.discounts) |> toEqual(1.000000000000001)
         );
         test("it should return tax", () =>
-          expect(totals.tax) |> toEqual(1.1739130434782599)
+          expect(totals.tax) |> toEqual(1.3043478260869552)
         );
       });
     });
