@@ -19,7 +19,9 @@
     "eject": "react-scripts eject",
     "prepare": "npm link bs-platform",
     "re:clean": "bsb -clean-world",
-    "deploy": "heroku container:push web --app cafe-new"
+    "deploy": "heroku container:push web --app cafe-new",
+    "docker:build": "docker build -t 'cafe:latest' .",
+    "docker:run": "docker run 'cafe:latest'"
   },
   "devDependencies": {}
 }
