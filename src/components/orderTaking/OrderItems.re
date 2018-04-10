@@ -73,11 +73,12 @@ let make =
       (
         order.discounts
         |> List.map((d: Discount.t) =>
-             <div
+             <button
                className="card small-card card-discount"
+               disabled=(closed ? Js.true_ : Js.false_)
                onClick=((_) => deselectDiscount(d))>
                (s(d.name))
-             </div>
+             </button>
            )
         |> Array.of_list
         |> ReasonReact.arrayToElement
