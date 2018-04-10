@@ -1,7 +1,5 @@
 open Util;
 
-open OrderConversion;
-
 let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
   Js.Console.log("orderActions:: Persisting order....");
   switch (order.id) {
@@ -12,16 +10,16 @@ let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
       orderItems: order.orderItems,
     })
     |> Js.Promise.then_(freshOrder => {
-         onFinish(freshOrder |> OrderConversion.vmFromExistingOrder);
+         onFinish(freshOrder |> Order.vmFromExistingOrder);
          Js.Promise.resolve(
            Js.Console.log("orderActions:: Added new order."),
          );
        })
   | Some(_id) =>
-    let o: Order.updateOrder = vmToUpdateOrder(order);
+    let o: Order.updateOrder = Order.vmToUpdateOrder(order);
     OrderStore.update(o)
     |> Js.Promise.then_(updatedOrder => {
-         onFinish(updatedOrder |> OrderConversion.vmFromExistingOrder);
+         onFinish(updatedOrder |> Order.vmFromExistingOrder);
          Js.Promise.resolve(
            Js.Console.log("orderActions:: Updated existing order."),
          );

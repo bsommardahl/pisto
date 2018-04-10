@@ -29,7 +29,7 @@ let loadClosedOrders = (state, send) => {
                 getPaidDateForComparison(a.paid),
               )
             )
-         |> List.map(OrderConversion.vmFromExistingOrder);
+         |> List.map(Order.vmFromExistingOrder);
        send(LoadOrders(vms));
        Js.Promise.resolve();
      })

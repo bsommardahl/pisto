@@ -1,7 +1,5 @@
 open Util;
 
-open OrderConversion;
-
 open Js.Promise;
 
 type viewing =
@@ -59,7 +57,7 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
 let getOrderVm = orderId =>
   OrderStore.get(orderId)
   |> Js.Promise.then_(order => {
-       let vm = vmFromExistingOrder(order);
+       let vm = Order.vmFromExistingOrder(order);
        Js.Promise.resolve(vm);
      });
 

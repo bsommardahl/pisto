@@ -1,7 +1,5 @@
 open Util;
 
-open Js.Promise;
-
 type state = {
   host: string,
   password: string,
