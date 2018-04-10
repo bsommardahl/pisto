@@ -12,6 +12,10 @@ describe("util functions", () => {
       let result = Util.QueryParam.get("theKey", "theKey=");
       expect(result) |> toEqual(None);
     });
+    test("a nonexistent key represent none", (_) => {
+      let result = Util.QueryParam.get("theKey", "");
+      expect(result) |> toEqual(None);
+    });
   });
   describe("react string to element shortcut", () => {
     test("react string with some", () => {

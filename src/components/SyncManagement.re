@@ -1,5 +1,9 @@
 open Util;
 
+[@bs.val] external protocol : string = "window.location.protocol";
+
+[@bs.val] external host : string = "window.location.host";
+
 type state = {
   host: string,
   password: string,
@@ -17,7 +21,13 @@ let component = ReasonReact.reducerComponent("SyncManagement");
 let make = _children => {
   ...component,
   didMount: self => {
-    let csv = Config.getValue(Config.Database.syncKey);
+    let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
+    let urlConfig: option(string) = Util.QueryParam.get("cfg", queryString);
+    let csv =
+      switch (urlConfig) {
+      | None => Config.getValue(Config.Database.syncKey)
+      | Some(cfg) => Some(cfg)
+      };
     switch (csv) {
     | None => Js.log("no sync config yet")
     | Some(configDelimited) =>
@@ -47,25 +57,32 @@ let make = _children => {
     let getVal = ev => ReactDOMRe.domElementToObj(
                          ReactEventRe.Form.target(ev),
                        )##value;
-    let saveChanges = _ev => {
-      let config: Config.Database.syncConnectionConfig = {
-        host: self.state.host,
-        options: {
-          "auth": {
-            "username": self.state.username,
-            "password": self.state.password,
-          },
+    let thisPageUrl = () => {
+      let url = ReasonReact.Router.dangerouslyGetInitialUrl();
+      let joinStrings = l => l |> Array.of_list |> Js.Array.joinWith("/");
+      let host: string = protocol ++ "//" ++ host ++ "/";
+      host ++ (url.path |> joinStrings);
+    };
+    let config = () : Config.Database.syncConnectionConfig => {
+      host: self.state.host,
+      options: {
+        "auth": {
+          "username": self.state.username,
+          "password": self.state.password,
         },
-        syncOptions: {
-          "live": true,
-          "retry": true,
-        },
-      };
+      },
+      syncOptions: {
+        "live": true,
+        "retry": true,
+      },
+    };
+    let saveChanges = () => {
       Config.setValue(
         Config.Database.syncKey,
-        config |> Config.Database.toString,
+        config() |> Config.Database.toString,
       );
-      self.send(LoadConfig(config));
+      self.send(LoadConfig(config()));
+      ReasonReact.Router.push("sync");
     };
     <div className="admin-menu">
       <div className="header">
@@ -113,7 +130,18 @@ let make = _children => {
             </td>
           </tr>
         </table>
-        <button className="card" onClick=saveChanges> (s("Guardar")) </button>
+        <button className="card" onClick=((_) => saveChanges())>
+          (s("Guardar"))
+        </button>
+      </div>
+      <div className="sharing no-float">
+        <h4> (s("Compartir")) </h4>
+        <input
+          value=(
+            thisPageUrl() ++ "?cfg=" ++ (config() |> Config.Database.toString)
+          )
+          onChange=((_) => ())
+        />
       </div>
     </div>;
   },
