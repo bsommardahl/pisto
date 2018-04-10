@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  font-size: 15px;
   background-color: #DDDDDD
 }
 
@@ -53,6 +54,7 @@ body {
 }
 .open-order-card .customer-name {  
   color: darkblue;
+  font-size: 25px;
   margin-bottom: 5px;
 }
 .card {
@@ -62,7 +64,7 @@ body {
   margin: 10px;
   background-color: lightblue;
   float: left;
-  min-width: 80px;
+  min-width: 100px;
   text-align: center;
   cursor: pointer;
 }
