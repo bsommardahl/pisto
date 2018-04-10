@@ -36,7 +36,7 @@ let loadClosedOrders = (state, send) => {
   |> ignore;
 };
 
-let make = (~goBack, _children) => {
+let make = _children => {
   ...component,
   initialState: () => {
     startDate: Date.oneMonthBefore(Date.now()),
@@ -70,7 +70,9 @@ let make = (~goBack, _children) => {
     <div className="all-orders">
       <div className="header">
         <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
+          <div
+            className="card quiet-card"
+            onClick=((_) => ReasonReact.Router.push("/"))>
             (s("Atras"))
           </div>
         </div>

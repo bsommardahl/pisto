@@ -8,29 +8,24 @@ body {
 
 .header {
   background-color:#CCC;
-  height: 60px;
+  min-height: 65px;
   margin-bottom: 15px;
+  padding: 10px;
 }
 
 .header-options {
-  width: 400px;
-  padding: 15px;
-  
+  padding: 15px;  
 }
 
 .header-menu {
   float: right;
-  width: 400px;
-
+  /* width: 150px;   */
 }
 
-.header-menu .card {
-  float: right;
-}
-
-.customer-name input {
-  font-size: 20px;
-  
+input.customer-name-input {  
+  font-size: 30px;
+  width: 300px;
+ 
 }
 .paid-date input {
   font-size: 20px; width: 400px;
@@ -39,10 +34,7 @@ body {
   font-size: 20px;
   margin-left: 10px;
 }
-.start-new-order button {
-  font-size: 20px;
-  margin-left: 10px;
-}
+
 .open-orders {
   margin: 10px;  
 }
@@ -63,10 +55,11 @@ body {
   padding: 10px; 
   margin: 10px;
   background-color: lightblue;
-  float: left;
+  display: inline-block;
   min-width: 100px;
   text-align: center;
   cursor: pointer;
+  font-size: 18px;
 }
 
 .quiet-card {

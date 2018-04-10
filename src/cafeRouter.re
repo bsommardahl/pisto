@@ -65,7 +65,7 @@ let make = _children => {
         switch (self.state.currentView) {
         | Home => <Home onStartNewOrder goToAdmin />
         | Order => <OrderScreen goBack />
-        | AllOrders => <AllOrders goBack=((_) => goToAdmin()) />
+        | AllOrders => <AllOrders />
         | Admin => <Admin />
         | Products => <ProductManagement />
         | Sync => <SyncManagement />

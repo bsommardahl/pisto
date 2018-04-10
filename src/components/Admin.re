@@ -14,18 +14,15 @@ let make = _children => {
         <div className="card quiet-card" onClick=((_) => go("/"))>
           (s("Atras"))
         </div>
-        <div className="card" onClick=((_) => go("orders"))>
-          (s("Ver Ordenes"))
-        </div>
         <div className="card" onClick=((_) => go("products"))>
           (s("Productos"))
         </div>
         <div className="card" onClick=((_) => go("discounts"))>
           (s("Descuentos"))
         </div>
-      </div>
-      <div className="card" onClick=((_) => go("sync"))>
-        (s("Syncronizacion"))
+        <div className="card" onClick=((_) => go("sync"))>
+          (s("Syncronizacion"))
+        </div>
       </div>
     </div>;
     /* <div className="card" onClick=((_) => go("webhooks"))>

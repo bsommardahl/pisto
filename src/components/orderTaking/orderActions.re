@@ -1,6 +1,6 @@
 open Util;
 
-let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
+let saveOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) : unit => {
   Js.Console.log("orderActions:: Persisting order....");
   switch (order.id) {
   | None =>
@@ -8,6 +8,7 @@ let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
       discounts: order.discounts,
       customerName: order.customerName,
       orderItems: order.orderItems,
+      paid: order.paid,
     })
     |> Js.Promise.then_(freshOrder => {
          onFinish(freshOrder |> Order.vmFromExistingOrder);
@@ -15,6 +16,8 @@ let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
            Js.Console.log("orderActions:: Added new order."),
          );
        })
+    |> ignore;
+    ();
   | Some(_id) =>
     let o: Order.updateOrder = Order.vmToUpdateOrder(order);
     OrderStore.update(o)
@@ -23,11 +26,33 @@ let saveToStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
          Js.Promise.resolve(
            Js.Console.log("orderActions:: Updated existing order."),
          );
-       });
+       })
+    |> ignore;
+    ();
   };
 };
 
-let removeFromStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
+let payOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
+  let totals =
+    OrderItemCalculation.getTotals(order.discounts, order.orderItems);
+  saveOrder(
+    {
+      ...order,
+      paid:
+        Some({
+          on: Date.now(),
+          by: "",
+          subTotal: totals.subTotal,
+          tax: totals.tax,
+          discount: totals.discounts,
+          total: totals.total,
+        }),
+    },
+    onFinish,
+  );
+};
+
+let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
   switch (order.id) {
   | None => onFinish(order)
   | Some(id) =>
@@ -40,79 +65,18 @@ let removeFromStore = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
     ();
   };
 
-type state = {
-  order: Order.orderVm,
-  onFinish: Order.orderVm => unit,
-};
-
-type action =
-  | PayOrder
-  | SaveOrder
-  | RemoveOrder;
-
-let component = ReasonReact.reducerComponent("OrderItem");
+let component = ReasonReact.statelessComponent("OrderActions");
 
 let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  initialState: () => {order, onFinish},
-  reducer: (action, state) =>
-    switch (action) {
-    | PayOrder =>
-      let totals =
-        OrderItemCalculation.getTotals(
-          state.order.discounts,
-          state.order.orderItems,
-        );
-      ReasonReact.SideEffects(
-        (
-          _self => {
-            saveToStore(
-              {
-                ...order,
-                paid:
-                  Some({
-                    on: Date.now(),
-                    by: "",
-                    subTotal: totals.subTotal,
-                    tax: totals.tax,
-                    discount: totals.discounts,
-                    total: totals.total,
-                  }),
-              },
-              state.onFinish,
-            )
-            |> ignore;
-            ();
-          }
-        ),
-      );
-    | SaveOrder =>
-      ReasonReact.SideEffects(
-        (
-          _self => {
-            saveToStore(order, state.onFinish) |> ignore;
-            ();
-          }
-        ),
-      )
-    | RemoveOrder =>
-      ReasonReact.SideEffects(
-        (
-          _self => {
-            removeFromStore(order, state.onFinish);
-            ();
-          }
-        ),
-      )
-    },
-  render: self => {
+  render: _self => {
     let items = order.orderItems |> Array.of_list;
     let disablePayButton: Js.boolean =
       items |> Array.length > 0 ? Js.false_ : Js.true_;
     <div className="order-actions">
       <div
         className="save-button-card card"
-        onClick=((_) => self.send(SaveOrder))>
+        onClick=((_) => saveOrder(order, onFinish))>
         (s("Guardar"))
       </div>
       (
@@ -120,7 +84,7 @@ let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
           <div
             className="pay-button-card card"
             disabled=disablePayButton
-            onClick=((_) => self.send(PayOrder))>
+            onClick=((_) => payOrder(order, onFinish))>
             (s("Pagar"))
           </div>;
         } else {
@@ -129,7 +93,7 @@ let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
       )
       <div
         className="remove-button-card card"
-        onClick=((_) => self.send(RemoveOrder))>
+        onClick=((_) => removeOrder(order, onFinish))>
         (s("Borrar"))
       </div>
     </div>;

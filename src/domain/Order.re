@@ -32,6 +32,7 @@ type newOrder = {
   customerName: string,
   orderItems: list(OrderItem.t),
   discounts: list(Discount.t),
+  paid: option(Paid.t),
 };
 
 let mapOrderFromJs = orderJs : t => {
@@ -103,7 +104,7 @@ let updateOrderToJs =
     |> Array.of_list,
   "paid":
     switch (updateOrder.paid) {
-    | None => Js.Nullable.null
+    | None => Js.Nullable.undefined
     | Some(paid) => Js.Nullable.return(paid |> Paid.toJs)
     },
   "createdOn": originalOrder.createdOn,
@@ -118,4 +119,9 @@ let newOrderToJs = (order: newOrder) => {
   "discounts":
     order.discounts |> List.map(d => d |> Discount.mapToJs) |> Array.of_list,
   "createdOn": Js.Date.now(),
+  "paid":
+    switch (order.paid) {
+    | None => Js.Nullable.undefined
+    | Some(paid) => Js.Nullable.return(paid |> Paid.toJs)
+    },
 };

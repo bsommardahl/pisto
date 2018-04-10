@@ -41,6 +41,14 @@ let make = (~orders: list(Order.orderVm), ~onSelect, _children) => {
       <tbody>
         (
           orders
+          |> List.sort((a: Order.orderVm, b: Order.orderVm) => {
+               let getPaidDate = (p: option(Paid.t)) =>
+                 switch (p) {
+                 | None => 0.0
+                 | Some(paid) => paid.on
+                 };
+               getPaidDate(b.paid) -. getPaidDate(a.paid) |> int_of_float;
+             })
           |> List.map(o => row(o, onSelect))
           |> Array.of_list
           |> ReasonReact.arrayToElement
