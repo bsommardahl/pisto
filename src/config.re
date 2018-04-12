@@ -12,6 +12,7 @@ module Database = {
       "username": string,
       "password": string,
     },
+    "auto_compaction": bool,
   };
   type connectionConfig = {
     host: string,
@@ -42,6 +43,7 @@ module Database = {
           "username": syncArr[1],
           "password": syncArr[2],
         },
+        "auto_compaction": true,
       },
       syncOptions: {
         "live": syncArr[3] === "true" ? true : false,
@@ -67,6 +69,7 @@ module Database = {
         "username": "",
         "password": "",
       },
+      "auto_compaction": true,
     },
   };
   let livePouchDbConfig = {

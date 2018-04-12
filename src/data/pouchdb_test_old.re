@@ -14,6 +14,7 @@ let testDbConfig: Config.Database.pouchDbConfig = {
         "username": "",
         "password": "",
       },
+      "auto_compaction": true,
     },
   },
   remote: None,

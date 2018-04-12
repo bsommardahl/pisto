@@ -78,6 +78,7 @@ let make = _children => {
           "username": self.state.username,
           "password": self.state.password,
         },
+        "auto_compaction": true,
       },
       syncOptions: {
         "live": true,

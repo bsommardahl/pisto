@@ -28,9 +28,32 @@ let toShortTime = t =>
     }
   );
 
+let toISODate = t : string =>
+  t
+  |> Js.Date.fromFloat
+  |> Js.Date.toISOString
+  |> Js.String.split("T")
+  |> (x => x[0]);
+
 let toDisplay = t => Js.Date.fromFloat(t) |> Js.Date.toString;
 
 let oneMonthBefore = t => t -. day *. 30.44;
+
+let addDays = (d: int, t) : t => t +. day *. float_of_int(d);
+
+let startOfDay = (d: t) : t => {
+  let jsDate = d |> Js.Date.fromFloat;
+  let _ =
+    Js.Date.setUTCHoursMS(jsDate, ~hours=0., ~minutes=0., ~seconds=0., ());
+  jsDate |> Js.Date.getTime;
+};
+
+let endOfDay = (d: t) : t => {
+  let jsDate = d |> Js.Date.fromFloat;
+  let _ =
+    Js.Date.setUTCHoursMS(jsDate, ~hours=23., ~minutes=59., ~seconds=59., ());
+  jsDate |> Js.Date.getTime;
+};
 
 let toFloat = (formattedDate: string) : float =>
   formattedDate |> Js.Date.parse |> Js.Date.getTime;

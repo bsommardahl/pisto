@@ -138,6 +138,15 @@ let make = _children => {
           <CreateProductFooter createProduct />
         </table>
         <h3> (s("Bulk Import")) </h3>
+        <p>
+          <i>
+            (
+              s(
+                "Note: Tab separated values (TSV), one product per line, value order should match the table above.",
+              )
+            )
+          </i>
+        </p>
         <textArea
           className="bulk-import"
           value=self.state.bulkImport
