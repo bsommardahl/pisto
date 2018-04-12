@@ -254,7 +254,7 @@ describe("order item calculation", () => {
           expect(totals.discounts) |> toEqual(0.)
         );
       });
-      describe("and with a discount", () => {
+      describe("and with a low discount", () => {
         let orderItem: OrderItem.t = {
           sku: "some",
           name: "some",
@@ -281,6 +281,35 @@ describe("order item calculation", () => {
         );
         test("it should return tax", () =>
           expect(totals.tax) |> toEqual(1.3043478260869552)
+        );
+      });
+      describe("and with a 100% discount", () => {
+        let orderItem: OrderItem.t = {
+          sku: "some",
+          name: "some",
+          suggestedPrice: 1000,
+          addedOn: 0.0,
+          salePrice: 0,
+          taxCalculation: Tax.TotalFirst(15),
+        };
+        let totals =
+          totalFirstCalculator(
+            15,
+            [{id: "id", name: "name", percent: 100}],
+            orderItem,
+          );
+        test(
+          "the subtotal should be discounted and derrived from the total", () =>
+          expect(totals.subTotal) |> toEqual(0.)
+        );
+        test("the total should be the discounted suggested price", () =>
+          expect(totals.total) |> toEqual(0.)
+        );
+        test("it should have a discount", () =>
+          expect(totals.discounts) |> toEqual(10.)
+        );
+        test("it should return tax", () =>
+          expect(totals.tax) |> toEqual(0.)
         );
       });
     });
