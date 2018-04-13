@@ -89,11 +89,12 @@ let make = _children => {
           <tbody>
             (
               self.state.discounts
-              |> List.map(d =>
+              |> List.map((d: Discount.t) =>
                    <DiscountManagementRow
                      discount=d
                      remove=removeDiscount
                      modify=modifyDiscount
+                     key=d.id
                    />
                  )
               |> Array.of_list

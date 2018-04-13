@@ -129,6 +129,7 @@ let make = _children => {
                      product=p
                      removeProduct
                      modifyProduct
+                     key=p.id
                    />
                  )
               |> Array.of_list
@@ -147,7 +148,7 @@ let make = _children => {
             )
           </i>
         </p>
-        <textArea
+        <textarea
           className="bulk-import"
           value=self.state.bulkImport
           onChange=(ev => self.send(UpdateBulkImport(getVal(ev))))
