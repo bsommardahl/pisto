@@ -1,5 +1,3 @@
-open Util;
-
 let saveOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) : unit => {
   Js.Console.log("orderActions:: Persisting order....");
   switch (order.id) {
@@ -77,7 +75,7 @@ let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
       <div
         className="save-button-card card"
         onClick=((_) => saveOrder(order, onFinish))>
-        (s("Guardar"))
+        (ReactUtils.s("Guardar"))
       </div>
       (
         if (! closed) {
@@ -85,7 +83,7 @@ let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
             className="pay-button-card card"
             disabled=disablePayButton
             onClick=((_) => payOrder(order, onFinish))>
-            (s("Pagar"))
+            (ReactUtils.s("Pagar"))
           </div>;
         } else {
           ReasonReact.nullElement;
@@ -94,7 +92,7 @@ let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
       <div
         className="remove-button-card card"
         onClick=((_) => removeOrder(order, onFinish))>
-        (s("Borrar"))
+        (ReactUtils.s("Borrar"))
       </div>
     </div>;
   },

@@ -1,5 +1,3 @@
-open Util;
-
 open Js.Promise;
 
 type state = {
@@ -103,21 +101,23 @@ let make = _children => {
       <div className="header">
         <div className="header-menu">
           <div className="card wide-card quiet-card" onClick=goBack>
-            (s("Atras"))
+            (ReactUtils.s("Atras"))
           </div>
         </div>
-        <div className="header-options"> (s("Gestion de Productos")) </div>
+        <div className="header-options">
+          (ReactUtils.s("Gestion de Productos"))
+        </div>
       </div>
       <div className="product-management">
         <table className="admin-table">
           <thead>
             <tr>
               <th />
-              <th> (s("Sku")) </th>
-              <th> (s("Nombre")) </th>
-              <th> (s("Precio")) </th>
-              <th> (s("Metodo de Impuesto")) </th>
-              <th> (s("Tags/Categorias")) </th>
+              <th> (ReactUtils.s("Sku")) </th>
+              <th> (ReactUtils.s("Nombre")) </th>
+              <th> (ReactUtils.s("Precio")) </th>
+              <th> (ReactUtils.s("Metodo de Impuesto")) </th>
+              <th> (ReactUtils.s("Tags/Categorias")) </th>
               <th />
             </tr>
           </thead>
@@ -138,11 +138,11 @@ let make = _children => {
           </tbody>
           <CreateProductFooter createProduct />
         </table>
-        <h3> (s("Bulk Import")) </h3>
+        <h3> (ReactUtils.s("Bulk Import")) </h3>
         <p>
           <i>
             (
-              s(
+              ReactUtils.s(
                 "Note: Tab separated values (TSV), one product per line, value order should match the table above.",
               )
             )
@@ -155,7 +155,7 @@ let make = _children => {
         />
         <p>
           <button onClick=((_) => importBulkProducts(self.state.bulkImport))>
-            (s("Import All"))
+            (ReactUtils.s("Import All"))
           </button>
         </p>
       </div>

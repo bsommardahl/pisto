@@ -1,5 +1,3 @@
-open Util;
-
 type state = {
   name: string,
   percent: string,
@@ -50,7 +48,7 @@ let make = (~create, _children) => {
       </td>
       <td>
         <button onClick=((_) => finishedEnteringData())>
-          (s("Crear"))
+          (ReactUtils.s("Crear"))
         </button>
       </td>
     </tr>;

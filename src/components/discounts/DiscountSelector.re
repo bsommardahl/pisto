@@ -1,4 +1,4 @@
-open Util;
+
 
 let component = ReasonReact.statelessComponent("DiscountSelector");
 
@@ -10,7 +10,7 @@ let make = (~discounts: list(Discount.t), ~selected, _children) => {
          <div
            onClick=((_) => selected(d))
            className="card small-card card-discount">
-           (s(d.name))
+           (ReactUtils.s(d.name))
          </div>
        )
     |> Array.of_list

@@ -1,5 +1,3 @@
-open Util;
-
 type action =
   | EnableMod
   | DisableMod
@@ -46,17 +44,23 @@ let make = (~date: float, ~onChange, _children) => {
         <button
           disabled=(! self.state.valid |> Js.Boolean.to_js_boolean)
           onClick=((_) => self.send(DisableMod))>
-          (s("Hecho"))
+          (ReactUtils.s("Hecho"))
         </button>
         (
           self.state.valid ?
-            <div className="valid"> (s("Valido")) </div> :
-            <div className="invalid"> (s("No Valido")) </div>
+            <div className="valid"> (ReactUtils.s("Valido")) </div> :
+            <div className="invalid"> (ReactUtils.s("No Valido")) </div>
         )
       </div> :
       <div onClick=((_) => self.send(EnableMod))>
-        <p> (s("Fecha:")) (s(date |> Date.toDisplayDate)) </p>
-        <p> (s("Hora:")) (s(date |> Date.toDisplayTime)) </p>
+        <p>
+          (ReactUtils.s("Fecha:"))
+          (ReactUtils.s(date |> Date.toDisplayDate))
+        </p>
+        <p>
+          (ReactUtils.s("Hora:"))
+          (ReactUtils.s(date |> Date.toDisplayTime))
+        </p>
       </div>;
   },
 };

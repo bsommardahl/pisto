@@ -8,7 +8,8 @@
   ],
   "bs-dependencies": [
     "reason-react",
-    "bs-jest"
+    "bs-jest",
+    "cafe-domain"
   ],
   "reason": {
     "react-jsx": 2

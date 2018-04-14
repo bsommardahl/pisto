@@ -1,5 +1,3 @@
-open Util;
-
 open Js.Promise;
 
 type viewing =
@@ -228,7 +226,7 @@ let make = (~goBack, _children) => {
         (
           if (self.state.closedOrder) {
             <div>
-              <h2> (s("Pagado")) </h2>
+              <h2> (ReactUtils.s("Pagado")) </h2>
               <div className="paid-date">
                 (
                   switch (self.state.order.paid) {
@@ -260,7 +258,7 @@ let make = (~goBack, _children) => {
                 | Products(tag) =>
                   <div className="products">
                     <div className="back-button-card card" onClick=deselectTag>
-                      (s("Atras"))
+                      (ReactUtils.s("Atras"))
                     </div>
                     (
                       Product.filterProducts(tag, self.state.allProducts)

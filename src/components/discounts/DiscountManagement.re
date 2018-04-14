@@ -1,4 +1,4 @@
-open Util;
+
 
 open Js.Promise;
 
@@ -72,18 +72,18 @@ let make = _children => {
       <div className="header">
         <div className="header-menu">
           <div className="card wide-card quiet-card" onClick=goBack>
-            (s("Atras"))
+            (ReactUtils.s("Atras"))
           </div>
         </div>
-        <div className="header-options"> (s("Gestion de Descuentos")) </div>
+        <div className="header-options"> (ReactUtils.s("Gestion de Descuentos")) </div>
       </div>
       <div className="discount-management">
         <table className="table">
           <thead>
             <tr>
               <th />
-              <th> (s("Nombre")) </th>
-              <th> (s("Percent")) </th>
+              <th> (ReactUtils.s("Nombre")) </th>
+              <th> (ReactUtils.s("Percent")) </th>
             </tr>
           </thead>
           <tbody>

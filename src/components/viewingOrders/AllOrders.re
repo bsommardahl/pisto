@@ -1,5 +1,3 @@
-open Util;
-
 type state = {
   startDate: float,
   endDate: float,
@@ -73,11 +71,11 @@ let make = _children => {
           <div
             className="card quiet-card"
             onClick=((_) => ReasonReact.Router.push("/"))>
-            (s("Atras"))
+            (ReactUtils.s("Atras"))
           </div>
         </div>
         <div className="header-options">
-          (s("Ordenes de los ultimos 30 dias"))
+          (ReactUtils.s("Ordenes de los ultimos 30 dias"))
         </div>
       </div>
       <OrderList

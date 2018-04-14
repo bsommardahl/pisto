@@ -1,5 +1,3 @@
-open Util;
-
 [@bs.val] external protocol : string = "window.location.protocol";
 
 [@bs.val] external host : string = "window.location.host";
@@ -94,18 +92,18 @@ let make = _children => {
       <div className="header">
         <div className="header-menu">
           <div className="card wide-card quiet-card" onClick=goBack>
-            (s("Atras"))
+            (ReactUtils.s("Atras"))
           </div>
         </div>
         <div className="header-options">
-          (s("Gestion de Configuracion"))
+          (ReactUtils.s("Gestion de Configuracion"))
         </div>
       </div>
       <div className="config-management">
-        <h2> (s("Remote Sync")) </h2>
+        <h2> (ReactUtils.s("Remote Sync")) </h2>
         <table>
           <tr>
-            <th> (s("Host")) </th>
+            <th> (ReactUtils.s("Host")) </th>
             <td>
               <input
                 value=self.state.host
@@ -114,7 +112,7 @@ let make = _children => {
             </td>
           </tr>
           <tr>
-            <th> (s("Username")) </th>
+            <th> (ReactUtils.s("Username")) </th>
             <td>
               <input
                 value=self.state.username
@@ -125,7 +123,7 @@ let make = _children => {
             </td>
           </tr>
           <tr>
-            <th> (s("Password")) </th>
+            <th> (ReactUtils.s("Password")) </th>
             <td>
               <input
                 value=self.state.password
@@ -139,11 +137,11 @@ let make = _children => {
         <button
           className="card"
           onClick=((_) => saveChanges(getConfigFromState()))>
-          (s("Guardar"))
+          (ReactUtils.s("Guardar"))
         </button>
       </div>
       <div className="sharing no-float">
-        <h4> (s("Compartir")) </h4>
+        <h4> (ReactUtils.s("Compartir")) </h4>
         <input
           value=(
             thisPageUrl()

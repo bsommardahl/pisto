@@ -1,5 +1,3 @@
-open Util;
-
 type state = {customerName: string};
 
 type action =
@@ -26,7 +24,7 @@ let make = (~onStartNewOrder, ~goToAdmin, _children) => {
           <div
             className="card quiet-card"
             onClick=((_) => ReasonReact.Router.push("orders"))>
-            (s("Ver Ordenes"))
+            (ReactUtils.s("Ver Ordenes"))
           </div>
         </div>
         <input
@@ -39,7 +37,7 @@ let make = (~onStartNewOrder, ~goToAdmin, _children) => {
         <div
           className="card"
           onClick=(_event => onStartNewOrder(self.state.customerName))>
-          (s("Iniciar"))
+          (ReactUtils.s("Iniciar"))
         </div>
       </div>
       <OpenOrders />

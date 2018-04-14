@@ -1,5 +1,3 @@
-open Util;
-
 type action =
   | EnableMod
   | DisableMod;
@@ -25,9 +23,11 @@ let make = (~text: string, ~onChange, _children) => {
       <div>
         <input value=text onChange=ontextChange />
         <button onClick=((_) => self.send(DisableMod))>
-          (s("Cambiar"))
+          (ReactUtils.s("Cambiar"))
         </button>
       </div> :
-      <div onClick=((_) => self.send(EnableMod))> (s(text)) </div>;
+      <div onClick=((_) => self.send(EnableMod))>
+        (ReactUtils.s(text))
+      </div>;
   },
 };

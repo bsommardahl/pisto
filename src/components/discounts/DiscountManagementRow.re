@@ -1,4 +1,4 @@
-open Util;
+
 
 type state = {
   modifying: bool,
@@ -71,11 +71,11 @@ let make = (~discount, ~remove, ~modify, _children) => {
       <tr>
         <td>
           <button onClick=((_) => self.send(EnableMod))>
-            (s("Editar"))
+            (ReactUtils.s("Editar"))
           </button>
         </td>
-        <td> (s(self.state.originalDiscount.name)) </td>
-        <td> (s(self.state.originalDiscount.percent |> string_of_int)) </td>
+        <td> (ReactUtils.s(self.state.originalDiscount.name)) </td>
+        <td> (ReactUtils.s(self.state.originalDiscount.percent |> string_of_int)) </td>
         <td>
           <button
             onClick=(
@@ -86,7 +86,7 @@ let make = (~discount, ~remove, ~modify, _children) => {
                 remove(self.state.originalDiscount);
               }
             )>
-            (s("Eliminar"))
+            (ReactUtils.s("Eliminar"))
           </button>
         </td>
       </tr>
@@ -94,7 +94,7 @@ let make = (~discount, ~remove, ~modify, _children) => {
       <tr>
         <td>
           <button onClick=((_) => self.send(CancelMod))>
-            (s("Cancelar"))
+            (ReactUtils.s("Cancelar"))
           </button>
         </td>
         <td>
@@ -109,7 +109,7 @@ let make = (~discount, ~remove, ~modify, _children) => {
             onChange=(ev => self.send(ChangePercent(getVal(ev))))
           />
         </td>
-        <td> <button onClick=saveModification> (s("Guardar")) </button> </td>
+        <td> <button onClick=saveModification> (ReactUtils.s("Guardar")) </button> </td>
       </tr>
     };
   },

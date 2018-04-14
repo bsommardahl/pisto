@@ -1,12 +1,10 @@
-open Util;
-
 type state = {
   modifying: bool,
   modifiedProduct: Product.t,
   originalProduct: Product.t,
   taxCalculationMod: string,
   tagsMod: string,
-  priceMod: string
+  priceMod: string,
 };
 
 type changeable =
@@ -30,9 +28,10 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
     modifying: false,
     originalProduct: product,
     modifiedProduct: product,
-    taxCalculationMod: product.taxCalculation |> Tax.Calculation.toDelimitedString,
-    tagsMod : product.tags |> Tags.toCSV,
-    priceMod : product.suggestedPrice |> Money.toDisplay
+    taxCalculationMod:
+      product.taxCalculation |> Tax.Calculation.toDelimitedString,
+    tagsMod: product.tags |> Tags.toCSV,
+    priceMod: product.suggestedPrice |> Money.toDisplay,
   },
   reducer: (action, state) =>
     switch (action) {
@@ -50,11 +49,7 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
         originalProduct: prod,
         modifiedProduct: prod,
       })
-    | ChangePrice(newVal) =>
-      ReasonReact.Update({
-        ...state,
-        priceMod: newVal,
-      })
+    | ChangePrice(newVal) => ReasonReact.Update({...state, priceMod: newVal})
     | Change(Name, newVal) =>
       ReasonReact.Update({
         ...state,
@@ -72,25 +67,20 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
         },
       })
     | ChangeTaxCalculation(newVal) =>
-      ReasonReact.Update({
-        ...state,
-        taxCalculationMod: newVal        
-      })
-    | ChangeTags(newVal) =>
-        ReasonReact.Update({
-          ...state,
-          tagsMod:newVal
-        })      
+      ReasonReact.Update({...state, taxCalculationMod: newVal})
+    | ChangeTags(newVal) => ReasonReact.Update({...state, tagsMod: newVal})
     },
   render: self => {
     let getVal = ev => ReactDOMRe.domElementToObj(
                          ReactEventRe.Form.target(ev),
                        )##value;
     let saveModification = (_) => {
-      let modified = {...self.state.modifiedProduct, 
-        taxCalculation: self.state.taxCalculationMod |> Tax.Calculation.toMethod,
+      let modified = {
+        ...self.state.modifiedProduct,
+        taxCalculation:
+          self.state.taxCalculationMod |> Tax.Calculation.toMethod,
         tags: self.state.tagsMod |> Tags.toList,
-        suggestedPrice: self.state.priceMod |> Money.toT
+        suggestedPrice: self.state.priceMod |> Money.toT,
       };
       modifyProduct(modified);
       self.send(SaveMod(modified));
@@ -100,26 +90,32 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
       <tr>
         <td>
           <button onClick=((_) => self.send(EnableMod))>
-            (s("Editar"))
+            (ReactUtils.s("Editar"))
           </button>
         </td>
-        <td> (s(self.state.originalProduct.sku)) </td>
-        <td> (s(self.state.originalProduct.name)) </td>
+        <td> (ReactUtils.s(self.state.originalProduct.sku)) </td>
+        <td> (ReactUtils.s(self.state.originalProduct.name)) </td>
         <td>
-          (s(self.state.originalProduct.suggestedPrice |> Money.toDisplay))
+          (
+            ReactUtils.s(
+              self.state.originalProduct.suggestedPrice |> Money.toDisplay,
+            )
+          )
         </td>
         <td>
           (
-            s(
+            ReactUtils.s(
               self.state.originalProduct.taxCalculation
               |> Tax.Calculation.toDelimitedString,
             )
           )
         </td>
-        <td> (s(self.state.originalProduct.tags |> Tags.toCSV)) </td>
+        <td>
+          (ReactUtils.s(self.state.originalProduct.tags |> Tags.toCSV))
+        </td>
         <td>
           <button onClick=((_) => removeProduct(self.state.originalProduct))>
-            (s("Eliminar"))
+            (ReactUtils.s("Eliminar"))
           </button>
         </td>
       </tr>
@@ -127,7 +123,7 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
       <tr>
         <td>
           <button onClick=((_) => self.send(CancelMod))>
-            (s("Cancelar"))
+            (ReactUtils.s("Cancelar"))
           </button>
         </td>
         <td>
@@ -150,19 +146,21 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
         </td>
         <td>
           <input
-            value=(
-              self.state.taxCalculationMod
-            )
+            value=self.state.taxCalculationMod
             onChange=(ev => self.send(ChangeTaxCalculation(getVal(ev))))
           />
         </td>
         <td>
           <input
-            value=(self.state.tagsMod)
+            value=self.state.tagsMod
             onChange=(ev => self.send(ChangeTags(getVal(ev))))
           />
         </td>
-        <td> <button onClick=saveModification> (s("Guardar")) </button> </td>
+        <td>
+          <button onClick=saveModification>
+            (ReactUtils.s("Guardar"))
+          </button>
+        </td>
       </tr>
     };
   },

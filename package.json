@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bs-jest": "^0.3.2",
     "bs-platform": "^2.2.3",
+    "cafe-domain": "github:bsommardahl/cafe-domain",
     "pouchdb": "^6.4.3",
     "pouchdb-find": "^6.4.3",
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
-    "reason-scripts": "0.8.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
     "reason-react": "^0.3.4",
-    "bs-jest": "^0.3.2"
+    "reason-scripts": "0.8.0"
   },
   "scripts": {
     "start": "react-scripts start",

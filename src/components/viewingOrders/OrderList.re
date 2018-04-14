@@ -1,16 +1,14 @@
-open Util;
-
 let component = ReasonReact.statelessComponent("OrderList");
 
 let headerRow = () =>
   <tr>
     <th />
-    <th> (s("Cliente")) </th>
-    <th> (s("Subtotal")) </th>
-    <th> (s("Impuesto")) </th>
-    <th> (s("Total")) </th>
-    <th> (s("Fecha")) </th>
-    <th> (s("Hora")) </th>
+    <th> (ReactUtils.s("Cliente")) </th>
+    <th> (ReactUtils.s("Subtotal")) </th>
+    <th> (ReactUtils.s("Impuesto")) </th>
+    <th> (ReactUtils.s("Total")) </th>
+    <th> (ReactUtils.s("Fecha")) </th>
+    <th> (ReactUtils.s("Hora")) </th>
   </tr>;
 
 let row = (o: Order.orderVm, onSelect) => {
@@ -22,14 +20,16 @@ let row = (o: Order.orderVm, onSelect) => {
     };
   <tr>
     <td>
-      <div className="card" onClick=((_) => onSelect(o))> (s("Ver")) </div>
+      <div className="card" onClick=((_) => onSelect(o))>
+        (ReactUtils.s("Ver"))
+      </div>
     </td>
-    <td> (s(o.customerName)) </td>
-    <td> (s(totals.subTotal |> Money.toDisplay)) </td>
-    <td> (s(totals.tax |> Money.toDisplay)) </td>
-    <td> (s(totals.total |> Money.toDisplay)) </td>
-    <td> (s(paidOn |> Date.toDisplayDate)) </td>
-    <td> (s(paidOn |> Date.toDisplayTime)) </td>
+    <td> (ReactUtils.s(o.customerName)) </td>
+    <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
+    <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
+    <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
+    <td> (ReactUtils.s(paidOn |> Date.toDisplayDate)) </td>
+    <td> (ReactUtils.s(paidOn |> Date.toDisplayTime)) </td>
   </tr>;
 };
 
