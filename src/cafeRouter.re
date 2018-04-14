@@ -5,20 +5,15 @@ type view =
   | Admin
   | Products
   | Sync
-  | Discounts;
+  | Discounts
+  | Webhooks;
 
 type customerName = string;
 
 type state = {currentView: view};
 
 type action =
-  | ShowHome
-  | ShowOrder
-  | ShowAllOrders
-  | ShowAdmin
-  | ShowProducts
-  | ShowSync
-  | ShowDiscounts;
+  | Show(view);
 
 let component = ReasonReact.reducerComponent("CafeRouter");
 
@@ -29,26 +24,21 @@ let make = _children => {
   initialState: () => {currentView: Home},
   reducer: (action, _state) =>
     switch (action) {
-    | ShowHome => ReasonReact.Update({currentView: Home})
-    | ShowOrder => ReasonReact.Update({currentView: Order})
-    | ShowAllOrders => ReasonReact.Update({currentView: AllOrders})
-    | ShowAdmin => ReasonReact.Update({currentView: Admin})
-    | ShowProducts => ReasonReact.Update({currentView: Products})
-    | ShowSync => ReasonReact.Update({currentView: Sync})
-    | ShowDiscounts => ReasonReact.Update({currentView: Discounts})
+    | Show(view) => ReasonReact.Update({currentView: view})
     },
   subscriptions: self => [
     Sub(
       () =>
         ReasonReact.Router.watchUrl(url =>
           switch (url.path) {
-          | [] => self.send(ShowHome)
-          | ["order"] => self.send(ShowOrder)
-          | ["orders"] => self.send(ShowAllOrders)
-          | ["admin"] => self.send(ShowAdmin)
-          | ["products"] => self.send(ShowProducts)
-          | ["sync"] => self.send(ShowSync)
-          | ["discounts"] => self.send(ShowDiscounts)
+          | [] => self.send(Show(Home))
+          | ["order"] => self.send(Show(Order))
+          | ["orders"] => self.send(Show(AllOrders))
+          | ["admin"] => self.send(Show(Admin))
+          | ["products"] => self.send(Show(Products))
+          | ["sync"] => self.send(Show(Sync))
+          | ["discounts"] => self.send(Show(Discounts))
+          | ["webhooks"] => self.send(Show(Webhooks))
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -70,6 +60,7 @@ let make = _children => {
         | Products => <ProductManagement />
         | Sync => <SyncManagement />
         | Discounts => <DiscountManagement />
+        | Webhooks => <WebhookManagement />
         }
       )
     </div>;

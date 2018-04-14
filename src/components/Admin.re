@@ -20,6 +20,9 @@ let make = _children => {
         <div className="card" onClick=((_) => go("discounts"))>
           (ReactUtils.s("Descuentos"))
         </div>
+        <div className="card" onClick=((_) => go("webhooks"))>
+          (ReactUtils.s("Webhooks"))
+        </div>
         <div className="card" onClick=((_) => go("sync"))>
           (ReactUtils.s("Syncronizacion"))
         </div>
