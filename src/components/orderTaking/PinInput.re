@@ -1,8 +1,13 @@
-type state = string;
+type state = {
+  pin: string,
+  cashiers: list(Cashier.t),
+};
 
 type action =
   | Update(string)
-  | Verify(string);
+  | Verify(string)
+  | LoadCashiers
+  | CashiersLoaded(list(Cashier.t));
 
 let component = ReasonReact.reducerComponent("PinInput");
 
@@ -14,12 +19,16 @@ let make =
       _children,
     ) => {
   ...component,
-  initialState: () => value,
-  reducer: (action, _state) =>
+  didMount: self => {
+    self.send(LoadCashiers);
+    ReasonReact.NoUpdate;
+  },
+  initialState: () => {pin: value, cashiers: []},
+  reducer: (action, state) =>
     switch (action) {
     | Update(pin) =>
       ReasonReact.UpdateWithSideEffects(
-        pin,
+        {...state, pin},
         (
           self =>
             if (pin |> Js.String.length === 4) {
@@ -27,21 +36,41 @@ let make =
             }
         ),
       )
+    | LoadCashiers =>
+      ReasonReact.SideEffects(
+        (
+          self => {
+            CashierStore.getAll()
+            |> Js.Promise.then_((cashiers: list(Cashier.t)) => {
+                 self.send(CashiersLoaded(cashiers));
+                 Js.Promise.resolve();
+               })
+            |> ignore;
+            ();
+          }
+        ),
+      )
+    | CashiersLoaded(cashiers) =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, cashiers},
+        (
+          _self =>
+            if (cashiers |> List.length === 0) {
+              onSuccess({id: "none", name: "n/a", pin: ""});
+            }
+        ),
+      )
     | Verify(pin) =>
       ReasonReact.SideEffects(
         (
-          _self =>
-            CashierStore.getAll()
-            |> Js.Promise.then_((cashiers: list(Cashier.t)) => {
-                 switch (
-                   cashiers |> List.find((c: Cashier.t) => c.pin === pin)
-                 ) {
-                 | exception Not_found => onFailure()
-                 | cashier => onSuccess(cashier)
-                 };
-                 Js.Promise.resolve();
-               })
-            |> ignore
+          self =>
+            switch (
+              self.state.cashiers
+              |> List.find((c: Cashier.t) => c.pin === pin)
+            ) {
+            | exception Not_found => onFailure()
+            | cashier => onSuccess(cashier)
+            }
         ),
       )
     },
@@ -54,7 +83,7 @@ let make =
       <input
         autoFocus=Js.true_
         className="big pin"
-        value=self.state
+        value=self.state.pin
         onChange=(ev => self.send(Update(getVal(ev))))
       />
     </div>;
