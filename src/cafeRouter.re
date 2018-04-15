@@ -6,7 +6,8 @@ type view =
   | Products
   | Sync
   | Discounts
-  | Webhooks;
+  | Webhooks
+  | Cashiers;
 
 type customerName = string;
 
@@ -39,6 +40,7 @@ let make = _children => {
           | ["sync"] => self.send(Show(Sync))
           | ["discounts"] => self.send(Show(Discounts))
           | ["webhooks"] => self.send(Show(Webhooks))
+          | ["cashiers"] => self.send(Show(Cashiers))
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -61,6 +63,7 @@ let make = _children => {
         | Sync => <SyncManagement />
         | Discounts => <DiscountManagement />
         | Webhooks => <WebhookManagement />
+        | Cashiers => <CashierManagement />
         }
       )
     </div>;

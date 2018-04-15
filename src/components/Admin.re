@@ -23,16 +23,13 @@ let make = _children => {
         <div className="card" onClick=((_) => go("webhooks"))>
           (ReactUtils.s("Webhooks"))
         </div>
+        <div className="card" onClick=((_) => go("cashiers"))>
+          (ReactUtils.s("Cajeros"))
+        </div>
         <div className="card" onClick=((_) => go("sync"))>
           (ReactUtils.s("Syncronizacion"))
         </div>
       </div>
     </div>;
-    /* <div className="card" onClick=((_) => go("webhooks"))>
-         (ReactUtils.s("Webhooks"))
-       </div> */
-    /* <div className="card" onClick=((_) => go("users"))>
-         (ReactUtils.s("Usuarios"))
-       </div> */
   },
 };
