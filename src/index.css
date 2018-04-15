@@ -22,6 +22,10 @@ body {
   /* width: 150px;   */
 }
 
+input.big{
+  font-size: 30px;
+} 
+input.pin { width: 70px;} 
 input.customer-name-input {  
   font-size: 30px;
   width: 300px;
@@ -105,16 +109,6 @@ input.customer-name-input {
 .tag-card {
   background-color: cornflowerblue;
   color: white;
-}
-.tags {
-
-}
-
-.products {
-
-}
-
-.order-items {
 }
 
 .order-header {

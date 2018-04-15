@@ -30,7 +30,12 @@ let saveOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) : unit =
   };
 };
 
-let payOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
+let payOrder =
+    (
+      cashier: Cashier.t,
+      order: Order.orderVm,
+      onFinish: Order.orderVm => unit,
+    ) => {
   let totals =
     OrderItemCalculation.getTotals(order.discounts, order.orderItems);
   saveOrder(
@@ -39,7 +44,7 @@ let payOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
       paid:
         Some({
           on: Date.now(),
-          by: "",
+          by: cashier.name,
           subTotal: totals.subTotal,
           tax: totals.tax,
           discount: totals.discounts,
@@ -66,37 +71,64 @@ let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
     ();
   };
 
-let component = ReasonReact.statelessComponent("OrderActions");
+type state = {
+  paying: bool,
+  cashierPin: string,
+};
+
+type action =
+  | StartPaying
+  | StopPaying;
+
+let component = ReasonReact.reducerComponent("OrderActions");
 
 let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  render: _self => {
+  initialState: () => {paying: false, cashierPin: ""},
+  reducer: (action, state) =>
+    switch (action) {
+    | StartPaying => ReasonReact.Update({...state, paying: true})
+    | StopPaying => ReasonReact.Update({...state, paying: false})
+    },
+  render: self => {
     let items = order.orderItems |> Array.of_list;
     let disablePayButton: Js.boolean =
       items |> Array.length > 0 ? Js.false_ : Js.true_;
     <div className="order-actions">
-      <div
-        className="save-button-card card"
-        onClick=((_) => saveOrder(order, onFinish))>
-        (ReactUtils.s("Guardar"))
-      </div>
       (
-        if (! closed) {
-          <div
-            className="pay-button-card card"
-            disabled=disablePayButton
-            onClick=((_) => payOrder(order, onFinish))>
-            (ReactUtils.s("Pagar"))
-          </div>;
+        if (self.state.paying) {
+          <PinInput
+            value=self.state.cashierPin
+            onFailure=(() => self.send(StopPaying))
+            onSuccess=(cashier => payOrder(cashier, order, onFinish))
+          />;
         } else {
-          ReasonReact.nullElement;
+          <div>
+            <div
+              className="save-button-card card"
+              onClick=((_) => saveOrder(order, onFinish))>
+              (ReactUtils.s("Guardar"))
+            </div>
+            (
+              if (! closed) {
+                <div
+                  className="pay-button-card card"
+                  disabled=disablePayButton
+                  onClick=((_) => self.send(StartPaying))>
+                  (ReactUtils.s("Pagar"))
+                </div>;
+              } else {
+                ReasonReact.nullElement;
+              }
+            )
+            <div
+              className="remove-button-card card"
+              onClick=((_) => removeOrder(order, onFinish))>
+              (ReactUtils.s("Borrar"))
+            </div>
+          </div>;
         }
       )
-      <div
-        className="remove-button-card card"
-        onClick=((_) => removeOrder(order, onFinish))>
-        (ReactUtils.s("Borrar"))
-      </div>
     </div>;
   },
 };
