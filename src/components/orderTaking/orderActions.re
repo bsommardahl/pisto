@@ -46,7 +46,10 @@ let payOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) => {
           total: totals.total,
         }),
     },
-    onFinish,
+    (vm: Order.orderVm) => {
+      vm |> Order.fromVm |> WebhookEngine.fireFor(OrderPaid);
+      onFinish(vm);
+    },
   );
 };
 

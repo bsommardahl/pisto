@@ -9,6 +9,7 @@
   "bs-dependencies": [
     "reason-react",
     "bs-jest",
+    "refetch",
     "cafe-domain",
     "cafe-data"
   ],
