@@ -60,7 +60,11 @@ let make = _children => {
       (
         self.state.orders
         |> List.map((o: Order.orderVm) =>
-             <OpenOrderCard order=o onSelect=(_event => selectOpenOrder(o)) />
+             <OpenOrderCard
+               order=o
+               onSelect=(_event => selectOpenOrder(o))
+               key=(o.createdOn |> string_of_float)
+             />
            )
         |> Array.of_list
         |> ReasonReact.arrayToElement

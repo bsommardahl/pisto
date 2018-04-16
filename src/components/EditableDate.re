@@ -53,14 +53,7 @@ let make = (~date: float, ~onChange, _children) => {
         )
       </div> :
       <div onClick=((_) => self.send(EnableMod))>
-        <p>
-          (ReactUtils.s("Fecha:"))
-          (ReactUtils.s(date |> Date.toDisplayDate))
-        </p>
-        <p>
-          (ReactUtils.s("Hora:"))
-          (ReactUtils.s(date |> Date.toDisplayTime))
-        </p>
+        (ReactUtils.s(date |> Date.toDisplay))
       </div>;
   },
 };

@@ -58,6 +58,20 @@ let payOrder =
   );
 };
 
+let returnOrder =
+    (
+      cashier: Cashier.t,
+      order: Order.orderVm,
+      onFinish: Order.orderVm => unit,
+    ) =>
+  saveOrder(
+    {...order, returned: Some({on: Date.now(), by: cashier.name})},
+    (vm: Order.orderVm) => {
+      vm |> Order.fromVm |> WebhookEngine.fireFor(OrderReturned);
+      onFinish(vm);
+    },
+  );
+
 let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
   switch (order.id) {
   | None => onFinish(order)
@@ -73,22 +87,26 @@ let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
 
 type state = {
   paying: bool,
-  cashierPin: string,
+  returning: bool,
 };
 
 type action =
   | StartPaying
-  | StopPaying;
+  | StopPaying
+  | StartReturning
+  | StopReturning;
 
 let component = ReasonReact.reducerComponent("OrderActions");
 
-let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
+let make = (~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  initialState: () => {paying: false, cashierPin: ""},
+  initialState: () => {paying: false, returning: false},
   reducer: (action, state) =>
     switch (action) {
     | StartPaying => ReasonReact.Update({...state, paying: true})
     | StopPaying => ReasonReact.Update({...state, paying: false})
+    | StartReturning => ReasonReact.Update({...state, returning: true})
+    | StopReturning => ReasonReact.Update({...state, returning: false})
     },
   render: self => {
     let items = order.orderItems |> Array.of_list;
@@ -96,39 +114,68 @@ let make = (~closed: bool, ~order: Order.orderVm, ~onFinish, _children) => {
       items |> Array.length > 0 ? Js.false_ : Js.true_;
     <div className="order-actions">
       (
-        if (self.state.paying) {
+        switch (
+          self.state.paying,
+          self.state.returning,
+          order.paid,
+          order.returned,
+          order.id,
+        ) {
+        | (true, _, _, _, _) =>
           <PinInput
-            value=self.state.cashierPin
             onFailure=(() => self.send(StopPaying))
             onSuccess=(cashier => payOrder(cashier, order, onFinish))
-          />;
-        } else {
-          <div>
+          />
+        | (_, true, _, _, Some(_id)) =>
+          <PinInput
+            onFailure=(() => self.send(StopReturning))
+            onSuccess=(cashier => returnOrder(cashier, order, onFinish))
+          />
+        | (false, false, None, None, Some(_id)) =>
+          <span>
             <div
               className="save-button-card card"
               onClick=((_) => saveOrder(order, onFinish))>
               (ReactUtils.s("Guardar"))
             </div>
-            (
-              if (! closed) {
-                <div
-                  className="pay-button-card card"
-                  disabled=disablePayButton
-                  onClick=((_) => self.send(StartPaying))>
-                  (ReactUtils.s("Pagar"))
-                </div>;
-              } else {
-                ReasonReact.nullElement;
-              }
-            )
+            <div
+              className="pay-button-card card"
+              disabled=disablePayButton
+              onClick=((_) => self.send(StartPaying))>
+              (ReactUtils.s("Pagar"))
+            </div>
             <div
               className="remove-button-card card"
               onClick=((_) => removeOrder(order, onFinish))>
               (ReactUtils.s("Borrar"))
             </div>
-          </div>;
+          </span>
+        | (false, false, None, None, None) =>
+          <span>
+            <div
+              className="save-button-card card"
+              onClick=((_) => saveOrder(order, onFinish))>
+              (ReactUtils.s("Guardar"))
+            </div>
+            <div
+              className="pay-button-card card"
+              disabled=disablePayButton
+              onClick=((_) => self.send(StartPaying))>
+              (ReactUtils.s("Pagar"))
+            </div>
+          </span>
+        | (false, false, Some(_paid), None, Some(_id)) =>
+          <div
+            className="card quiet-card"
+            onClick=((_) => self.send(StartReturning))>
+            (ReactUtils.s("Devolver"))
+          </div>
+        | (_, _, _, _, _) => ReasonReact.nullElement
         }
       )
+      <div className="card" onClick=((_) => onFinish(order))>
+        (ReactUtils.s("Salir"))
+      </div>
     </div>;
   },
 };

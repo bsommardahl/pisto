@@ -1,9 +1,11 @@
 type eventType =
-  | OrderPaid;
+  | OrderPaid
+  | OrderReturned;
 
 let toString = e =>
   switch (e) {
   | OrderPaid => "OrderPaid"
+  | OrderReturned => "OrderReturned"
   };
 
 let fireFor = (event: eventType, order: Order.t) : unit => {

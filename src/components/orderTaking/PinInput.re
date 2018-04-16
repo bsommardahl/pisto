@@ -12,18 +12,13 @@ type action =
 let component = ReasonReact.reducerComponent("PinInput");
 
 let make =
-    (
-      ~value,
-      ~onSuccess: Cashier.t => unit,
-      ~onFailure: unit => unit,
-      _children,
-    ) => {
+    (~onSuccess: Cashier.t => unit, ~onFailure: unit => unit, _children) => {
   ...component,
   didMount: self => {
     self.send(LoadCashiers);
     ReasonReact.NoUpdate;
   },
-  initialState: () => {pin: value, cashiers: []},
+  initialState: () => {pin: "", cashiers: []},
   reducer: (action, state) =>
     switch (action) {
     | Update(pin) =>

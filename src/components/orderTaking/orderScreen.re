@@ -48,6 +48,7 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
   createdOn: Js.Date.now(),
   discounts: [],
   paid: None,
+  returned: None,
   lastUpdated: None,
   removed: false,
 };
@@ -203,7 +204,6 @@ let make = (~goBack, _children) => {
     <div className="order">
       <div className="order-header">
         <OrderActions
-          closed=self.state.closedOrder
           order=self.state.order
           onFinish=((_) => self.send(CloseOrderScreen))
         />
@@ -225,23 +225,10 @@ let make = (~goBack, _children) => {
       <div className="left-side">
         (
           if (self.state.closedOrder) {
-            <div>
-              <h2> (ReactUtils.s("Pagado")) </h2>
-              <div className="paid-date">
-                (
-                  switch (self.state.order.paid) {
-                  | None => <div />
-                  | Some(paid) =>
-                    <EditableDate
-                      date=paid.on
-                      onChange=(
-                        newDate => self.send(ChangePaidDate(newDate))
-                      )
-                    />
-                  }
-                )
-              </div>
-            </div>;
+            <ClosedOrderInfo
+              order=self.state.order
+              paidDateChanged=(newDate => self.send(ChangePaidDate(newDate)))
+            />;
           } else {
             <div>
               (
