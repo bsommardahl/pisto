@@ -23,8 +23,8 @@ let make = (~onStartNewOrder, ~goToAdmin, _children) => {
         <div className="header-menu">
           <div
             className="card quiet-card"
-            onClick=((_) => ReasonReact.Router.push("orders"))>
-            (ReactUtils.s("Ver Ordenes"))
+            onClick=((_) => ReasonReact.Router.push("admin"))>
+            (ReactUtils.s("Admin"))
           </div>
         </div>
         <input
