@@ -7,7 +7,8 @@ type view =
   | Sync
   | Discounts
   | Webhooks
-  | Cashiers;
+  | Cashiers
+  | Daily;
 
 type customerName = string;
 
@@ -41,6 +42,7 @@ let make = _children => {
           | ["discounts"] => self.send(Show(Discounts))
           | ["webhooks"] => self.send(Show(Webhooks))
           | ["cashiers"] => self.send(Show(Cashiers))
+          | ["daily"] => self.send(Show(Daily))
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -64,6 +66,11 @@ let make = _children => {
         | Discounts => <DiscountManagement />
         | Webhooks => <WebhookManagement />
         | Cashiers => <CashierManagement />
+        | Daily =>
+          <PAndLContainer
+            startDate=(Date.now() |> Date.startOfDay)
+            endDate=(Date.now() |> Date.endOfDay)
+          />
         }
       )
     </div>;

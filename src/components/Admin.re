@@ -17,6 +17,9 @@ let make = _children => {
         <div className="card" onClick=((_) => go("products"))>
           (ReactUtils.s("Productos"))
         </div>
+        <div className="card" onClick=((_) => go("daily"))>
+          (ReactUtils.s("Informe Diario"))
+        </div>
         <div className="card" onClick=((_) => go("discounts"))>
           (ReactUtils.s("Descuentos"))
         </div>
