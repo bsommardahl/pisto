@@ -1,11 +1,13 @@
 type eventType =
   | OrderPaid
-  | OrderReturned;
+  | OrderReturned
+  | ReprintReceipt;
 
 let toString = e =>
   switch (e) {
   | OrderPaid => "OrderPaid"
   | OrderReturned => "OrderReturned"
+  | ReprintReceipt => "ReprintReceipt"
   };
 
 let fireFor = (event: eventType, order: Order.t) : unit => {

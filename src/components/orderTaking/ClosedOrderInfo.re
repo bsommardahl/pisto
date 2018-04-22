@@ -45,5 +45,13 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
           }
         )
       </table>
+      <button
+        className="card"
+        onClick=(
+          (_) =>
+            order |> Order.fromVm |> WebhookEngine.fireFor(ReprintReceipt)
+        )>
+        (s("Imprimir Recibo"))
+      </button>
     </div>,
 };

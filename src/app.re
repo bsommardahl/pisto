@@ -1,8 +1,9 @@
 [%bs.raw {|require('./app.css')|}];
 
-/* Initialize the order store. */
-/* CafeStore.retrieveAllOrders() |> CafeStore.persistAllOrders; */
-
+/* var _LTracker = _LTracker || [];
+   _LTracker.push({'logglyKey': '',
+   'sendConsoleErrors' : true,
+   'tag' : 'loggly-jslogger'  }); */
 let component = ReasonReact.statelessComponent("App");
 
 let make = _children => {
