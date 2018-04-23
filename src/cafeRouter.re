@@ -5,11 +5,11 @@ type view =
   | Admin
   | Products
   | Sync
-  | Discounts
-  | Webhooks
-  | Cashiers
   | Daily
-  | Expenses;
+  | Expenses
+  | ExpenseTypes
+  | Vendors
+  | Logs;
 
 type customerName = string;
 
@@ -40,11 +40,11 @@ let make = _children => {
           | ["admin"] => self.send(Show(Admin))
           | ["products"] => self.send(Show(Products))
           | ["sync"] => self.send(Show(Sync))
-          | ["discounts"] => self.send(Show(Discounts))
-          | ["webhooks"] => self.send(Show(Webhooks))
-          | ["cashiers"] => self.send(Show(Cashiers))
           | ["daily"] => self.send(Show(Daily))
           | ["expenses"] => self.send(Show(Expenses))
+          | ["logs"] => self.send(Show(Logs))
+          | ["expenseTypes"] => self.send(Show(ExpenseTypes))
+          | ["vendors"] => self.send(Show(Vendors))
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -65,9 +65,9 @@ let make = _children => {
         | Admin => <Admin />
         | Products => <ProductManagement />
         | Sync => <SyncManagement />
-        | Discounts => <DiscountManagement />
-        | Webhooks => <WebhookManagement />
-        | Cashiers => <CashierManagement />
+        | Logs => <LogManagement />
+        | ExpenseTypes => <ExpenseTypeManagement />
+        | Vendors => <VendorManagement />
         | Expenses =>
           <div>
             <div className="header">

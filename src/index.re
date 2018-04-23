@@ -7,4 +7,14 @@ ReactDOMRe.renderToElementWithId(<CafeRouter />, "root");
 
 register_service_worker();
 
-ReasonReact.Router.push("");
+let handleError = (message: string, url: string, line: int, col: int) : bool => {
+  Logger.logError(
+    message,
+    "line:" ++ (line |> string_of_int) ++ "|col:" ++ (col |> string_of_int),
+    url,
+  )
+  |> ignore;
+  true;
+};
+
+[%raw {| window.onerror = handleError |}];

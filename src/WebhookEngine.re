@@ -1,22 +1,20 @@
 type eventType =
   | OrderPaid
   | OrderReturned
-  | ReprintReceipt;
+  | ReprintReceipt
+  | Error;
 
 let toString = e =>
   switch (e) {
   | OrderPaid => "OrderPaid"
   | OrderReturned => "OrderReturned"
   | ReprintReceipt => "ReprintReceipt"
+  | Error => "Error"
   };
 
-let fireFor = (event: eventType, order: Order.t) : unit => {
-  let eventName = event |> toString;
+let fire = (eventName: string, payload: option(string)) =>
   WebhookStore.getAll()
   |> Js.Promise.then_((webhooks: list(Webhook.t)) => {
-       let payload =
-         {"order": order |> Order.toJs, "event": eventName}
-         |> Js.Json.stringifyAny;
        webhooks
        |> List.filter((x: Webhook.t) => x.event === eventName)
        |> List.iter((hook: Webhook.t) => {
@@ -48,5 +46,18 @@ let fireFor = (event: eventType, order: Order.t) : unit => {
        Js.Promise.resolve();
      })
   |> ignore;
+
+let fireFor = (event: eventType, order: Order.t) : unit => {
+  let eventName = event |> toString;
+  let payload =
+    {"order": order |> Order.toJs, "event": eventName} |> Js.Json.stringifyAny;
+  fire(eventName, payload);
+  ();
+};
+
+let fireForAny = (event: eventType, payload: 'a) : unit => {
+  {"payload": payload, "event": event |> toString}
+  |> Js.Json.stringifyAny
+  |> fire(event |> toString);
   ();
 };

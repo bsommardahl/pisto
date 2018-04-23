@@ -1,32 +1,29 @@
+open ReactUtils;
+
 type state = {
   name: string,
-  pin: string,
+  percent: string,
 };
 
 type action =
   | ChangeName(string)
-  | ChangePin(string)
   | ClearInputs;
 
-let component = ReasonReact.reducerComponent("CashierManagementNew");
+let component = ReasonReact.reducerComponent("VendorManagementNew");
 
 let make = (~create, _children) => {
   ...component,
-  initialState: () => {name: "", pin: ""},
+  initialState: () => {name: "", percent: ""},
   reducer: (action, state) =>
     switch (action) {
     | ChangeName(newVal) => ReasonReact.Update({...state, name: newVal})
-    | ChangePin(newVal) => ReasonReact.Update({...state, pin: newVal})
-    | ClearInputs => ReasonReact.Update({name: "", pin: ""})
+    | ClearInputs => ReasonReact.Update({name: "", percent: ""})
     },
   render: self => {
     let finishedEnteringData = () => {
-      let newCashier: Cashier.New.t = {
-        name: self.state.name,
-        pin: self.state.pin,
-      };
+      let newVendor: Vendor.New.t = {name: self.state.name};
       self.send(ClearInputs);
-      create(newCashier);
+      create(newVendor);
     };
     let getVal = ev => ReactDOMRe.domElementToObj(
                          ReactEventRe.Form.target(ev),
@@ -40,14 +37,8 @@ let make = (~create, _children) => {
         />
       </td>
       <td>
-        <input
-          value=self.state.pin
-          onChange=(ev => self.send(ChangePin(getVal(ev))))
-        />
-      </td>
-      <td>
         <button onClick=((_) => finishedEnteringData())>
-          (ReactUtils.s("Crear"))
+          (s("Crear"))
         </button>
       </td>
     </tr>;

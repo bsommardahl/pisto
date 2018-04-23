@@ -23,17 +23,18 @@ let make = _children => {
         <div className="card" onClick=((_) => go("daily"))>
           (ReactUtils.s("Informe Diario"))
         </div>
+        <div className="card" onClick=((_) => go("logs"))>
+          (ReactUtils.s("Logs"))
+        </div>
+        <h3> (ReactUtils.s("Configuracion")) </h3>
         <div className="card" onClick=((_) => go("products"))>
           (ReactUtils.s("Productos"))
         </div>
-        <div className="card" onClick=((_) => go("discounts"))>
-          (ReactUtils.s("Descuentos"))
+        <div className="card" onClick=((_) => go("expenseTypes"))>
+          (ReactUtils.s("Typos de Gastos"))
         </div>
-        <div className="card" onClick=((_) => go("webhooks"))>
-          (ReactUtils.s("Webhooks"))
-        </div>
-        <div className="card" onClick=((_) => go("cashiers"))>
-          (ReactUtils.s("Cajeros"))
+        <div className="card" onClick=((_) => go("vendors"))>
+          (ReactUtils.s("Vendedores"))
         </div>
         <div className="card" onClick=((_) => go("sync"))>
           (ReactUtils.s("Syncronizacion"))
