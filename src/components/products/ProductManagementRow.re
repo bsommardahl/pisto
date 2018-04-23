@@ -89,7 +89,7 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
     | false =>
       <tr>
         <td>
-          <button onClick=((_) => self.send(EnableMod))>
+          <button className="card" onClick=((_) => self.send(EnableMod))>
             (ReactUtils.s("Editar"))
           </button>
         </td>
@@ -114,7 +114,9 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
           (ReactUtils.s(self.state.originalProduct.tags |> Tags.toCSV))
         </td>
         <td>
-          <button onClick=((_) => removeProduct(self.state.originalProduct))>
+          <button
+            className="card danger-card"
+            onClick=((_) => removeProduct(self.state.originalProduct))>
             (ReactUtils.s("Eliminar"))
           </button>
         </td>
@@ -122,7 +124,7 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
     | true =>
       <tr>
         <td>
-          <button onClick=((_) => self.send(CancelMod))>
+          <button className="card" onClick=((_) => self.send(CancelMod))>
             (ReactUtils.s("Cancelar"))
           </button>
         </td>
@@ -157,7 +159,7 @@ let make = (~product, ~removeProduct, ~modifyProduct, _children) => {
           />
         </td>
         <td>
-          <button onClick=saveModification>
+          <button className="card" onClick=saveModification>
             (ReactUtils.s("Guardar"))
           </button>
         </td>
