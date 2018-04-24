@@ -75,7 +75,7 @@ let make = _children => {
           </div>
         </div>
         <div className="header-options">
-          (ReactUtils.s("Ordenes de los ultimos 30 dias"))
+          (ReactUtils.s("Ordenes de Hoy"))
         </div>
       </div>
       <OrderList

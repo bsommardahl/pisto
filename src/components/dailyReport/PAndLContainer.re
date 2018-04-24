@@ -59,10 +59,12 @@ let make = (~startDate: Date.t, ~endDate: Date.t, _children) => {
     },
   initialState: _self => {expenses: [], orders: []},
   render: self =>
-    <PAndLReport
-      startDate
-      endDate
-      expenses=self.state.expenses
-      orders=self.state.orders
-    />,
+    <div>
+      <PAndLReport
+        startDate
+        endDate
+        expenses=self.state.expenses
+        orders=self.state.orders
+      />
+    </div>,
 };
