@@ -5,7 +5,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("Home");
 
-let make = (~onStartNewOrder, ~goToAdmin, _children) => {
+let make = (~onStartNewOrder, _children) => {
   ...component,
   initialState: () => {customerName: ""},
   reducer: (action, _state) =>
