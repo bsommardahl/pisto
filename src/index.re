@@ -19,4 +19,6 @@ let handleError = (message: string, url: string, line: int, col: int) : bool => 
   true;
 };
 
+ReasonReact.Router.push("");
+
 [%raw {| window.onerror = handleError |}];
