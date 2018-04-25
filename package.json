@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bs-jest": "^0.3.2",
+    "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^2.2.3",
     "cafe-data": "github:bsommardahl/cafe-data",
     "cafe-domain": "github:bsommardahl/cafe-domain",

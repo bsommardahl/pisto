@@ -1,9 +1,11 @@
 [%bs.raw {|require('./index.css')|}];
 
+[%bs.raw {|require('./loader.css')|}];
+
 [@bs.module "./registerServiceWorker"]
 external register_service_worker : unit => unit = "default";
 
-ReactDOMRe.renderToElementWithId(<CafeRouter />, "root");
+ReactDOMRe.renderToElementWithId(<App />, "root");
 
 register_service_worker();
 

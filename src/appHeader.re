@@ -4,6 +4,7 @@ let make = _children => {
   ...component,
   render: _self =>
     <div className="App-header">
-      <div className="Title"> (ReactUtils.s("Cafe")) </div>
+      <Loading />
+      <div className="Title"> (ReactUtils.s("Pisto")) </div>
     </div>,
 };
