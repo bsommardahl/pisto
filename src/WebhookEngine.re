@@ -2,6 +2,7 @@ type eventType =
   | OrderPaid
   | OrderReturned
   | ReprintReceipt
+  | PrintOrder
   | Error;
 
 let toString = e =>
@@ -9,6 +10,7 @@ let toString = e =>
   | OrderPaid => "OrderPaid"
   | OrderReturned => "OrderReturned"
   | ReprintReceipt => "ReprintReceipt"
+  | PrintOrder => "PrintOrder"
   | Error => "Error"
   };
 

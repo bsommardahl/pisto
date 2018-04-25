@@ -264,6 +264,18 @@ let make = (~goBack, _children) => {
                   selected=discountSelected
                 />
               </div>
+              <div className="more-actions">
+                <button
+                  onClick=(
+                    (_) =>
+                      self.state.order
+                      |> Order.fromVm
+                      |> WebhookEngine.fireFor(PrintOrder)
+                  )
+                  className="card">
+                  (ReactUtils.s("Imprimir Orden"))
+                </button>
+              </div>
             </div>;
           }
         )
