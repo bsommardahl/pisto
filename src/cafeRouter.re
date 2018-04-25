@@ -31,7 +31,8 @@ let make = _children => {
     },
   subscriptions: self => [
     Sub(
-      () =>
+      () => {
+        [%bs.raw {|window.Intercom("update")|}] |> ignore;
         ReasonReact.Router.watchUrl(url =>
           switch (url.path) {
           | [] => self.send(Show(Home))
@@ -47,7 +48,8 @@ let make = _children => {
           | ["vendors"] => self.send(Show(Vendors))
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
-        ),
+        );
+      },
       ReasonReact.Router.unwatchUrl,
     ),
   ],

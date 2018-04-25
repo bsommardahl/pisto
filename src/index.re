@@ -2,6 +2,8 @@
 
 [%bs.raw {|require('./loader.css')|}];
 
+[%bs.raw {| window.Intercom("boot", { app_id: "y3fecu0h" })|}];
+
 [@bs.module "./registerServiceWorker"]
 external register_service_worker : unit => unit = "default";
 

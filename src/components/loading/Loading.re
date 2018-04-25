@@ -39,7 +39,6 @@ let make = _children => {
       })
     | Expenses(false) =>
       let newList = state.loading |> List.filter(x => x !== "expenses");
-      Js.log(newList);
       ReasonReact.Update({loading: newList});
     | Products(true) =>
       ReasonReact.Update({
@@ -47,7 +46,6 @@ let make = _children => {
       })
     | Products(false) =>
       let newList = state.loading |> List.filter(x => x !== "products");
-      Js.log(newList);
       ReasonReact.Update({loading: newList});
     | Orders(true) =>
       ReasonReact.Update({
@@ -55,7 +53,6 @@ let make = _children => {
       })
     | Orders(false) =>
       let newList = state.loading |> List.filter(x => x !== "orders");
-      Js.log(newList);
       ReasonReact.Update({loading: newList});
     },
   render: self =>
