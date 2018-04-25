@@ -20,13 +20,6 @@ let make = (~onStartNewOrder, ~goToAdmin, _children) => {
     };
     <div className="home">
       <div className="header">
-        <div className="header-menu">
-          <div
-            className="card quiet-card"
-            onClick=((_) => ReasonReact.Router.push("admin"))>
-            (ReactUtils.s("Admin"))
-          </div>
-        </div>
         <input
           _type="text"
           className="customer-name-input"
