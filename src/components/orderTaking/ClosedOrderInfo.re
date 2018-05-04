@@ -49,7 +49,11 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
         className="card"
         onClick=(
           (_) =>
-            order |> Order.fromVm |> WebhookEngine.fireFor(ReprintReceipt)
+            order
+            |> Order.fromVm
+            |> WebhookEngine.fireForOrder(ReprintReceipt)
+            |> Most.observe((response: Order.t) => Js.log(response))
+            |> ignore
         )>
         (s("Imprimir Recibo"))
       </button>

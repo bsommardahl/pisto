@@ -35,27 +35,35 @@ let payOrder =
       cashier: Cashier.t,
       order: Order.orderVm,
       onFinish: Order.orderVm => unit,
-    ) => {
+    )
+    : unit => {
   let totals =
     OrderItemCalculation.getTotals(order.discounts, order.orderItems);
-  saveOrder(
-    {
-      ...order,
-      paid:
-        Some({
-          on: Date.now(),
-          by: cashier.name,
-          subTotal: totals.subTotal,
-          tax: totals.tax,
-          discount: totals.discounts,
-          total: totals.total,
-        }),
-    },
-    (vm: Order.orderVm) => {
-      vm |> Order.fromVm |> WebhookEngine.fireFor(OrderPaid);
-      onFinish(vm);
-    },
-  );
+  let paidOrder = {
+    ...order,
+    paid:
+      Some({
+        on: Date.now(),
+        by: cashier.name,
+        subTotal: totals.subTotal,
+        tax: totals.tax,
+        discount: totals.discounts,
+        total: totals.total,
+      }),
+  };
+  let stream =
+    paidOrder |> Order.fromVm |> WebhookEngine.fireForOrder(BeforeOrderPaid);
+  stream
+  |> Most.observe((orderFromWebhook: Order.t) =>
+       saveOrder(
+         orderFromWebhook |> Order.toVm,
+         (vm: Order.orderVm) => {
+           orderFromWebhook |> WebhookEngine.fireForOrder(OrderPaid) |> ignore;
+           onFinish(vm);
+         },
+       )
+     )
+  |> ignore;
 };
 
 let returnOrder =
@@ -67,7 +75,10 @@ let returnOrder =
   saveOrder(
     {...order, returned: Some({on: Date.now(), by: cashier.name})},
     (vm: Order.orderVm) => {
-      vm |> Order.fromVm |> WebhookEngine.fireFor(OrderReturned);
+      vm
+      |> Order.fromVm
+      |> WebhookEngine.fireForOrder(OrderReturned)
+      |> ignore;
       onFinish(vm);
     },
   );

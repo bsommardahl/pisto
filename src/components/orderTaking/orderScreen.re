@@ -42,15 +42,20 @@ let buildOrderItem = (product: Product.t) : OrderItem.t => {
 };
 
 let buildNewOrder = (customerName: string) : Order.orderVm => {
-  id: None,
-  customerName,
-  orderItems: [],
-  createdOn: Js.Date.now(),
-  discounts: [],
-  paid: None,
-  returned: None,
-  lastUpdated: None,
-  removed: false,
+  let order: Order.orderVm = {
+    id: None,
+    customerName,
+    orderItems: [],
+    createdOn: Js.Date.now(),
+    discounts: [],
+    paid: None,
+    returned: None,
+    lastUpdated: None,
+    removed: false,
+    meta: "",
+  };
+  /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
+  order;
 };
 
 let getOrderVm = orderId =>
@@ -155,7 +160,7 @@ let make = (~goBack, _children) => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
     let customerName =
       switch (Util.QueryParam.get("customerName", queryString)) {
-      | Some(name) => name
+      | Some(name) => name |> Js.Global.decodeURIComponent
       | None => "Amado Cliente"
       };
     {
@@ -270,7 +275,8 @@ let make = (~goBack, _children) => {
                     (_) =>
                       self.state.order
                       |> Order.fromVm
-                      |> WebhookEngine.fireFor(PrintOrder)
+                      |> WebhookEngine.fireForOrder(PrintOrder)
+                      |> ignore
                   )
                   className="card">
                   (ReactUtils.s("Imprimir Orden"))

@@ -15,7 +15,7 @@ type action =
   | RemotePasswordChanged(string);
 
 let saveConfigToLocalStorage = config =>
-  Config.setValue(
+  LocalStorage.setValue(
     Config.Database.syncKey,
     config |> Config.Database.toString,
   );
@@ -33,7 +33,7 @@ let make = _children => {
       saveConfigToLocalStorage(config);
       ReasonReact.Router.push("/");
     | None =>
-      switch (Config.getValue(Config.Database.syncKey)) {
+      switch (LocalStorage.getValue(Config.Database.syncKey)) {
       | Some(delimited) =>
         let config = delimited |> Config.Database.toSyncConnectionConfig;
         self.send(LoadConfig(config));
