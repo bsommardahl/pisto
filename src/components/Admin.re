@@ -11,21 +11,27 @@ let make = _children => {
         </div>
       </div>
       <div className="admin-menu-buttons">
-        <div className="card" onClick=((_) => go("logs"))>
-          (ReactUtils.s("Logs"))
-        </div>
-        <div className="card" onClick=((_) => go("products"))>
-          (ReactUtils.s("Productos"))
-        </div>
-        <div className="card" onClick=((_) => go("expenseTypes"))>
-          (ReactUtils.s("Typos de Gastos"))
-        </div>
-        <div className="card" onClick=((_) => go("vendors"))>
-          (ReactUtils.s("Vendedores"))
-        </div>
-        <div className="card" onClick=((_) => go("sync"))>
-          (ReactUtils.s("Syncronizacion"))
-        </div>
+        <Button local=true onClick=((_) => go("logs")) label="admin.logs" />
+        <Button
+          local=true
+          onClick=((_) => go("products"))
+          label="admin.products"
+        />
+        <Button
+          local=true
+          onClick=((_) => go("expenseTypes"))
+          label="admin.expenseTypes"
+        />
+        <Button
+          local=true
+          onClick=((_) => go("vendors"))
+          label="admin.vendors"
+        />
+        <Button
+          local=true
+          onClick=((_) => go("config"))
+          label="admin.config"
+        />
       </div>
     </div>;
   },

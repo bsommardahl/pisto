@@ -121,8 +121,42 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
     },
   render: self => {
     let items = order.orderItems |> Array.of_list;
-    let disablePayButton: Js.boolean =
-      items |> Array.length > 0 ? Js.false_ : Js.true_;
+    let disablePayButton = items |> Array.length > 0;
+    let saveButton =
+      <Button
+        local=true
+        className="save-button-card"
+        onClick=((_) => saveOrder(order, onFinish))
+        label="order.save"
+      />;
+    let payButton =
+      <Button
+        local=true
+        className="pay-button-card"
+        disabled=disablePayButton
+        onClick=((_) => self.send(StartPaying))
+        label="order.pay"
+      />;
+    let deleteButton =
+      <Button
+        local=true
+        className="remove-button-card"
+        onClick=((_) => removeOrder(order, onFinish))
+        label="order.delete"
+      />;
+    let returnButton =
+      <Button
+        local=true
+        className="quiet-card"
+        onClick=((_) => self.send(StartReturning))
+        label="order.return"
+      />;
+    let cancelButton =
+      <Button
+        onClick=((_) => onFinish(order))
+        local=true
+        label="order.cancel"
+      />;
     <div className="order-actions">
       (
         switch (
@@ -143,50 +177,14 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
             onSuccess=(cashier => returnOrder(cashier, order, onFinish))
           />
         | (false, false, None, None, Some(_id)) =>
-          <span>
-            <div
-              className="save-button-card card"
-              onClick=((_) => saveOrder(order, onFinish))>
-              (ReactUtils.s("Guardar"))
-            </div>
-            <div
-              className="pay-button-card card"
-              disabled=disablePayButton
-              onClick=((_) => self.send(StartPaying))>
-              (ReactUtils.s("Pagar"))
-            </div>
-            <div
-              className="remove-button-card card"
-              onClick=((_) => removeOrder(order, onFinish))>
-              (ReactUtils.s("Borrar"))
-            </div>
-          </span>
+          <span> saveButton payButton deleteButton </span>
         | (false, false, None, None, None) =>
-          <span>
-            <div
-              className="save-button-card card"
-              onClick=((_) => saveOrder(order, onFinish))>
-              (ReactUtils.s("Guardar"))
-            </div>
-            <div
-              className="pay-button-card card"
-              disabled=disablePayButton
-              onClick=((_) => self.send(StartPaying))>
-              (ReactUtils.s("Pagar"))
-            </div>
-          </span>
-        | (false, false, Some(_paid), None, Some(_id)) =>
-          <div
-            className="card quiet-card"
-            onClick=((_) => self.send(StartReturning))>
-            (ReactUtils.s("Devolver"))
-          </div>
+          <span> saveButton payButton </span>
+        | (false, false, Some(_paid), None, Some(_id)) => returnButton
         | (_, _, _, _, _) => ReasonReact.nullElement
         }
       )
-      <div className="card" onClick=((_) => onFinish(order))>
-        (ReactUtils.s("Salir"))
-      </div>
+      cancelButton
     </div>;
   },
 };

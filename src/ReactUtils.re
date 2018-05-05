@@ -1,4 +1,4 @@
-let s = (str: string) => ReasonReact.stringToElement(str);
+let s = (message: string) => ReasonReact.stringToElement(message);
 
 let sopt = (str: option(string)) =>
   switch (str) {

@@ -4,7 +4,7 @@ type view =
   | AllOrders
   | Admin
   | Products
-  | Sync
+  | Config
   | Daily
   | Expenses
   | ExpenseTypes
@@ -39,7 +39,7 @@ let make = _children => {
           | ["orders"] => self.send(Show(AllOrders))
           | ["admin"] => self.send(Show(Admin))
           | ["products"] => self.send(Show(Products))
-          | ["sync"] => self.send(Show(Sync))
+          | ["config"] => self.send(Show(Config))
           | ["daily"] => self.send(Show(Daily))
           | ["expenses"] => self.send(Show(Expenses))
           | ["logs"] => self.send(Show(Logs))
@@ -63,7 +63,7 @@ let make = _children => {
         | AllOrders => <AllOrders />
         | Admin => <Admin />
         | Products => <ProductManagement />
-        | Sync => <SyncManagement />
+        | Config => <ConfigManagement />
         | Logs => <LogManagement />
         | ExpenseTypes => <ExpenseTypeManagement />
         | Vendors => <VendorManagement />
