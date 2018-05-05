@@ -200,3 +200,8 @@ table.admin-table thead th {
 .loading { height: 20px; width: 20px; float: right;}
 
 .more-actions { margin-top: 30px;}
+.sku-search {
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+}

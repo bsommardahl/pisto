@@ -16,6 +16,7 @@ type state = {
   closedOrder: bool,
   modifying,
   allDiscounts: list(Discount.t),
+  sku: string,
 };
 
 type action =
@@ -171,6 +172,7 @@ let make = (~goBack, _children) => {
       order: buildNewOrder(customerName),
       modifying: Nothing,
       allDiscounts: [],
+      sku: "",
     };
   },
   didMount: self => {
@@ -283,6 +285,10 @@ let make = (~goBack, _children) => {
                       |> ignore
                   )
                   label="order.printOrder"
+                />
+                <SkuSearch
+                  allProducts=self.state.allProducts
+                  productFound=(p => self.send(SelectProduct(p)))
                 />
               </div>
             </div>;

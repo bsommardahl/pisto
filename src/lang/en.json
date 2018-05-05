@@ -416,7 +416,7 @@
     "content": "Required"
   },
   {
-    "key": "expense.totalsDoNotAddUp",
+    "key": "validation.totalsDoNotAddUp",
     "content": "Totals Do Not Add Up"
   }
 ]
