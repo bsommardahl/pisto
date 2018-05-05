@@ -1,0 +1,414 @@
+[
+  {
+    "key": "action.save",
+    "content": "Save"
+  },
+  {
+    "key": "action.cancel",
+    "content": "Exit"
+  },
+  {
+    "key": "action.edit",
+    "content": "Edit"
+  },
+  {
+    "key": "action.create",
+    "content": "Create"
+  },
+  {
+    "key": "action.delete",
+    "content": "Delete"
+  },
+  {
+    "key": "action.pay",
+    "content": "Pay"
+  },
+  {
+    "key": "action.return",
+    "content": "Refund"
+  },
+  {
+    "key": "menu.openOrders",
+    "content": "Open Orders"
+  },
+  {
+    "key": "menu.closedOrders",
+    "content": "Closed Orders"
+  },
+  {
+    "key": "menu.expenses",
+    "content": "Expenses"
+  },
+  {
+    "key": "menu.daily",
+    "content": "Daily"
+  },
+  {
+    "key": "menu.admin",
+    "content": "Admin"
+  },
+  {
+    "key": "admin.header",
+    "content": "Administration"
+  },
+  {
+    "key": "admin.logs",
+    "content": "Logs"
+  },
+  {
+    "key": "admin.logs.header",
+    "content": "Application Logs"
+  },
+  {
+    "key": "log.date",
+    "content": "Date"
+  },
+  {
+    "key": "log.type",
+    "content": "Type"
+  },
+  {
+    "key": "log.level",
+    "content": "Level"
+  },
+  {
+    "key": "log.message",
+    "content": "Message"
+  },
+  {
+    "key": "log.payload",
+    "content": "Payload"
+  },
+  {
+    "key": "admin.products",
+    "content": "Products"
+  },
+  {
+    "key": "admin.products.header",
+    "content": "Product Management"
+  },
+  {
+    "key": "product.sku",
+    "content": "Sku"
+  },
+  {
+    "key": "product.name",
+    "content": "Name"
+  },
+  {
+    "key": "product.price",
+    "content": "Price"
+  },
+  {
+    "key": "product.taxMethod",
+    "content": "Tax Method"
+  },
+  {
+    "key": "product.tags",
+    "content": "Tags"
+  },
+  {
+    "key": "admin.expenseTypes",
+    "content": "Expense Types"
+  },
+  {
+    "key": "expenseType.name",
+    "content": "Expense Type"
+  },
+  {
+    "key": "admin.expenseTypes.header",
+    "content": "Expense Type Management"
+  },
+  {
+    "key": "admin.vendors",
+    "content": "Vendors"
+  },
+  {
+    "key": "admin.vendors.header",
+    "content": "Vendor Management"
+  },
+  {
+    "key": "vendor.name",
+    "content": "Vendor"
+  },
+  {
+    "key": "admin.config",
+    "content": "Configuration"
+  },
+  {
+    "key": "admin.products.bulkImport.header",
+    "content": "Bulk Product Import"
+  },
+  {
+    "key": "admin.products.bulkImport.importButton",
+    "content": "Import Products"
+  },
+  {
+    "key": "admin.products.bulkImport.instructions",
+    "content": "Note: Tab separated values (TSV), one product per line, value order should match the table above."
+  },
+  {
+    "key": "nav.back",
+    "content": "Back"
+  },
+  {
+    "key": "order.startNew",
+    "content": "Start Order"
+  },
+  {
+    "key": "order.defaultCustomerName",
+    "content": "Beloved Customer"
+  },
+  {
+    "key": "order.orderItems.header",
+    "content": "Order Items"
+  },
+  {
+    "key": "order.discounts",
+    "content": "Discount"
+  },
+  {
+    "key": "order.subTotal",
+    "content": "Subtotal"
+  },
+  {
+    "key": "order.tax",
+    "content": "Tax"
+  },
+  {
+    "key": "order.total",
+    "content": "Total"
+  },
+  {
+    "key": "order.paidDate",
+    "content": "Date"
+  },
+  {
+    "key": "order.paidTime",
+    "content": "Time"
+  },
+  {
+    "key": "order.customerName",
+    "content": "Customer"
+  },
+  {
+    "key": "order.printOrder",
+    "content": "Print Order"
+  },
+  {
+    "key": "order.printReceiptCopy",
+    "content": "Print Reciept Copy"
+  },
+  {
+    "key": "order.created.header",
+    "content": "Created"
+  },
+  {
+    "key": "order.created.date",
+    "content": "Date/Time"
+  },
+  {
+    "key": "order.paid.header",
+    "content": "Paid"
+  },
+  {
+    "key": "order.paid.date",
+    "content": "Date/Time"
+  },
+  {
+    "key": "order.paid.by",
+    "content": "By"
+  },
+  {
+    "key": "order.returned.header",
+    "content": "Returned/Refunded"
+  },
+  {
+    "key": "order.returned.date",
+    "content": "Date/Time"
+  },
+  {
+    "key": "order.returned.by",
+    "content": "By"
+  },
+  {
+    "key": "allOrders.header",
+    "content": "Today's Closed Orders"
+  },
+  {
+    "key": "allOrders.viewOrder",
+    "content": "View"
+  },
+  {
+    "key": "expenses.header",
+    "content": "Expense Management"
+  },
+  {
+    "key": "expense.vendor",
+    "content": "Vendor"
+  },
+  {
+    "key": "expense.type",
+    "content": "Type"
+  },
+  {
+    "key": "expense.description",
+    "content": "Desription"
+  },
+  {
+    "key": "expense.date",
+    "content": "Date"
+  },
+  {
+    "key": "expense.time",
+    "content": "Time"
+  },
+  {
+    "key": "expense.subTotals",
+    "content": "Subtotal"
+  },
+  {
+    "key": "expense.subTotal.add",
+    "content": "Add"
+  },
+  {
+    "key": "expense.tax",
+    "content": "Tax"
+  },
+  {
+    "key": "expense.total",
+    "content": "Total"
+  },
+  {
+    "key": "daily.header",
+    "content": "Daily Report"
+  },
+  {
+    "key": "daily.sales.header",
+    "content": "Sales"
+  },
+  {
+    "key": "daily.discounts.header",
+    "content": "Discounts"
+  },
+  {
+    "key": "daily.expenses.header",
+    "content": "Expenses"
+  },
+  {
+    "key": "daily.totals.header",
+    "content": "Totals"
+  },
+  {
+    "key": "discount.name",
+    "content": "Name"
+  },
+  {
+    "key": "discount.percentage",
+    "content": "Percentage"
+  },
+  {
+    "key": "discount.total",
+    "content": "Total"
+  },
+  {
+    "key": "daily.expensesSection.title.pre",
+    "content": "with"
+  },
+  {
+    "key": "daily.expensesSection.title.post",
+    "content": "tax"
+  },
+  {
+    "key": "daily.totals.sales",
+    "content": "Sales"
+  },
+  {
+    "key": "daily.totals.expenses",
+    "content": "Expenses"
+  },
+  {
+    "key": "daily.totals.final",
+    "content": "Final"
+  },
+  {
+    "key": "daily.totals.subTotal",
+    "content": "Subtotal"
+  },
+  {
+    "key": "daily.totals.tax",
+    "content": "Tax"
+  },
+  {
+    "key": "daily.totals.total",
+    "content": "Total"
+  },
+  {
+    "key": "daily.salesSection.title.pre",
+    "content": "Sales with"
+  },
+  {
+    "key": "daily.salesSection.title.post",
+    "content": "tax"
+  },
+  {
+    "key": "daily.salesSection.product",
+    "content": "Product"
+  },
+  {
+    "key": "daily.salesSection.price",
+    "content": "Price"
+  },
+  {
+    "key": "daily.salesSection.quantity",
+    "content": "Quantity"
+  },
+  {
+    "key": "daily.salesSection.subTotal",
+    "content": "Subtotal"
+  },
+  {
+    "key": "daily.salesSection.tax",
+    "content": "Tax"
+  },
+  {
+    "key": "daily.salesSection.total",
+    "content": "Total"
+  },
+  {
+    "key": "admin.config.header",
+    "content": "Configuration Management"
+  },
+  {
+    "key": "admin.config.remote.header",
+    "content": "Remote Sync"
+  },
+  {
+    "key": "admin.config.remote.host",
+    "content": "Url"
+  },
+  {
+    "key": "admin.config.remote.username",
+    "content": "Username"
+  },
+  {
+    "key": "admin.config.remote.password",
+    "content": "Password"
+  },
+  {
+    "key": "admin.config.remote.share",
+    "content": "Easy Share Link"
+  },
+  {
+    "key": "admin.config.application.header",
+    "content": "Application"
+  },
+  {
+    "key": "admin.config.application.language",
+    "content": "Language"
+  },
+  {
+    "key": "admin.config.application.deviceId",
+    "content": "Device Id"
+  }
+]

@@ -13,7 +13,7 @@ let make =
   render: _self =>
     <button
       onClick=((_) => onClick(label))
-      disabled=(disabled ? Js.false_ : Js.true_)
+      disabled=(disabled ? Js.true_ : Js.false_)
       className=("card " ++ className)>
       (ReactUtils.s(local ? label |> Lang.translate : label))
     </button>,

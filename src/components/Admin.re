@@ -7,7 +7,7 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-options">
-          (ReactUtils.s("Gestion del Programa"))
+          (ReactUtils.sloc("admin.header"))
         </div>
       </div>
       <div className="admin-menu-buttons">

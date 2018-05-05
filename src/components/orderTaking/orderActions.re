@@ -121,13 +121,13 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
     },
   render: self => {
     let items = order.orderItems |> Array.of_list;
-    let disablePayButton = items |> Array.length > 0;
+    let disablePayButton = items |> Array.length === 0;
     let saveButton =
       <Button
         local=true
         className="save-button-card"
         onClick=((_) => saveOrder(order, onFinish))
-        label="order.save"
+        label="action.save"
       />;
     let payButton =
       <Button
@@ -135,27 +135,27 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         className="pay-button-card"
         disabled=disablePayButton
         onClick=((_) => self.send(StartPaying))
-        label="order.pay"
+        label="action.pay"
       />;
     let deleteButton =
       <Button
         local=true
         className="remove-button-card"
         onClick=((_) => removeOrder(order, onFinish))
-        label="order.delete"
+        label="action.delete"
       />;
     let returnButton =
       <Button
         local=true
         className="quiet-card"
         onClick=((_) => self.send(StartReturning))
-        label="order.return"
+        label="action.return"
       />;
     let cancelButton =
       <Button
         onClick=((_) => onFinish(order))
         local=true
-        label="order.cancel"
+        label="action.cancel"
       />;
     <div className="order-actions">
       (

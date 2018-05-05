@@ -161,7 +161,7 @@ let make = (~goBack, _children) => {
     let customerName =
       switch (Util.QueryParam.get("customerName", queryString)) {
       | Some(name) => name |> Js.Global.decodeURIComponent
-      | None => "Amado Cliente"
+      | None => "order.defaultCustomerName" |> Lang.translate
       };
     {
       closedOrder: false,
@@ -249,9 +249,12 @@ let make = (~goBack, _children) => {
                   </div>
                 | Products(tag) =>
                   <div className="products">
-                    <div className="back-button-card card" onClick=deselectTag>
-                      (ReactUtils.s("Atras"))
-                    </div>
+                    <Button
+                      local=true
+                      className="back-button-card"
+                      onClick=deselectTag
+                      label="nav.back"
+                    />
                     (
                       Product.filterProducts(tag, self.state.allProducts)
                       |> List.map(product =>
@@ -270,7 +273,8 @@ let make = (~goBack, _children) => {
                 />
               </div>
               <div className="more-actions">
-                <button
+                <Button
+                  local=true
                   onClick=(
                     (_) =>
                       self.state.order
@@ -278,9 +282,8 @@ let make = (~goBack, _children) => {
                       |> WebhookEngine.fireForOrder(PrintOrder)
                       |> ignore
                   )
-                  className="card">
-                  (ReactUtils.s("Imprimir Orden"))
-                </button>
+                  label="order.printOrder"
+                />
               </div>
             </div>;
           }

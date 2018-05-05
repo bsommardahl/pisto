@@ -75,17 +75,25 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
-            (s("Atras"))
-          </div>
+          <Button
+            local=true
+            className="quiet-card"
+            onClick=goBack
+            label="nav.back"
+          />
         </div>
         <div className="header-options">
-          (s("Gestion de Tipos de Gastos"))
+          (s("admin.expenseTypes.header" |> Lang.translate))
         </div>
       </div>
       <div className="expenseType-management">
         <table className="table">
-          <thead> <tr> <th /> <th> (s("Nombre")) </th> </tr> </thead>
+          <thead>
+            <tr>
+              <th />
+              <th> (s("expenseType.name" |> Lang.translate)) </th>
+            </tr>
+          </thead>
           <tbody>
             (
               self.state.expenseTypes

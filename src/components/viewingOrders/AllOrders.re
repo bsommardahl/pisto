@@ -67,15 +67,9 @@ let make = _children => {
   render: self =>
     <div className="all-orders">
       <div className="header">
-        <div className="header-menu">
-          <div
-            className="card quiet-card"
-            onClick=((_) => ReasonReact.Router.push("/"))>
-            (ReactUtils.s("Atras"))
-          </div>
-        </div>
+        <div className="header-menu" />
         <div className="header-options">
-          (ReactUtils.s("Ordenes de Hoy"))
+          (ReactUtils.s("allOrders.header" |> Lang.translate))
         </div>
       </div>
       <OrderList

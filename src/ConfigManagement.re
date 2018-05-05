@@ -7,12 +7,15 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
-            (ReactUtils.s("Atras"))
-          </div>
+          <Button
+            className="wide-card quiet-card"
+            onClick=goBack
+            label="nav.back"
+            local=true
+          />
         </div>
         <div className="header-options">
-          (ReactUtils.s("Gestion de Configuracion"))
+          (ReactUtils.sloc("admin.config.header"))
         </div>
       </div>
       <SyncManagement />

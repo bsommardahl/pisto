@@ -71,16 +71,19 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
-            (s("Atras"))
-          </div>
+          <Button
+            className="quiet-card"
+            onClick=goBack
+            local=true
+            label="nav.back"
+          />
         </div>
-        <div className="header-options"> (s("Gestion de Vendedores")) </div>
+        <div className="header-options"> (sloc("admin.vendors.header")) </div>
       </div>
       <div className="vendor-management">
         <table className="table">
           <thead>
-            <tr> <th /> <th> (ReactUtils.s("Nombre")) </th> </tr>
+            <tr> <th /> <th> (ReactUtils.sloc("vendor.name")) </th> </tr>
           </thead>
           <tbody>
             (

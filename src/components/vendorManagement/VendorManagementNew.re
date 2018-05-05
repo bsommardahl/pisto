@@ -37,9 +37,11 @@ let make = (~create, _children) => {
         />
       </td>
       <td>
-        <button onClick=((_) => finishedEnteringData())>
-          (s("Crear"))
-        </button>
+        <Button
+          local=true
+          onClick=((_) => finishedEnteringData())
+          label="action.create"
+        />
       </td>
     </tr>;
   },

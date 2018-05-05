@@ -88,10 +88,10 @@ let make = _children => {
       ReasonReact.Router.push("sync");
     };
     <div className="config-management">
-      <h2> (ReactUtils.s("Remote Sync")) </h2>
+      <h2> (ReactUtils.sloc("admin.config.remote.header")) </h2>
       <table>
         <tr>
-          <th> (ReactUtils.s("Host")) </th>
+          <th> (ReactUtils.sloc("admin.config.remote.host")) </th>
           <td>
             <input
               value=self.state.host
@@ -100,7 +100,7 @@ let make = _children => {
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.s("Username")) </th>
+          <th> (ReactUtils.sloc("admin.config.remote.username")) </th>
           <td>
             <input
               value=self.state.username
@@ -109,7 +109,7 @@ let make = _children => {
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.s("Password")) </th>
+          <th> (ReactUtils.sloc("admin.config.remote.password")) </th>
           <td>
             <input
               value=self.state.password
@@ -118,12 +118,13 @@ let make = _children => {
           </td>
         </tr>
       </table>
-      <button
-        className="card" onClick=((_) => saveChanges(getConfigFromState()))>
-        (ReactUtils.s("Guardar"))
-      </button>
+      <Button
+        local=true
+        onClick=((_) => saveChanges(getConfigFromState()))
+        label="action.save"
+      />
       <div className="sharing no-float">
-        <h4> (ReactUtils.s("Compartir")) </h4>
+        <h4> (ReactUtils.sloc("admin.config.remote.share")) </h4>
         <input
           value=(
             thisPageUrl()

@@ -67,20 +67,7 @@ let make = _children => {
         | Logs => <LogManagement />
         | ExpenseTypes => <ExpenseTypeManagement />
         | Vendors => <VendorManagement />
-        | Expenses =>
-          <div>
-            <div className="header">
-              <div className="header-menu">
-                <div className="card wide-card quiet-card" onClick=goBack>
-                  (ReactUtils.s("Atras"))
-                </div>
-              </div>
-              <div className="header-options">
-                (ReactUtils.s("Gestion de Gastos"))
-              </div>
-            </div>
-            <ExpenseManagement />
-          </div>
+        | Expenses => <ExpenseManagement />
         | Daily =>
           <PAndLContainer
             startDate=(Date.now() |> Date.startOfDay)

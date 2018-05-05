@@ -50,10 +50,10 @@ let make = _children => {
                          ReactEventRe.Form.target(ev),
                        )##value;
     <div className="config-management">
-      <h2> (ReactUtils.s("Application")) </h2>
+      <h2> (ReactUtils.sloc("admin.config.application.header")) </h2>
       <table>
         <tr>
-          <th> (ReactUtils.s("Language")) </th>
+          <th> (ReactUtils.sloc("admin.config.application.language")) </th>
           <td>
             <input
               value=self.state.language
@@ -62,7 +62,7 @@ let make = _children => {
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.s("DeviceId")) </th>
+          <th> (ReactUtils.sloc("admin.config.application.deviceId")) </th>
           <td>
             <input
               value=self.state.deviceId
@@ -71,9 +71,11 @@ let make = _children => {
           </td>
         </tr>
       </table>
-      <button className="card" onClick=((_) => self.send(SaveConfig))>
-        (ReactUtils.s("Guardar"))
-      </button>
+      <Button
+        onClick=((_) => self.send(SaveConfig))
+        local=true
+        label="action.save"
+      />
     </div>;
   },
 };

@@ -27,11 +27,11 @@ let make = (~onStartNewOrder, _children) => {
           name="customerName"
           onChange=(handleChange(self))
         />
-        <div
-          className="card"
-          onClick=(_event => onStartNewOrder(self.state.customerName))>
-          (ReactUtils.s("Iniciar"))
-        </div>
+        <Button
+          local=true
+          onClick=(_event => onStartNewOrder(self.state.customerName))
+          label="order.startNew"
+        />
       </div>
       <OpenOrders />
     </div>;

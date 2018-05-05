@@ -1,11 +1,20 @@
+
 type message = {
   key: string,
   language: string,
   content: string,
 };
 
+
 let m = (key, language, content) => {key, language, content};
 
+[@bs.module] external en : Js.Array.t('a) = "./lang/en.json";
+
+let enMessages = en |> Js.Array.map(x=> {
+  m(x##key, "EN", x##content);
+}) |> Array.to_list;
+
+/* 
 let menuItems = [
   m("menu.openOrders", "EN", "Open Orders"),
   m("menu.closedOrders", "EN", "Closed Orders"),
@@ -22,21 +31,26 @@ let adminItems = [
   m("admin.config", "EN", "Configuration"),
 ];
 
-let orderButtons = [
-  m("order.save", "EN", "Save"),
-  m("order.delete", "EN", "Delete"),
-  m("order.pay", "EN", "Pay"),
-  m("order.printOrder", "EN", "Print Order"),
-  m("order.printReceipt", "EN", "Print Receipt"),
-  m("order.defaultCustomerName", "EN", "Beloved Customer"),
+let productAdmin = [
+  m("admin.products.bulkImport.instructions", 
+  "EN", 
+  "Note: Tab separated values (TSV), one product per line, value order should match the table above.")
 ];
+
+let nav = [
+  m("nav.back", "EN", "Back")
+];
+let commonActions = [
+  m("action.save", "EN", "Save"),
+  m("action.create", "EN", "Create"),
+  m("action.delete", "EN", "Delete"),
+  m("action.pay", "EN", "Pay"),
+  m("action.return", "EN", "Return"),
+]; */
 
 let dictionary: list(message) =
   List.concat([
-    [m("Pisto", "EN", "Pisto")],
-    menuItems,
-    adminItems,
-    orderButtons,
+    enMessages
   ]);
 
 let translate = key => {

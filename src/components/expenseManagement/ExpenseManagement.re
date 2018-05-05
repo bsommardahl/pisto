@@ -1,5 +1,3 @@
-open ReactUtils;
-
 open Js.Promise;
 
 type view =
@@ -148,34 +146,42 @@ let make = _children => {
       ();
     };
     <div className="expense-management">
-      (
-        switch (self.state.currentView) {
-        | List =>
-          <ExpenseManagementList
-            expenses=self.state.expenses
-            onModify=(d => self.send(ChangeView(Modifying(d))))
-            onRemove=(d => removeExpense(d))
-            onNew=((_) => self.send(ChangeView(New)))
-          />
-        | Modifying(expense) =>
-          <ExpenseManagementEditor
-            expense
-            allExpenseTypes=self.state.allExpenseTypes
-            allVendors=self.state.allVendors
-            onCancel=(() => self.send(ChangeView(List)))
-            onCreate=(e => createExpense(e))
-            onModify=(e => modifyExpense(e))
-            onRemove=(e => removeExpense(e))
-          />
-        | New =>
-          <ExpenseManagementEditor
-            allExpenseTypes=self.state.allExpenseTypes
-            allVendors=self.state.allVendors
-            onCancel=(() => self.send(ChangeView(List)))
-            onCreate=(e => createExpense(e))
-          />
-        }
-      )
+      <div>
+        <div className="header">
+          <div className="header-menu" />
+          <div className="header-options">
+            (ReactUtils.s("expenses.header" |> Lang.translate))
+          </div>
+        </div>
+        (
+          switch (self.state.currentView) {
+          | List =>
+            <ExpenseManagementList
+              expenses=self.state.expenses
+              onModify=(d => self.send(ChangeView(Modifying(d))))
+              onRemove=(d => removeExpense(d))
+              onNew=((_) => self.send(ChangeView(New)))
+            />
+          | Modifying(expense) =>
+            <ExpenseManagementEditor
+              expense
+              allExpenseTypes=self.state.allExpenseTypes
+              allVendors=self.state.allVendors
+              onCancel=(() => self.send(ChangeView(List)))
+              onCreate=(e => createExpense(e))
+              onModify=(e => modifyExpense(e))
+              onRemove=(e => removeExpense(e))
+            />
+          | New =>
+            <ExpenseManagementEditor
+              allExpenseTypes=self.state.allExpenseTypes
+              allVendors=self.state.allVendors
+              onCancel=(() => self.send(ChangeView(List)))
+              onCreate=(e => createExpense(e))
+            />
+          }
+        )
+      </div>
     </div>;
   },
 };
