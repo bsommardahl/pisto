@@ -402,7 +402,7 @@ let make =
           />
           <ValidationMessage
             hidden=(totalsCalculateCorrectly())
-            key="expense.totalsDoNotAddUp"
+            messageKey="validation.totalsDoNotAddUp"
           />
         </div>
         <MoneyInput
