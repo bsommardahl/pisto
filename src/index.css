@@ -70,7 +70,7 @@ input.customer-name-input {
 }
 .pin-entry input { font-size: 25px;}
 .card {
-  border: 1px solid black;
+  border: 0px;
   border-radius: 8px;
   padding: 10px; 
   margin: 10px;

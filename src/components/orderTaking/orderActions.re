@@ -96,28 +96,24 @@ let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
     ();
   };
 
-type state = {
-  paying: bool,
-  returning: bool,
-};
+type userIntent =
+  | Paying
+  | Building
+  | Returning;
+
+type state = {userIntent};
 
 type action =
-  | StartPaying
-  | StopPaying
-  | StartReturning
-  | StopReturning;
+  | ChangeIntent(userIntent);
 
 let component = ReasonReact.reducerComponent("OrderActions");
 
 let make = (~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  initialState: () => {paying: false, returning: false},
-  reducer: (action, state) =>
+  initialState: () => {userIntent: Building},
+  reducer: (action, _state) =>
     switch (action) {
-    | StartPaying => ReasonReact.Update({...state, paying: true})
-    | StopPaying => ReasonReact.Update({...state, paying: false})
-    | StartReturning => ReasonReact.Update({...state, returning: true})
-    | StopReturning => ReasonReact.Update({...state, returning: false})
+    | ChangeIntent(intent) => ReasonReact.Update({userIntent: intent})
     },
   render: self => {
     let items = order.orderItems |> Array.of_list;
@@ -134,7 +130,7 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         local=true
         className="pay-button-card"
         disabled=disablePayButton
-        onClick=((_) => self.send(StartPaying))
+        onClick=((_) => self.send(ChangeIntent(Paying)))
         label="action.pay"
       />;
     let deleteButton =
@@ -148,7 +144,7 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
       <Button
         local=true
         className="quiet-card"
-        onClick=((_) => self.send(StartReturning))
+        onClick=((_) => self.send(ChangeIntent(Returning)))
         label="action.return"
       />;
     let cancelButton =
@@ -159,29 +155,22 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
       />;
     <div className="order-actions">
       (
-        switch (
-          self.state.paying,
-          self.state.returning,
-          order.paid,
-          order.returned,
-          order.id,
-        ) {
-        | (true, _, _, _, _) =>
+        switch (self.state.userIntent, order.paid, order.returned, order.id) {
+        | (Paying, _, _, _) =>
           <PinInput
-            onFailure=(() => self.send(StopPaying))
+            onFailure=(() => self.send(ChangeIntent(Building)))
             onSuccess=(cashier => payOrder(cashier, order, onFinish))
           />
-        | (_, true, _, _, Some(_id)) =>
+        | (Returning, _, _, Some(_id)) =>
           <PinInput
-            onFailure=(() => self.send(StopReturning))
+            onFailure=(() => self.send(ChangeIntent(Building)))
             onSuccess=(cashier => returnOrder(cashier, order, onFinish))
           />
-        | (false, false, None, None, Some(_id)) =>
+        | (Building, None, None, Some(_id)) =>
           <span> saveButton payButton deleteButton </span>
-        | (false, false, None, None, None) =>
-          <span> saveButton payButton </span>
-        | (false, false, Some(_paid), None, Some(_id)) => returnButton
-        | (_, _, _, _, _) => ReasonReact.nullElement
+        | (Building, None, None, None) => <span> saveButton payButton </span>
+        | (Building, Some(_paid), None, Some(_id)) => returnButton
+        | (_, _, _, _) => ReasonReact.nullElement
         }
       )
       cancelButton
