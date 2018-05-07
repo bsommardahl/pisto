@@ -1,53 +1,26 @@
-type state = {sku:string};
+let component = ReasonReact.statelessComponent("SkuSearch");
 
-type action =
-  | ChangeSku(string)
-  | ResetSku
-  | SearchForProductBySku
-  | KeyDown(int);
-
-let component = ReasonReact.reducerComponent("SkuSearch");
-
-let make = (~allProducts: list(Product.t), ~productFound, _children) => {
+let make =
+    (
+      ~allProducts: list(Product.t),
+      ~productFound,
+      ~maintainFocus: bool,
+      _children,
+    ) => {
   ...component,
-  initialState: () => {sku:""},
-  reducer: (action, state) =>
-    switch (action) {
-    | KeyDown(27) => ReasonReact.Update({sku:""})
-    | KeyDown(13) =>
-      ReasonReact.SideEffects((self => self.send(SearchForProductBySku)))
-    | KeyDown(_) => ReasonReact.NoUpdate
-    | ChangeSku(sku) => ReasonReact.Update({sku:sku})
-    | SearchForProductBySku =>
-      ReasonReact.UpdateWithSideEffects({sku:""}, 
-        (
-          _self => {
-            let matches =
-              allProducts |> List.filter((p: Product.t) => p.sku === state.sku);
-            if (matches |> List.length > 0) {
-              productFound(matches |. List.nth(0));              
-            };
-          }
-        ),
-      )
-    },
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
-    let refocusInput = ev => {
-      let node = ev
-      |> ReactEventRe.Focus.target
-      |> ReactDOMRe.domElementToObj;
-      node##focus();
+  render: _self => {
+    let findProduct = sku => {
+      let matches =
+        allProducts |> List.filter((p: Product.t) => p.sku === sku);
+      if (matches |> List.length > 0) {
+        productFound(matches |. List.nth(0));
+      };
     };
-    <input
-      autoFocus=Js.true_
+    <KeyInput
+      autoFocus=maintainFocus
+      maintainFocus
       className="sku-search"
-      value=self.state.sku
-      onBlur=(ev => refocusInput(ev))
-      onChange=(ev => self.send(ChangeSku(getVal(ev))))
-      onKeyDown=(ev => self.send(KeyDown(ReactEventRe.Keyboard.which(ev))))
+      onFinish=(sku => findProduct(sku))
     />;
   },
 };

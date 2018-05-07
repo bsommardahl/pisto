@@ -1,6 +1,7 @@
 type view =
   | Home
   | Order
+  | Pay
   | AllOrders
   | Admin
   | Products
@@ -36,6 +37,7 @@ let make = _children => {
           switch (url.path) {
           | [] => self.send(Show(Home))
           | ["order"] => self.send(Show(Order))
+          | ["pay"] => self.send(Show(Pay))
           | ["orders"] => self.send(Show(AllOrders))
           | ["admin"] => self.send(Show(Admin))
           | ["products"] => self.send(Show(Products))
@@ -54,12 +56,24 @@ let make = _children => {
   render: self => {
     let onStartNewOrder = customerName =>
       ReasonReact.Router.push("order?customerName=" ++ customerName);
-    let goBack = (_) => ReasonReact.Router.push("/");
+    let goHome = () => ReasonReact.Router.push("/");
+    let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
+    let orderId =
+      switch (Util.QueryParam.get("orderId", queryString)) {
+      | None => ""
+      | Some(orderId) => orderId
+      };
     <div>
       (
         switch (self.state.currentView) {
         | Home => <Home onStartNewOrder />
-        | Order => <OrderScreen goBack />
+        | Order => <OrderScreen goBack=goHome />
+        | Pay =>
+          <PayScreen
+            orderId
+            onPay=((_c, _o) => goHome())
+            onCancel=(_o => goHome())
+          />
         | AllOrders => <AllOrders />
         | Admin => <Admin />
         | Products => <ProductManagement />

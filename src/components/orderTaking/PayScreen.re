@@ -1,12 +1,14 @@
 open Js.Promise;
 
+open OrderHelper;
+
 type state = {order: Order.orderVm};
 
 type action =
   | LoadOrder(string)
   | OrderLoaded(Order.orderVm)
-  | PinEntered(string)
-  | CancelPay;
+  | PayOrder(Cashier.t)
+  | Cancel;
 
 let component = ReasonReact.reducerComponent("PayScreen");
 
@@ -22,37 +24,53 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
       ReasonReact.SideEffects(
         (
           self =>
-            OrderStore.get(orderId)
-            |> Js.Promise.then_(order => {
-                 let vm = Order.vmFromExistingOrder(order);
+            getOrderVm(orderId)
+            |> Js.Promise.then_(vm => {
                  self.send(OrderLoaded(vm));
                  Js.Promise.resolve(vm);
                })
             |> ignore
         ),
       )
+    | PayOrder(cashier) =>
+      ReasonReact.SideEffects(
+        (
+          _self =>
+            payOrder(cashier, state.order, paidOrder =>
+              onPay(cashier, paidOrder)
+            )
+        ),
+      )
     | OrderLoaded(order) => ReasonReact.Update({order: order})
-    | CancelPay => ReasonReact.SideEffects(((_) => onCancel(state.order)))
-    | Pay
+    | Cancel => ReasonReact.SideEffects(((_) => onCancel(state.order)))
     },
-  initialState: () => {
-    
-      order: buildNewOrder(customerName),
-    
-  },
+  initialState: () => {order: buildNewOrder("")},
   render: self =>
     <div className="order">
-    <PinInput
-    onFailure=(() => self.send(ChangeIntent(Building)))
-    onSuccess=(cashier => payOrder(cashier, order, onFinish))
-  />
-<OrderItems
+      <div className="order-header">
+        <div className="header-menu">
+          <Button
+            local=true
+            className="quiet-card"
+            onClick=((_) => self.send(Cancel))
+            label="action.cancel"
+          />
+        </div>
+        <div className="customer-name">
+          (ReactUtils.s(self.state.order.customerName))
+        </div>
+      </div>
+      <div className="pay-for-order">
+        <OrderItems
           closed=false
           order=self.state.order
           canDeselectDiscount=false
           canRemoveItem=false
         />
-      
+        <PinInput
+          onFailure=(() => onCancel(self.state.order))
+          onSuccess=(cashier => self.send(PayOrder(cashier)))
+        />
+      </div>
     </div>,
-
 };

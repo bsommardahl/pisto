@@ -95,3 +95,36 @@ let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
     |> ignore;
     ();
   };
+
+let buildOrderItem = (product: Product.t) : OrderItem.t => {
+  sku: product.sku,
+  name: product.name,
+  suggestedPrice: product.suggestedPrice,
+  addedOn: Js.Date.now(),
+  salePrice: product.suggestedPrice,
+  taxCalculation: product.taxCalculation,
+};
+
+let buildNewOrder = (customerName: string) : Order.orderVm => {
+  let order: Order.orderVm = {
+    id: None,
+    customerName,
+    orderItems: [],
+    createdOn: Js.Date.now(),
+    discounts: [],
+    paid: None,
+    returned: None,
+    lastUpdated: None,
+    removed: false,
+    meta: "",
+  };
+  /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
+  order;
+};
+
+let getOrderVm = orderId =>
+  OrderStore.get(orderId)
+  |> Js.Promise.then_(order => {
+       let vm = Order.vmFromExistingOrder(order);
+       Js.Promise.resolve(vm);
+     });

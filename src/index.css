@@ -205,3 +205,22 @@ table.admin-table thead th {
   top: -9999px !important;
   left: -9999px !important;
 }
+.pay-for-order{
+  width: 400px;
+  background-color: #EEEEEE;
+  border: #BBBBBB solid 1px;
+  padding: 5px;
+  margin: 20px auto;
+}
+
+.centered {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  /* bring your own prefixes */
+  transform: translate(-50%, -50%);
+}
+
+.h-centered {
+  margin:0 auto;
+}

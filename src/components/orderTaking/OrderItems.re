@@ -4,8 +4,10 @@ let make =
     (
       ~closed: bool,
       ~order: Order.orderVm,
-      ~deselectDiscount,
-      ~onRemoveItem,
+      ~canDeselectDiscount=true,
+      ~canRemoveItem=true,
+      ~deselectDiscount=_d => (),
+      ~onRemoveItem=_i => (),
       _children,
     ) => {
   ...component,
@@ -24,7 +26,7 @@ let make =
                  <tr>
                    <td>
                      (
-                       if (! closed) {
+                       if (! closed && canRemoveItem) {
                          <Button
                            className="small-card danger-card"
                            onClick=((_) => onRemoveItem(i))
@@ -76,7 +78,7 @@ let make =
         |> List.map((d: Discount.t) =>
              <button
                className="card small-card card-discount"
-               disabled=(closed ? Js.true_ : Js.false_)
+               disabled=(closed || canDeselectDiscount ? true : false)
                onClick=((_) => deselectDiscount(d))>
                (ReactUtils.s(d.name))
              </button>
