@@ -7,7 +7,7 @@
     "bs-jest": "^0.3.2",
     "bs-json": "^1.0.1",
     "bs-most": "github:bsommardahl/bs-most",
-    "bs-platform": "^2.2.3",
+    "bs-platform": "^3.0.0",
     "cafe-data": "github:bsommardahl/cafe-data",
     "cafe-domain": "github:bsommardahl/cafe-domain",
     "pouchdb": "^6.4.3",

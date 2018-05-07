@@ -201,9 +201,13 @@ table.admin-table thead th {
 
 .more-actions { margin-top: 30px;}
 .sku-search {
-  position: absolute !important;
-  top: -9999px !important;
-  left: -9999px !important;
+ 
+  font-size: 30px; 
+  color: white;  
+  border: 0px; 
+  width: 100%;
+  background-color: #000000;
+  opacity: .1;
 }
 .pay-for-order{
   width: 400px;

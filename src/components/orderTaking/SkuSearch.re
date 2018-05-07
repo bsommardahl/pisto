@@ -4,7 +4,7 @@ let make =
     (
       ~allProducts: list(Product.t),
       ~productFound,
-      ~maintainFocus: bool,
+      ~maintainFocus=true,
       _children,
     ) => {
   ...component,
