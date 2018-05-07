@@ -14,14 +14,14 @@ let make = (~expenses, ~onModify, ~onRemove, ~onNew, _children) => {
         <thead>
           <tr>
             <th />
-            <th> (s("Vendor")) </th>
-            <th> (s("Type")) </th>
-            <th> (s("Descripcion")) </th>
-            <th> (s("Date")) </th>
-            <th> (s("Time")) </th>
-            <th> (s("SubTotals")) </th>
-            <th> (s("Tax")) </th>
-            <th> (s("Total")) </th>
+            <th> (s("expense.vendor" |> Lang.translate)) </th>
+            <th> (s("expense.type" |> Lang.translate)) </th>
+            <th> (s("expense.description" |> Lang.translate)) </th>
+            <th> (s("expense.date" |> Lang.translate)) </th>
+            <th> (s("expense.time" |> Lang.translate)) </th>
+            <th> (s("expense.subTotals" |> Lang.translate)) </th>
+            <th> (s("expense.tax" |> Lang.translate)) </th>
+            <th> (s("expense.total" |> Lang.translate)) </th>
             <th />
           </tr>
         </thead>
@@ -31,9 +31,11 @@ let make = (~expenses, ~onModify, ~onRemove, ~onNew, _children) => {
             |> List.map((e: Expense.t) =>
                  <tr key=e.id>
                    <td>
-                     <button onClick=((_) => onModify(e))>
-                       (s("Editar"))
-                     </button>
+                     <Button
+                       local=true
+                       onClick=((_) => onModify(e))
+                       label="action.edit"
+                     />
                    </td>
                    <td> (s(e.vendor.name)) </td>
                    <td> (s(e.expenseType.name)) </td>
@@ -46,9 +48,11 @@ let make = (~expenses, ~onModify, ~onRemove, ~onNew, _children) => {
                    <td> (s(e.tax |> Money.toDisplay)) </td>
                    <td> (s(e.total |> Money.toDisplay)) </td>
                    <td>
-                     <button onClick=((_) => onRemove(e))>
-                       (s("Eliminar"))
-                     </button>
+                     <Button
+                       local=true
+                       onClick=((_) => onRemove(e))
+                       label="action.delete"
+                     />
                    </td>
                  </tr>
                )
@@ -57,9 +61,7 @@ let make = (~expenses, ~onModify, ~onRemove, ~onNew, _children) => {
           )
         </tbody>
       </table>
-      <div className="card" onClick=((_) => onNew())>
-        (s("+ Nuevo Expense"))
-      </div>
+      <Button local=true onClick=((_) => onNew()) label="action.create" />
     </div>;
   },
 };

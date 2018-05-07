@@ -1,5 +1,7 @@
 open ReactUtils;
 
+open Lang;
+
 type state = {
   modifying: bool,
   modifiedExpenseType: ExpenseType.t,
@@ -61,13 +63,16 @@ let make = (~expenseType, ~remove, ~modify, _children) => {
     | false =>
       <tr>
         <td>
-          <button onClick=((_) => self.send(EnableMod))>
-            (s("Editar"))
-          </button>
+          <Button
+            local=true
+            onClick=((_) => self.send(EnableMod))
+            label="action.edit"
+          />
         </td>
         <td> (s(self.state.originalExpenseType.name)) </td>
         <td>
-          <button
+          <Button
+            local=true
             onClick=(
               (_) => {
                 Js.log(
@@ -75,17 +80,19 @@ let make = (~expenseType, ~remove, ~modify, _children) => {
                 );
                 remove(self.state.originalExpenseType);
               }
-            )>
-            (s("Eliminar"))
-          </button>
+            )
+            label="action.delete"
+          />
         </td>
       </tr>
     | true =>
       <tr>
         <td>
-          <button onClick=((_) => self.send(CancelMod))>
-            (s("Cancelar"))
-          </button>
+          <Button
+            local=true
+            onClick=((_) => self.send(CancelMod))
+            label="action.cancel"
+          />
         </td>
         <td>
           <input
@@ -93,7 +100,9 @@ let make = (~expenseType, ~remove, ~modify, _children) => {
             onChange=(ev => self.send(ChangeName(getVal(ev))))
           />
         </td>
-        <td> <button onClick=saveModification> (s("Guardar")) </button> </td>
+        <td>
+          <Button local=true onClick=saveModification label="action.save" />
+        </td>
       </tr>
     };
   },

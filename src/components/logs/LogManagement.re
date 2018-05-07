@@ -28,23 +28,26 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
-            (ReactUtils.s("Atras"))
-          </div>
+          <Button
+            local=true
+            className="wide-card quiet-card"
+            onClick=goBack
+            label="nav.back"
+          />
         </div>
         <div className="header-options">
-          (ReactUtils.s("Gestion de Logs"))
+          (ReactUtils.sloc("admin.logs.header"))
         </div>
       </div>
       <div className="log-management">
         <table className="table">
           <thead>
             <tr>
-              <th> (ReactUtils.s("Date")) </th>
-              <th> (ReactUtils.s("Type")) </th>
-              <th> (ReactUtils.s("Level")) </th>
-              <th> (ReactUtils.s("Message")) </th>
-              <th> (ReactUtils.s("Payload")) </th>
+              <th> (ReactUtils.sloc("log.date")) </th>
+              <th> (ReactUtils.sloc("log.type")) </th>
+              <th> (ReactUtils.sloc("log.level")) </th>
+              <th> (ReactUtils.sloc("log.message")) </th>
+              <th> (ReactUtils.sloc("log.payload")) </th>
             </tr>
           </thead>
           <tbody>

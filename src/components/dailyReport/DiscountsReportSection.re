@@ -2,9 +2,9 @@ open ReactUtils;
 
 let tableHeader =
   <tr className="table-header">
-    <th className="text-cell"> (s("Descuento")) </th>
-    <th className="text-cell"> (s("Porcentaje")) </th>
-    <th className="number-cell"> (s("Monto")) </th>
+    <th className="text-cell"> (sloc("discount.name")) </th>
+    <th className="text-cell"> (sloc("discount.percentage")) </th>
+    <th className="number-cell"> (sloc("discount.total")) </th>
   </tr>;
 
 let discountRow = (discount: DiscountGroup.t) =>

@@ -1,4 +1,6 @@
-let s = (str: string) => ReasonReact.stringToElement(str);
+let s = (message: string) => ReasonReact.stringToElement(message);
+
+let sloc = (key: string) => s(key |> Lang.translate);
 
 let sopt = (str: option(string)) =>
   switch (str) {

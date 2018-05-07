@@ -24,7 +24,7 @@ let make = (~date: float, ~onChange, _children) => {
     | DisableMod =>
       ReasonReact.UpdateWithSideEffects(
         {...state, modifying: false, valid: true},
-        (_self => onChange(state.date |> Date.toFloat)),
+        (_self => onChange(state.date |> float_of_string)),
       )
     | UpdateDate(newDate) =>
       ReasonReact.Update({

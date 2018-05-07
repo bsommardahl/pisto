@@ -100,12 +100,15 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
-            (ReactUtils.s("Atras"))
-          </div>
+          <Button
+            local=true
+            className="wide-card quiet-card"
+            onClick=goBack
+            label="nav.back"
+          />
         </div>
         <div className="header-options">
-          (ReactUtils.s("Gestion de Productos"))
+          (ReactUtils.sloc("admin.products.header"))
         </div>
       </div>
       <div className="product-management">
@@ -113,11 +116,11 @@ let make = _children => {
           <thead>
             <tr>
               <th />
-              <th> (ReactUtils.s("Sku")) </th>
-              <th> (ReactUtils.s("Nombre")) </th>
-              <th> (ReactUtils.s("Precio")) </th>
-              <th> (ReactUtils.s("Metodo de Impuesto")) </th>
-              <th> (ReactUtils.s("Tags/Categorias")) </th>
+              <th> (ReactUtils.sloc("product.sku")) </th>
+              <th> (ReactUtils.sloc("product.name")) </th>
+              <th> (ReactUtils.sloc("product.price")) </th>
+              <th> (ReactUtils.sloc("product.taxMethod")) </th>
+              <th> (ReactUtils.sloc("product.tags")) </th>
               <th />
             </tr>
           </thead>
@@ -138,15 +141,9 @@ let make = _children => {
           </tbody>
           <CreateProductFooter createProduct />
         </table>
-        <h3> (ReactUtils.s("Bulk Import")) </h3>
+        <h3> (ReactUtils.sloc("admin.products.bulkImport.header")) </h3>
         <p>
-          <i>
-            (
-              ReactUtils.s(
-                "Note: Tab separated values (TSV), one product per line, value order should match the table above.",
-              )
-            )
-          </i>
+          <i> (ReactUtils.sloc("admin.products.bulkImport.instructions")) </i>
         </p>
         <textarea
           className="bulk-import"
@@ -154,9 +151,11 @@ let make = _children => {
           onChange=(ev => self.send(UpdateBulkImport(getVal(ev))))
         />
         <p>
-          <button onClick=((_) => importBulkProducts(self.state.bulkImport))>
-            (ReactUtils.s("Import All"))
-          </button>
+          <Button
+            local=true
+            onClick=((_) => importBulkProducts(self.state.bulkImport))
+            label="admin.products.bulkImport.importButton"
+          />
         </p>
       </div>
     </div>;

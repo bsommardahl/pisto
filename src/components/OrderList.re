@@ -1,14 +1,14 @@
 let component = ReasonReact.statelessComponent("OrderList");
 
-let headerRow = () =>
+let headerRow =
   <tr>
     <th />
-    <th> (ReactUtils.s("Cliente")) </th>
-    <th> (ReactUtils.s("Subtotal")) </th>
-    <th> (ReactUtils.s("Impuesto")) </th>
-    <th> (ReactUtils.s("Total")) </th>
-    <th> (ReactUtils.s("Fecha")) </th>
-    <th> (ReactUtils.s("Hora")) </th>
+    <th> (ReactUtils.s("order.customerName" |> Lang.translate)) </th>
+    <th> (ReactUtils.s("order.subTotal" |> Lang.translate)) </th>
+    <th> (ReactUtils.s("order.tax" |> Lang.translate)) </th>
+    <th> (ReactUtils.s("order.total" |> Lang.translate)) </th>
+    <th> (ReactUtils.s("order.paidDate" |> Lang.translate)) </th>
+    <th> (ReactUtils.s("order.paidTime" |> Lang.translate)) </th>
   </tr>;
 
 let row = (o: Order.orderVm, onSelect) => {
@@ -20,9 +20,12 @@ let row = (o: Order.orderVm, onSelect) => {
     };
   <tr>
     <td>
-      <div className="card" onClick=((_) => onSelect(o))>
-        (ReactUtils.s("Ver"))
-      </div>
+      <Button
+        local=true
+        className="card"
+        onClick=((_) => onSelect(o))
+        label="allOrders.viewOrder"
+      />
     </td>
     <td> (ReactUtils.s(o.customerName)) </td>
     <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
@@ -37,7 +40,7 @@ let make = (~orders: list(Order.orderVm), ~onSelect, _children) => {
   ...component,
   render: _self =>
     <table className="order-list">
-      <thead> (headerRow()) </thead>
+      <thead> headerRow </thead>
       <tbody>
         (
           orders

@@ -15,16 +15,16 @@ let make =
     let expenseTax = expensesDenorm |> Expense.sum(e => e.tax);
     let expenseTotal = expensesDenorm |> Expense.sum(e => e.total);
     <div className="report-section" key>
-      <h4> (s("Totales al Final")) </h4>
+      <h4> (sloc("daily.totals.header")) </h4>
       <table className="table">
         <tr>
           <th />
-          <th className="number-cell"> (s("Ventas")) </th>
-          <th className="number-cell"> (s("Gastos")) </th>
-          <th className="number-cell"> (s("Final")) </th>
+          <th className="number-cell"> (sloc("daily.totals.sales")) </th>
+          <th className="number-cell"> (sloc("daily.totals.expenses")) </th>
+          <th className="number-cell"> (sloc("daily.totals.final")) </th>
         </tr>
         <tr>
-          <th className="number-cell"> (s("SubTotal")) </th>
+          <th className="number-cell"> (sloc("daily.totals.subTotal")) </th>
           <td className="number-cell">
             (s(salesSubTotal |> Money.toDisplay))
           </td>
@@ -36,7 +36,7 @@ let make =
           </td>
         </tr>
         <tr>
-          <th className="number-cell"> (s("Impuesto")) </th>
+          <th className="number-cell"> (sloc("daily.totals.tax")) </th>
           <td className="number-cell"> (s(salesTax |> Money.toDisplay)) </td>
           <td className="number-cell">
             (s(expenseTax |> Money.toDisplay))
@@ -46,7 +46,7 @@ let make =
           </td>
         </tr>
         <tr>
-          <th className="number-cell"> (s("Total")) </th>
+          <th className="number-cell"> (sloc("daily.totals.total")) </th>
           <td className="number-cell">
             (s(salesTotal |> Money.toDisplay))
           </td>

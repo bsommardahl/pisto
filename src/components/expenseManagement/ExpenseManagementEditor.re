@@ -248,7 +248,7 @@ let make =
     <div className="modify-expense">
       <div className="section">
         <div className="title">
-          (s("Vendor"))
+          (s("expense.vendor" |> Lang.translate))
           <ValidationMessage
             hidden=(isValid("Vendor", self.state.vendor.name))
           />
@@ -268,7 +268,7 @@ let make =
       </div>
       <div className="section">
         <div className="title">
-          (s("Expense Type"))
+          (s("expense.type" |> Lang.translate))
           <ValidationMessage
             hidden=(isValid("ExpenseType", self.state.expenseType.name))
           />
@@ -290,7 +290,7 @@ let make =
       </div>
       <div className="section">
         <div className="title">
-          (s("Descripcion"))
+          (s("expense.description" |> Lang.translate))
           <ValidationMessage
             hidden=(isValid("Description", self.state.description))
           />
@@ -308,7 +308,7 @@ let make =
       </div>
       <div className="section">
         <div className="title">
-          (s("Fecha"))
+          (s("expense.date" |> Lang.translate))
           <ValidationMessage
             hidden=(isValid("Date", self.state.date |> Date.toDisplay))
           />
@@ -321,7 +321,7 @@ let make =
       </div>
       <div className="section">
         <div className="title">
-          (s("Subtotals"))
+          (s("expense.subTotals" |> Lang.translate))
           <ValidationMessage
             hidden=(
               isValid(
@@ -344,10 +344,11 @@ let make =
                        (s(sub.taxRate |> Percent.toDisplay))
                      </td>
                      <td>
-                       <button
-                         onClick=((_) => self.send(RemoveSubTotal(sub)))>
-                         (s("Eliminar"))
-                       </button>
+                       <Button
+                         local=true
+                         onClick=((_) => self.send(RemoveSubTotal(sub)))
+                         label="action.delete"
+                       />
                      </td>
                    </tr>
                  )
@@ -376,16 +377,18 @@ let make =
                 />
               </td>
               <td>
-                <button onClick=((_) => self.send(AddSubTotal))>
-                  (s("Agregar"))
-                </button>
+                <Button
+                  local=true
+                  onClick=((_) => self.send(AddSubTotal))
+                  label="expense.subTotal.add"
+                />
               </td>
             </tr>
           </tfoot>
         </table>
       </div>
       <div className="section">
-        <div className="title"> (s("Impuesto")) </div>
+        <div className="title"> (s("expense.tax" |> Lang.translate)) </div>
         <MoneyInput
           amount=self.state.tax
           onChange=(amount => self.send(ChangeTax(amount)))
@@ -393,13 +396,13 @@ let make =
       </div>
       <div className="section">
         <div className="title">
-          (s("Total"))
+          (s("expense.total" |> Lang.translate))
           <ValidationMessage
             hidden=(isValid("Total", self.state.total |> string_of_int))
           />
           <ValidationMessage
             hidden=(totalsCalculateCorrectly())
-            message="Total no cuadra"
+            messageKey="validation.totalsDoNotAddUp"
           />
         </div>
         <MoneyInput
@@ -416,34 +419,30 @@ let make =
       (
         switch (expense) {
         | None =>
-          <button
-            className="card"
-            disabled=(
-              isExpenseValid(self.state.fields) ? Js.false_ : Js.true_
-            )
-            onClick=((_) => createNewExpense())>
-            (s("Crear"))
-          </button>
+          <Button
+            local=true
+            disabled=(isExpenseValid(self.state.fields) ? false : true)
+            onClick=((_) => createNewExpense())
+            label="action.create"
+          />
         | Some(e) =>
-          <div>
-            <button
-              className="card"
-              disabled=(
-                isExpenseValid(self.state.fields) ? Js.false_ : Js.true_
-              )
-              onClick=((_) => modifyExistingExpense(e))>
-              (s("Modificar"))
-            </button>
-            <button
-              className="card danger-card" onClick=((_) => onRemove(e))>
-              (s("Eliminar"))
-            </button>
-          </div>
+          <span>
+            <Button
+              local=true
+              disabled=(isExpenseValid(self.state.fields) ? false : true)
+              onClick=((_) => modifyExistingExpense(e))
+              label="action.save"
+            />
+            <Button
+              local=true
+              className="danger-card"
+              onClick=((_) => onRemove(e))
+              label="action.delete"
+            />
+          </span>
         }
       )
-      <button className="card" onClick=((_) => onCancel())>
-        (s("Cancelar"))
-      </button>
+      <Button local=true onClick=((_) => onCancel()) label="action.cancel" />
     </div>;
   },
 };
