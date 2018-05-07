@@ -1,21 +1,16 @@
-# Reason-Cafe
+# PistoPOS
 
-Cafe is a browser-based POS system for small counter-service restaurants. It is under construction, so use at your own risk.
+Landing Page: http://pisto.io
 
-## User Features (future):
-- Take multiple open food orders
-- Access open orders them to add to, remove from, or pay the order.
-- Search closed orders.
-- Webhooks for...
-  - Printing receipts.
-  - Kitchen order printing.
-  - Integration with other systems.
+Live App: http://app.pisto.io (free to use)
 
-## Technical Features (future):
+PistoPOS is a browser-based POS system for small and medium-sized restaurants, boutiques, and markets. 
+
+## Technical Features:
 - PouchDb for offline sync - Uses local database that syncs with remote database(s).
-- Written in ReasonML, so the code is (will be) super solid and performant!
-- Using Facebook's React framework.
-- Built with tests first (TDD) using Jest.
+- Written in ReasonML, so the code is sound, solid and performant!
+- Using Facebook's ReactJs framework.
 
-## Here Be Dragons:
-I am learning ReasonML and React at the same time. At some point, I expect this code will be a great example of how ReasonML and React can work together in harmony. But until that day, I this code will be full of horrible structure and smells. If you are a newb like me, and you're looking for some example code, copy/paste with caution. - Byron
+## Open and Not Open
+
+The core PistoPOS app, which you find here in this repository, is open source and free to use. As you can see at our website (http://pisto.io), there is some paid features which are not open source. However, that doesn't stop you from creating your own. Enjoy!
