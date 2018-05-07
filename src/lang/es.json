@@ -1,0 +1,422 @@
+[
+  {
+    "key": "action.save",
+    "content": "Guardar"
+  },
+  {
+    "key": "action.cancel",
+    "content": "Salir"
+  },
+  {
+    "key": "action.edit",
+    "content": "Editar"
+  },
+  {
+    "key": "action.create",
+    "content": "Crear"
+  },
+  {
+    "key": "action.delete",
+    "content": "Eliminar"
+  },
+  {
+    "key": "action.pay",
+    "content": "Pagar"
+  },
+  {
+    "key": "action.return",
+    "content": "Devolver"
+  },
+  {
+    "key": "menu.openOrders",
+    "content": "Ordenes Abiertos"
+  },
+  {
+    "key": "menu.closedOrders",
+    "content": "Ordenes Cerrados"
+  },
+  {
+    "key": "menu.expenses",
+    "content": "Gastos"
+  },
+  {
+    "key": "menu.daily",
+    "content": "Diario"
+  },
+  {
+    "key": "menu.admin",
+    "content": "Admin"
+  },
+  {
+    "key": "admin.header",
+    "content": "Administracion"
+  },
+  {
+    "key": "admin.logs",
+    "content": "Logs"
+  },
+  {
+    "key": "admin.logs.header",
+    "content": "Logs de Applicacion"
+  },
+  {
+    "key": "log.date",
+    "content": "Fecha"
+  },
+  {
+    "key": "log.type",
+    "content": "Tipo"
+  },
+  {
+    "key": "log.level",
+    "content": "Nivel"
+  },
+  {
+    "key": "log.message",
+    "content": "Mensaje"
+  },
+  {
+    "key": "log.payload",
+    "content": "Datos"
+  },
+  {
+    "key": "admin.products",
+    "content": "Productos"
+  },
+  {
+    "key": "admin.products.header",
+    "content": "Gestion de Productos"
+  },
+  {
+    "key": "product.sku",
+    "content": "Codigo"
+  },
+  {
+    "key": "product.name",
+    "content": "Nombre"
+  },
+  {
+    "key": "product.price",
+    "content": "Precio"
+  },
+  {
+    "key": "product.taxMethod",
+    "content": "Method de Impuesto"
+  },
+  {
+    "key": "product.tags",
+    "content": "Categorias"
+  },
+  {
+    "key": "admin.expenseTypes",
+    "content": "Tipos de Gastos"
+  },
+  {
+    "key": "expenseType.name",
+    "content": "Tipo de Gasto"
+  },
+  {
+    "key": "admin.expenseTypes.header",
+    "content": "Gestion de Tipos de Gastos"
+  },
+  {
+    "key": "admin.vendors",
+    "content": "Proveedores"
+  },
+  {
+    "key": "admin.vendors.header",
+    "content": "Gestion de Proveedores"
+  },
+  {
+    "key": "vendor.name",
+    "content": "Proveedor"
+  },
+  {
+    "key": "admin.config",
+    "content": "Configuracion"
+  },
+  {
+    "key": "admin.products.bulkImport.header",
+    "content": "Importar Productos"
+  },
+  {
+    "key": "admin.products.bulkImport.importButton",
+    "content": "Importar"
+  },
+  {
+    "key": "admin.products.bulkImport.instructions",
+    "content": "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
+  },
+  {
+    "key": "nav.back",
+    "content": "Atras"
+  },
+  {
+    "key": "order.startNew",
+    "content": "Iniciar Orden"
+  },
+  {
+    "key": "order.defaultCustomerName",
+    "content": "Amado Cliente"
+  },
+  {
+    "key": "order.orderItems.header",
+    "content": "Productos"
+  },
+  {
+    "key": "order.discounts",
+    "content": "Descuento"
+  },
+  {
+    "key": "order.subTotal",
+    "content": "Subtotal"
+  },
+  {
+    "key": "order.tax",
+    "content": "ISV"
+  },
+  {
+    "key": "order.total",
+    "content": "Total"
+  },
+  {
+    "key": "order.paidDate",
+    "content": "Fecha"
+  },
+  {
+    "key": "order.paidTime",
+    "content": "Hora"
+  },
+  {
+    "key": "order.customerName",
+    "content": "Cliente"
+  },
+  {
+    "key": "order.printOrder",
+    "content": "Imprimir Orden"
+  },
+  {
+    "key": "order.printReceiptCopy",
+    "content": "Imprimir Recibo (Copia)"
+  },
+  {
+    "key": "order.created.header",
+    "content": "Creado"
+  },
+  {
+    "key": "order.created.date",
+    "content": "Fecha/Hora"
+  },
+  {
+    "key": "order.paid.header",
+    "content": "Pagado"
+  },
+  {
+    "key": "order.paid.date",
+    "content": "Fecha/Hora"
+  },
+  {
+    "key": "order.paid.by",
+    "content": "Por"
+  },
+  {
+    "key": "order.returned.header",
+    "content": "Devuelto"
+  },
+  {
+    "key": "order.returned.date",
+    "content": "Fecha/Hora"
+  },
+  {
+    "key": "order.returned.by",
+    "content": "Por"
+  },
+  {
+    "key": "allOrders.header",
+    "content": "Ordenes Cerrados de Hoy"
+  },
+  {
+    "key": "allOrders.viewOrder",
+    "content": "Ver"
+  },
+  {
+    "key": "expenses.header",
+    "content": "Gestio de Gastos"
+  },
+  {
+    "key": "expense.vendor",
+    "content": "Proveedor"
+  },
+  {
+    "key": "expense.type",
+    "content": "Tipo"
+  },
+  {
+    "key": "expense.description",
+    "content": "Desripcion"
+  },
+  {
+    "key": "expense.date",
+    "content": "Fecha"
+  },
+  {
+    "key": "expense.time",
+    "content": "Hora"
+  },
+  {
+    "key": "expense.subTotals",
+    "content": "Subtotal"
+  },
+  {
+    "key": "expense.subTotal.add",
+    "content": "Agregar"
+  },
+  {
+    "key": "expense.tax",
+    "content": "ISV"
+  },
+  {
+    "key": "expense.total",
+    "content": "Total"
+  },
+  {
+    "key": "daily.header",
+    "content": "Informe Diario"
+  },
+  {
+    "key": "daily.sales.header",
+    "content": "Ventas"
+  },
+  {
+    "key": "daily.discounts.header",
+    "content": "Descuentos"
+  },
+  {
+    "key": "daily.expenses.header",
+    "content": "Gastos"
+  },
+  {
+    "key": "daily.totals.header",
+    "content": "Totales"
+  },
+  {
+    "key": "discount.name",
+    "content": "Nombre"
+  },
+  {
+    "key": "discount.percentage",
+    "content": "Porcentaje"
+  },
+  {
+    "key": "discount.total",
+    "content": "Total"
+  },
+  {
+    "key": "daily.expensesSection.title.pre",
+    "content": "con"
+  },
+  {
+    "key": "daily.expensesSection.title.post",
+    "content": "ISV"
+  },
+  {
+    "key": "daily.totals.sales",
+    "content": "Ventas"
+  },
+  {
+    "key": "daily.totals.expenses",
+    "content": "Gastos"
+  },
+  {
+    "key": "daily.totals.final",
+    "content": "Final"
+  },
+  {
+    "key": "daily.totals.subTotal",
+    "content": "Subtotal"
+  },
+  {
+    "key": "daily.totals.tax",
+    "content": "ISV"
+  },
+  {
+    "key": "daily.totals.total",
+    "content": "Total"
+  },
+  {
+    "key": "daily.salesSection.title.pre",
+    "content": "Ventas con"
+  },
+  {
+    "key": "daily.salesSection.title.post",
+    "content": "ISV"
+  },
+  {
+    "key": "daily.salesSection.product",
+    "content": "Producto"
+  },
+  {
+    "key": "daily.salesSection.price",
+    "content": "Precio"
+  },
+  {
+    "key": "daily.salesSection.quantity",
+    "content": "Cantidad"
+  },
+  {
+    "key": "daily.salesSection.subTotal",
+    "content": "Subtotal"
+  },
+  {
+    "key": "daily.salesSection.tax",
+    "content": "ISV"
+  },
+  {
+    "key": "daily.salesSection.total",
+    "content": "Total"
+  },
+  {
+    "key": "admin.config.header",
+    "content": "Gestion de Configuracion"
+  },
+  {
+    "key": "admin.config.remote.header",
+    "content": "Syncronizacion Remoto"
+  },
+  {
+    "key": "admin.config.remote.host",
+    "content": "Url"
+  },
+  {
+    "key": "admin.config.remote.username",
+    "content": "Username"
+  },
+  {
+    "key": "admin.config.remote.password",
+    "content": "Password"
+  },
+  {
+    "key": "admin.config.remote.share",
+    "content": "Compartir"
+  },
+  {
+    "key": "admin.config.application.header",
+    "content": "Applicacion"
+  },
+  {
+    "key": "admin.config.application.language",
+    "content": "Idioma"
+  },
+  {
+    "key": "admin.config.application.deviceId",
+    "content": "Id de Dispositiva"
+  },
+  {
+    "key": "validation.required",
+    "content": "Requerido"
+  },
+  {
+    "key": "validation.totalsDoNotAddUp",
+    "content": "Totales No Cuadran"
+  }
+]

@@ -1,5 +1,3 @@
-
-
 let component = ReasonReact.statelessComponent("OrderItems");
 
 let make =
@@ -15,7 +13,7 @@ let make =
     let totals =
       OrderItemCalculation.getTotals(order.discounts, order.orderItems);
     <div className="order-items">
-      <h2> (ReactUtils.s("Order Items")) </h2>
+      <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
       <table>
         <tbody>
           (
@@ -27,18 +25,21 @@ let make =
                    <td>
                      (
                        if (! closed) {
-                         <div
-                           className="card small-card danger-card"
-                           onClick=((_) => onRemoveItem(i))>
-                           (ReactUtils.s("Eliminar"))
-                         </div>;
+                         <Button
+                           className="small-card danger-card"
+                           onClick=((_) => onRemoveItem(i))
+                           label="action.delete"
+                           local=true
+                         />;
                        } else {
                          ReasonReact.nullElement;
                        }
                      )
                    </td>
                    <td> (ReactUtils.s(i.name)) </td>
-                   <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
+                   <td>
+                     (ReactUtils.s(totals.subTotal |> Money.toDisplay))
+                   </td>
                  </tr>;
                })
             |> Array.of_list
@@ -47,13 +48,13 @@ let make =
         </tbody>
         <tfoot>
           <tr className="divider">
-            <th colSpan=2> (ReactUtils.s("Sub-total")) </th>
+            <th colSpan=2> (ReactUtils.sloc("order.subTotal")) </th>
             <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
           </tr>
           (
             if (order.discounts |> List.length > 0) {
               <tr>
-                <th colSpan=2> (ReactUtils.s("Descuento")) </th>
+                <th colSpan=2> (ReactUtils.sloc("order.discounts")) </th>
                 <td> (ReactUtils.s(totals.discounts |> Money.toDisplay)) </td>
               </tr>;
             } else {
@@ -61,11 +62,11 @@ let make =
             }
           )
           <tr>
-            <th colSpan=2> (ReactUtils.s("Impuesto")) </th>
+            <th colSpan=2> (ReactUtils.sloc("order.tax")) </th>
             <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
           </tr>
           <tr>
-            <th colSpan=2> (ReactUtils.s("Total")) </th>
+            <th colSpan=2> (ReactUtils.sloc("order.total")) </th>
             <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
           </tr>
         </tfoot>

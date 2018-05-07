@@ -10,7 +10,8 @@
     "reason-react",
     "bs-jest",
     "bs-most",
-    "refetch",
+    "bs-fetch",
+    "bs-json",
     "cafe-domain",
     "cafe-data"
   ],

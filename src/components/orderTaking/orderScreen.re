@@ -42,15 +42,20 @@ let buildOrderItem = (product: Product.t) : OrderItem.t => {
 };
 
 let buildNewOrder = (customerName: string) : Order.orderVm => {
-  id: None,
-  customerName,
-  orderItems: [],
-  createdOn: Js.Date.now(),
-  discounts: [],
-  paid: None,
-  returned: None,
-  lastUpdated: None,
-  removed: false,
+  let order: Order.orderVm = {
+    id: None,
+    customerName,
+    orderItems: [],
+    createdOn: Js.Date.now(),
+    discounts: [],
+    paid: None,
+    returned: None,
+    lastUpdated: None,
+    removed: false,
+    meta: "",
+  };
+  /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
+  order;
 };
 
 let getOrderVm = orderId =>
@@ -155,8 +160,8 @@ let make = (~goBack, _children) => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
     let customerName =
       switch (Util.QueryParam.get("customerName", queryString)) {
-      | Some(name) => name
-      | None => "Amado Cliente"
+      | Some(name) => name |> Js.Global.decodeURIComponent
+      | None => "order.defaultCustomerName" |> Lang.translate
       };
     {
       closedOrder: false,
@@ -244,9 +249,12 @@ let make = (~goBack, _children) => {
                   </div>
                 | Products(tag) =>
                   <div className="products">
-                    <div className="back-button-card card" onClick=deselectTag>
-                      (ReactUtils.s("Atras"))
-                    </div>
+                    <Button
+                      local=true
+                      className="back-button-card"
+                      onClick=deselectTag
+                      label="nav.back"
+                    />
                     (
                       Product.filterProducts(tag, self.state.allProducts)
                       |> List.map(product =>
@@ -265,16 +273,17 @@ let make = (~goBack, _children) => {
                 />
               </div>
               <div className="more-actions">
-                <button
+                <Button
+                  local=true
                   onClick=(
                     (_) =>
                       self.state.order
                       |> Order.fromVm
-                      |> WebhookEngine.fireFor(PrintOrder)
+                      |> WebhookEngine.fireForOrder(PrintOrder)
+                      |> ignore
                   )
-                  className="card">
-                  (ReactUtils.s("Imprimir Orden"))
-                </button>
+                  label="order.printOrder"
+                />
               </div>
             </div>;
           }

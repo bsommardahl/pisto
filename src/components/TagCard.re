@@ -4,7 +4,5 @@ let component = ReasonReact.statelessComponent("TagCard");
 let make = (~tag: string, ~onSelect, _children) => {
   ...component,
   render: _self =>
-    <div onClick=((_) => onSelect(tag)) className="card tag-card">
-      (ReactUtils.s(tag))
-    </div>,
+    <Button onClick=(_ev => onSelect(tag)) className="tag-card" label=tag />,
 };

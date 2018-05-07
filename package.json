@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bs-fetch": "^0.2.1",
     "bs-jest": "^0.3.2",
+    "bs-json": "^1.0.1",
     "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^2.2.3",
     "cafe-data": "github:bsommardahl/cafe-data",

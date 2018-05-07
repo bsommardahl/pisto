@@ -1,5 +1,3 @@
-
-
 type state = {
   newSku: string,
   newName: string,
@@ -92,9 +90,11 @@ let make = (~createProduct, _children) => {
           />
         </td>
         <td>
-          <button onClick=((_) => finishedEnteringData())>
-            (ReactUtils.s("Crear"))
-          </button>
+          <Button
+            local=true
+            onClick=((_) => finishedEnteringData())
+            label="action.create"
+          />
         </td>
       </tr>
     </tfoot>;

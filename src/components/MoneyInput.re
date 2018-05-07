@@ -1,5 +1,3 @@
-open ReactUtils;
-
 type state = {currentValue: string};
 
 type action =

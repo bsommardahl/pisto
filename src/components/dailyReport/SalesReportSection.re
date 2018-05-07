@@ -15,12 +15,24 @@ let make = (~title: string, ~sales: list(Sale.t), ~key="", _children) => {
       <table className="table">
         <thead>
           <tr className="table-header">
-            <th className="text-cell"> (s("Producto")) </th>
-            <th className="number-cell"> (s("Precio")) </th>
-            <th className="number-cell"> (s("Cantidad")) </th>
-            <th className="number-cell"> (s("Venta")) </th>
-            <th className="number-cell"> (s("ISV")) </th>
-            <th className="number-cell"> (s("Total")) </th>
+            <th className="text-cell">
+              (sloc("daily.salesSection.product"))
+            </th>
+            <th className="number-cell">
+              (sloc("daily.salesSection.price"))
+            </th>
+            <th className="number-cell">
+              (sloc("daily.salesSection.quantity"))
+            </th>
+            <th className="number-cell">
+              (sloc("daily.salesSection.subTotal"))
+            </th>
+            <th className="number-cell">
+              (sloc("daily.salesSection.tax"))
+            </th>
+            <th className="number-cell">
+              (sloc("daily.salesSection.total"))
+            </th>
           </tr>
         </thead>
         <tbody>

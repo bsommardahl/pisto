@@ -2,12 +2,12 @@ open ReactUtils;
 
 let header =
   <tr className="table-header">
-    <th className="text-cell"> (s("Fecha")) </th>
-    <th className="text-cell"> (s("Vendedor")) </th>
-    <th className="text-cell"> (s("Descripcion")) </th>
-    <th className="number-cell"> (s("Subtotal")) </th>
-    <th className="number-cell"> (s("ISV")) </th>
-    <th className="number-cell"> (s("Total")) </th>
+    <th className="text-cell"> (sloc("expense.date")) </th>
+    <th className="text-cell"> (sloc("expense.vendor")) </th>
+    <th className="text-cell"> (sloc("expense.description")) </th>
+    <th className="number-cell"> (sloc("expense.subTotals")) </th>
+    <th className="number-cell"> (sloc("expense.tax")) </th>
+    <th className="number-cell"> (sloc("expense.total")) </th>
   </tr>;
 
 let expenseRow = (e: Expense.denormalized) =>
@@ -55,11 +55,19 @@ let make = (~expenses: list(Expense.t), ~key="", _children) => {
     let denormalized = expenses |> Expense.denormalize;
     let groups =
       denormalized
-      |> Group.by((x: Expense.denormalized) =>
-           x.expenseType.name
-           ++ " con ISV "
-           ++ (x.taxRate |> Percent.toDisplay)
-         );
+      |> Group.by((x: Expense.denormalized) => {
+           let pre = "daily.expensesSection.title.pre" |> Lang.translate;
+           let post = "daily.expensesSection.title.post" |> Lang.translate;
+           let title =
+             x.expenseType.name
+             ++ " "
+             ++ pre
+             ++ " "
+             ++ (x.taxRate |> Percent.toDisplay)
+             ++ " "
+             ++ post;
+           title;
+         });
     <div className="report-section" key>
       <table className="table">
         (

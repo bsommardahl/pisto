@@ -14,7 +14,8 @@ body {
 }
 
 .header-options {
-  padding: 15px;  
+  padding: 15px; 
+  font-size: 30px; 
 }
 
 .header-menu {
@@ -26,6 +27,11 @@ input.big{
   font-size: 30px;
 } 
 input.pin { width: 70px;} 
+
+input.big-text {
+  font-size: 30px;
+}
+
 input.customer-name-input {  
   font-size: 30px;
   width: 300px;

@@ -8,9 +8,11 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
     <div className="paid-date">
       <table>
         <tbody>
-          <tr> <td colSpan=2> <h2> (s("Creado")) </h2> </td> </tr>
           <tr>
-            <th> (s("Fecha")) </th>
+            <td colSpan=2> <h2> (sloc("order.created.header")) </h2> </td>
+          </tr>
+          <tr>
+            <th> (sloc("order.created.date")) </th>
             <td> (s(order.createdOn |> Date.toDisplay)) </td>
           </tr>
         </tbody>
@@ -19,14 +21,19 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
           | None => <tbody />
           | Some(paid) =>
             <tbody>
-              <tr> <td colSpan=2> <h2> (s("Pagado")) </h2> </td> </tr>
               <tr>
-                <th> (s("Fecha")) </th>
+                <td colSpan=2> <h2> (sloc("order.paid.header")) </h2> </td>
+              </tr>
+              <tr>
+                <th> (sloc("order.paid.date")) </th>
                 <td>
                   <EditableDate date=paid.on onChange=paidDateChanged />
                 </td>
               </tr>
-              <tr> <th> (s("Por")) </th> <td> (s(paid.by)) </td> </tr>
+              <tr>
+                <th> (sloc("order.paid.by")) </th>
+                <td> (s(paid.by)) </td>
+              </tr>
             </tbody>
           }
         )
@@ -35,23 +42,34 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
           | None => <tbody />
           | Some(returned) =>
             <tbody>
-              <tr> <td colSpan=2> <h2> (s("Devuelto")) </h2> </td> </tr>
               <tr>
-                <th> (s("Fecha")) </th>
+                <td colSpan=2>
+                  <h2> (sloc("order.returned.header")) </h2>
+                </td>
+              </tr>
+              <tr>
+                <th> (sloc("order.returned.date")) </th>
                 <td> (s(returned.on |> Date.toDisplay)) </td>
               </tr>
-              <tr> <th> (s("Por")) </th> <td> (s(returned.by)) </td> </tr>
+              <tr>
+                <th> (s("order.returned.by")) </th>
+                <td> (s(returned.by)) </td>
+              </tr>
             </tbody>
           }
         )
       </table>
-      <button
-        className="card"
+      <Button
+        local=true
         onClick=(
           (_) =>
-            order |> Order.fromVm |> WebhookEngine.fireFor(ReprintReceipt)
-        )>
-        (s("Imprimir Recibo"))
-      </button>
+            order
+            |> Order.fromVm
+            |> WebhookEngine.fireForOrder(ReprintReceipt)
+            |> Most.observe((response: Order.t) => Js.log(response))
+            |> ignore
+        )
+        label="order.printReceiptCopy"
+      />
     </div>,
 };

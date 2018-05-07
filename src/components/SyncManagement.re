@@ -15,7 +15,7 @@ type action =
   | RemotePasswordChanged(string);
 
 let saveConfigToLocalStorage = config =>
-  Config.setValue(
+  LocalStorage.setValue(
     Config.Database.syncKey,
     config |> Config.Database.toString,
   );
@@ -33,7 +33,7 @@ let make = _children => {
       saveConfigToLocalStorage(config);
       ReasonReact.Router.push("/");
     | None =>
-      switch (Config.getValue(Config.Database.syncKey)) {
+      switch (LocalStorage.getValue(Config.Database.syncKey)) {
       | Some(delimited) =>
         let config = delimited |> Config.Database.toSyncConnectionConfig;
         self.send(LoadConfig(config));
@@ -59,7 +59,6 @@ let make = _children => {
       ReasonReact.Update({...state, password: newVal})
     },
   render: self => {
-    let goBack = (_) => ReasonReact.Router.push("/admin");
     let getVal = ev => ReactDOMRe.domElementToObj(
                          ReactEventRe.Form.target(ev),
                        )##value;
@@ -88,60 +87,44 @@ let make = _children => {
       self.send(LoadConfig(getConfigFromState()));
       ReasonReact.Router.push("sync");
     };
-    <div className="admin-menu">
-      <div className="header">
-        <div className="header-menu">
-          <div className="card wide-card quiet-card" onClick=goBack>
-            (ReactUtils.s("Atras"))
-          </div>
-        </div>
-        <div className="header-options">
-          (ReactUtils.s("Gestion de Configuracion"))
-        </div>
-      </div>
-      <div className="config-management">
-        <h2> (ReactUtils.s("Remote Sync")) </h2>
-        <table>
-          <tr>
-            <th> (ReactUtils.s("Host")) </th>
-            <td>
-              <input
-                value=self.state.host
-                onChange=(ev => self.send(RemoteHostChanged(getVal(ev))))
-              />
-            </td>
-          </tr>
-          <tr>
-            <th> (ReactUtils.s("Username")) </th>
-            <td>
-              <input
-                value=self.state.username
-                onChange=(
-                  ev => self.send(RemoteUsernameChanged(getVal(ev)))
-                )
-              />
-            </td>
-          </tr>
-          <tr>
-            <th> (ReactUtils.s("Password")) </th>
-            <td>
-              <input
-                value=self.state.password
-                onChange=(
-                  ev => self.send(RemotePasswordChanged(getVal(ev)))
-                )
-              />
-            </td>
-          </tr>
-        </table>
-        <button
-          className="card"
-          onClick=((_) => saveChanges(getConfigFromState()))>
-          (ReactUtils.s("Guardar"))
-        </button>
-      </div>
+    <div className="config-management">
+      <h2> (ReactUtils.sloc("admin.config.remote.header")) </h2>
+      <table>
+        <tr>
+          <th> (ReactUtils.sloc("admin.config.remote.host")) </th>
+          <td>
+            <input
+              value=self.state.host
+              onChange=(ev => self.send(RemoteHostChanged(getVal(ev))))
+            />
+          </td>
+        </tr>
+        <tr>
+          <th> (ReactUtils.sloc("admin.config.remote.username")) </th>
+          <td>
+            <input
+              value=self.state.username
+              onChange=(ev => self.send(RemoteUsernameChanged(getVal(ev))))
+            />
+          </td>
+        </tr>
+        <tr>
+          <th> (ReactUtils.sloc("admin.config.remote.password")) </th>
+          <td>
+            <input
+              value=self.state.password
+              onChange=(ev => self.send(RemotePasswordChanged(getVal(ev))))
+            />
+          </td>
+        </tr>
+      </table>
+      <Button
+        local=true
+        onClick=((_) => saveChanges(getConfigFromState()))
+        label="action.save"
+      />
       <div className="sharing no-float">
-        <h4> (ReactUtils.s("Compartir")) </h4>
+        <h4> (ReactUtils.sloc("admin.config.remote.share")) </h4>
         <input
           value=(
             thisPageUrl()
