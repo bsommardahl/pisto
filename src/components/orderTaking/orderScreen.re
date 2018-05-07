@@ -192,7 +192,6 @@ let make = (~goBack, _children) => {
       </div>
       <div className="right-side">
         <SkuSearch
-          maintainFocus=true
           allProducts=self.state.allProducts
           productFound=(p => self.send(SelectProduct(p)))
         />

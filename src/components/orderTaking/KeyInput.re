@@ -1,21 +1,20 @@
+[@bs.val] external window : Dom.window = "";
+
+[@bs.send]
+external addEventListener : (Dom.window, string, 'a => unit) => unit = "";
+
+[@bs.send]
+external removeEventListener : (Dom.window, string, 'a => unit) => unit = "";
+
 type state = {value: string};
 
 type action =
-  | Change(string)
   | Reset
   | KeyDown(int);
 
 let component = ReasonReact.reducerComponent("KeyInput");
 
-let make =
-    (
-      ~onCancel=() => (),
-      ~onFinish,
-      ~autoFocus=true,
-      ~maintainFocus=false,
-      ~className="",
-      _children,
-    ) => {
+let make = (~onCancel=() => (), ~onFinish, ~className="", _children) => {
   ...component,
   initialState: () => {value: ""},
   reducer: (action, state) =>
@@ -27,32 +26,25 @@ let make =
         {value: ""},
         ((_) => onFinish(state.value)),
       )
-    | KeyDown(_) => ReasonReact.NoUpdate
-    | Change(value) => ReasonReact.Update({value: value})
+    | KeyDown(key) =>
+      ReasonReact.Update({
+        value: state.value ++ (key |> Js.String.fromCharCode),
+      })
     | Reset => ReasonReact.Update({value: ""})
     },
-    didMount: _ =>{
-      Js.log("mounted. ");
-      Js.log(maintainFocus);
-      ReasonReact.NoUpdate;
-    },
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
-    let refocusInput = ev =>
-      if (maintainFocus) {
-        let node =
-          ev |> ReactEventRe.Focus.target |> ReactDOMRe.domElementToObj;
-        node##focus();
-      };
+  subscriptions: self => {
+    let logKey = ev => self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
+    [
+      Sub(
+        () => addEventListener(window, "keydown", logKey),
+        () => removeEventListener(window, "keydown", logKey),
+      ),
+    ];
+  },
+  render: self =>
     <input
-      autoFocus=(autoFocus ? Js.true_ : Js.false_)
+      readOnly=true
       className=("key-input " ++ className)
       value=self.state.value
-      onBlur=(ev => refocusInput(ev))
-      onChange=(ev => self.send(Change(getVal(ev))))
-      onKeyDown=(ev => self.send(KeyDown(ReactEventRe.Keyboard.which(ev))))
-    />;
-  },
+    />,
 };
