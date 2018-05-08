@@ -1,6 +1,6 @@
 # PistoPOS
 
-Landing Page: http://pisto.io
+Landing Page: http://pisto.io (spanish) http://pisto.io/en.html (english)
 
 Live App: http://app.pisto.io (free to use)
 
