@@ -1,35 +1,102 @@
+type mode =
+  | TouchToEdit
+  | EditOnly
+  | ReadOnly;
+
+type submitBehavior =
+  | SubmitOnEnter
+  | SubmitOnKey;
+
 type action =
   | EnableMod
-  | DisableMod;
+  | DisableMod
+  | KeyDown(int)
+  | ValueChanged(string);
 
-type state = {modifying: bool};
+type state = {
+  modifying: bool,
+  value: string,
+  original: string,
+};
 
 let component = ReasonReact.reducerComponent("EditableText");
 
-let make = (~text: string, ~big=false, ~onChange, _children) => {
+let make =
+    (
+      ~text: string,
+      ~placeholder="",
+      ~big=true,
+      ~onChange,
+      ~mode=TouchToEdit,
+      ~autoFocus=true,
+      ~required=false,
+      ~submitBehavior=SubmitOnEnter,
+      _children,
+    ) => {
   ...component,
-  initialState: () => {modifying: false},
-  reducer: (action, _state) =>
+  initialState: () => {
+    modifying: mode === EditOnly,
+    original: text,
+    value: text,
+  },
+  reducer: (action, state) =>
     switch (action) {
-    | EnableMod => ReasonReact.Update({modifying: true})
-    | DisableMod => ReasonReact.Update({modifying: false})
+    | EnableMod =>
+      ReasonReact.Update({...state, modifying: mode === TouchToEdit})
+    | DisableMod =>
+      ReasonReact.Update({...state, modifying: mode === EditOnly})
+    | ValueChanged(value) =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, value},
+        (
+          self =>
+            if (submitBehavior === SubmitOnKey) {
+              onChange(self.state.value);
+            }
+        ),
+      )
+    | KeyDown(27) =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, value: state.original},
+        (
+          self =>
+            if (mode !== EditOnly) {
+              self.send(DisableMod);
+            }
+        ),
+      )
+    | KeyDown(13) =>
+      ReasonReact.SideEffects(
+        (
+          self => {
+            onChange(self.state.value);
+            if (mode !== EditOnly) {
+              self.send(DisableMod);
+            };
+          }
+        ),
+      )
+    | KeyDown(_) => ReasonReact.NoUpdate
     },
   render: self => {
-    let ontextChange = ev => {
+    let getVal = ev => {
       let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
-      onChange(value);
+      value;
     };
     self.state.modifying ?
       <div>
         <input
-          value=text
-          onChange=ontextChange
+          value=self.state.value
+          placeholder
+          autoFocus
+          onChange=(ev => self.send(ValueChanged(getVal(ev))))
+          onKeyDown=(
+            event => self.send(KeyDown(ReactEventRe.Keyboard.which(event)))
+          )
           className=(big ? "big-text" : "")
         />
-        <Button
-          local=true
-          onClick=((_) => self.send(DisableMod))
-          label="action.save"
+        <ValidationMessage
+          hidden=(! required || required && self.state.value !== "")
         />
       </div> :
       <div onClick=((_) => self.send(EnableMod))>

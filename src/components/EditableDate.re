@@ -42,7 +42,7 @@ let make = (~date: float, ~onChange, _children) => {
       <div>
         <input value=self.state.date onChange=onCustomerNameChange />
         <button
-          disabled=(! self.state.valid |> Js.Boolean.to_js_boolean)
+          disabled=(! self.state.valid)
           onClick=((_) => self.send(DisableMod))>
           (ReactUtils.s("Hecho"))
         </button>

@@ -12,7 +12,12 @@ type action =
 let component = ReasonReact.reducerComponent("PinInput");
 
 let make =
-    (~onSuccess: Cashier.t => unit, ~onFailure: unit => unit, _children) => {
+    (
+      ~onSuccess: Cashier.t => unit,
+      ~onFailure: unit => unit,
+      ~autoFocus=true,
+      _children,
+    ) => {
   ...component,
   didMount: self => {
     self.send(LoadCashiers);
@@ -76,7 +81,7 @@ let make =
     <div className="pin-entry">
       (ReactUtils.s("PIN:"))
       <input
-        autoFocus=Js.true_
+        autoFocus
         className="big pin"
         value=self.state.pin
         onChange=(ev => self.send(Update(getVal(ev))))

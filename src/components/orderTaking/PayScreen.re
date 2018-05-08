@@ -2,12 +2,27 @@ open Js.Promise;
 
 open OrderHelper;
 
-type state = {order: Order.orderVm};
+type doing =
+  | GettingCashier
+  | ChoosingPaymentMethod
+  | Paying;
+
+type state = {
+  doing,
+  order: Order.orderVm,
+  method: option(PaymentMethod.t),
+  externalId: string,
+  cashier: option(Cashier.t),
+};
 
 type action =
   | LoadOrder(string)
   | OrderLoaded(Order.orderVm)
-  | PayOrder(Cashier.t)
+  | PayOrder
+  | SelectPaymentMethod((PaymentMethod.t, string))
+  | PaymentMethodInvalid
+  | ExternalIdChanged(string)
+  | CashierChanged(option(Cashier.t))
   | Cancel;
 
 let component = ReasonReact.reducerComponent("PayScreen");
@@ -20,6 +35,16 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
   },
   reducer: (action, state) =>
     switch (action) {
+    | PaymentMethodInvalid =>
+      ReasonReact.Update({...state, doing: ChoosingPaymentMethod})
+    | SelectPaymentMethod((method, externalId)) =>
+      ReasonReact.Update({
+        ...state,
+        method: Some(method),
+        externalId,
+        doing: GettingCashier,
+      })
+    | ExternalIdChanged(id) => ReasonReact.Update({...state, externalId: id})
     | LoadOrder(orderId) =>
       ReasonReact.SideEffects(
         (
@@ -32,20 +57,59 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
             |> ignore
         ),
       )
-    | PayOrder(cashier) =>
+    | PayOrder =>
       ReasonReact.SideEffects(
         (
           _self =>
-            payOrder(cashier, state.order, paidOrder =>
-              onPay(cashier, paidOrder)
-            )
+            switch (state.method) {
+            | None => ()
+            | Some(method) =>
+              payOrder(
+                state.cashier, state.order, method, state.externalId, paidOrder =>
+                onPay(state.cashier, paidOrder)
+              )
+            }
         ),
       )
-    | OrderLoaded(order) => ReasonReact.Update({order: order})
+    | CashierChanged(cashier) =>
+      ReasonReact.Update({...state, cashier, doing: Paying})
+    | OrderLoaded(order) => ReasonReact.Update({...state, order})
     | Cancel => ReasonReact.SideEffects(((_) => onCancel(state.order)))
     },
-  initialState: () => {order: buildNewOrder("")},
-  render: self =>
+  initialState: () => {
+    order: buildNewOrder(""),
+    method: None,
+    externalId: "",
+    cashier: None,
+    doing: ChoosingPaymentMethod,
+  },
+  render: self => {
+    let cashier =
+      <h2>
+        (ReactUtils.sloc("cashier"))
+        (ReactUtils.s(": "))
+        (
+          ReactUtils.s(
+            switch (self.state.cashier) {
+            | None => "n/a"
+            | Some(cashier) => cashier.name
+            },
+          )
+        )
+      </h2>;
+    let paymentMethod =
+      <h2>
+        (ReactUtils.sloc("paymentMethod"))
+        (ReactUtils.s(": "))
+        (
+          ReactUtils.sloc(
+            switch (self.state.method) {
+            | None => "none"
+            | Some(m) => m.name
+            },
+          )
+        )
+      </h2>;
     <div className="order">
       <div className="order-header">
         <div className="header-menu">
@@ -67,10 +131,42 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
           canDeselectDiscount=false
           canRemoveItem=false
         />
-        <PinInput
-          onFailure=(() => onCancel(self.state.order))
-          onSuccess=(cashier => self.send(PayOrder(cashier)))
-        />
+        (
+          switch (self.state.doing) {
+          | ChoosingPaymentMethod =>
+            <PaymentMethodSelector
+              onValid=(
+                (method, externalId) =>
+                  self.send(SelectPaymentMethod((method, externalId)))
+              )
+              onInvalid=((_) => self.send(PaymentMethodInvalid))
+            />
+          | GettingCashier =>
+            <div>
+              paymentMethod
+              <PinInput
+                autoFocus=true
+                onFailure=(() => self.send(CashierChanged(None)))
+                onSuccess=(
+                  cashier => self.send(CashierChanged(Some(cashier)))
+                )
+              />
+            </div>
+          | Paying =>
+            <div>
+              paymentMethod
+              cashier
+              <div>
+                <Button
+                  local=true
+                  label="action.pay"
+                  onClick=((_) => self.send(PayOrder))
+                />
+              </div>
+            </div>
+          }
+        )
       </div>
-    </div>,
+    </div>;
+  },
 };

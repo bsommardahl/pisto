@@ -34,6 +34,20 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
                 <th> (sloc("order.paid.by")) </th>
                 <td> (s(paid.by)) </td>
               </tr>
+              <tr>
+                <th> (sloc("paymentMethod")) </th>
+                <td> (sloc(paid.method.name)) </td>
+              </tr>
+              (
+                switch (paid.externalId) {
+                | "" => ReasonReact.nullElement
+                | id =>
+                  <tr>
+                    <th> (sloc(paid.method.name ++ ".externalId")) </th>
+                    <td> (s(id)) </td>
+                  </tr>
+                }
+              )
             </tbody>
           }
         )

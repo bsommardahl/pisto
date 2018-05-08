@@ -30,6 +30,7 @@ input.pin { width: 70px;}
 
 input.big-text {
   font-size: 30px;
+  width: 100%;
 }
 
 input.customer-name-input {  
@@ -134,6 +135,7 @@ input.customer-name-input {
 }
 .order-header .customer-name {
   font-size: 30px;
+  width: 350px;
 }
 .order-actions{
   float: right;
@@ -227,4 +229,9 @@ table.admin-table thead th {
 
 .h-centered {
   margin:0 auto;
+}
+
+
+.payment-method-selected {
+  background-color: darkorange;
 }
