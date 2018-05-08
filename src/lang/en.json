@@ -418,5 +418,25 @@
   {
     "key": "validation.totalsDoNotAddUp",
     "content": "Totals Do Not Add Up"
+  },
+  {
+    "key": "cashier",
+    "content": "Cashier"
+  },
+  {
+    "key": "paymentMethod",
+    "content": "Payment Method"
+  },
+  {
+    "key": "paymentMethod.cash",
+    "content": "Cash"
+  },
+  {
+    "key": "paymentMethod.card",
+    "content": "Credit/Debit"
+  },
+  {
+    "key": "paymentMethod.card.externalId",
+    "content": "TransactionId"
   }
 ]

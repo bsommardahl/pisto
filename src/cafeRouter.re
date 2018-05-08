@@ -57,6 +57,10 @@ let make = _children => {
     let onStartNewOrder = customerName =>
       ReasonReact.Router.push("order?customerName=" ++ customerName);
     let goHome = () => ReasonReact.Router.push("/");
+    let goToOrder = order =>
+      ReasonReact.Router.push(
+        "/order?orderId=" ++ (order |> Order.fromVm).id,
+      );
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
     let orderId =
       switch (Util.QueryParam.get("orderId", queryString)) {
@@ -72,7 +76,7 @@ let make = _children => {
           <PayScreen
             orderId
             onPay=((_c, _o) => goHome())
-            onCancel=(_o => goHome())
+            onCancel=(o => goToOrder(o))
           />
         | AllOrders => <AllOrders />
         | Admin => <Admin />

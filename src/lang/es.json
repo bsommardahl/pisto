@@ -418,5 +418,25 @@
   {
     "key": "validation.totalsDoNotAddUp",
     "content": "Totales No Cuadran"
+  },
+  {
+    "key": "cashier",
+    "content": "Cajero"
+  },
+  {
+    "key": "paymentMethod",
+    "content": "Metodo de Pago"
+  },
+  {
+    "key": "paymentMethod.cash",
+    "content": "Efectivo"
+  },
+  {
+    "key": "paymentMethod.card",
+    "content": "Debito/Credito"
+  },
+  {
+    "key": "paymentMethod.card.externalId",
+    "content": "Trans Id"
   }
 ]

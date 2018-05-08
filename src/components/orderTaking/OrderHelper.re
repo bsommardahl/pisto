@@ -32,8 +32,10 @@ let saveOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) : unit =
 
 let payOrder =
     (
-      cashier: Cashier.t,
+      cashier: option(Cashier.t),
       order: Order.orderVm,
+      method: PaymentMethod.t,
+      externalId: string,
       onFinish: Order.orderVm => unit,
     )
     : unit => {
@@ -44,11 +46,17 @@ let payOrder =
     paid:
       Some({
         on: Date.now(),
-        by: cashier.name,
+        by:
+          switch (cashier) {
+          | None => "n/a"
+          | Some(c) => c.name
+          },
         subTotal: totals.subTotal,
         tax: totals.tax,
         discount: totals.discounts,
         total: totals.total,
+        method,
+        externalId,
       }),
   };
   let stream =

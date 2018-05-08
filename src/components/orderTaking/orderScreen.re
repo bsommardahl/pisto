@@ -185,6 +185,7 @@ let make = (~goBack, _children) => {
         />
         <div className="customer-name">
           <EditableText
+            mode=TouchToEdit
             text=self.state.order.customerName
             onChange=(newName => self.send(ChangeCustomerName(newName)))
           />
