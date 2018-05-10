@@ -11,7 +11,7 @@ let make = _children => {
   ...component,
   didMount: self => {
     LogStore.getLogs(
-      Date.now() |> Date.oneMonthBefore,
+      ConfigurableDate.now() |> Date.oneMonthBefore,
       ConfigurableDate.now(),
       1,
     )

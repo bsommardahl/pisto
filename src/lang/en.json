@@ -422,5 +422,13 @@
   {
     "key": "admin.config.application.now",
     "content": "System Time"
+  },
+  {
+    "key": "admin.config.application.now.default",
+    "content": "Default Time"
+  },
+  {
+    "key": "admin.config.application.now.set",
+    "content": "Set Time"
   }
 ]

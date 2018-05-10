@@ -37,7 +37,7 @@ let loadClosedOrders = (state, send) => {
 let make = _children => {
   ...component,
   initialState: () => {
-    startDate: Date.now() |> Date.startOfDay,
+    startDate: ConfigurableDate.now() |> Date.startOfDay,
     endDate: ConfigurableDate.now(),
     orders: [],
     interval: (-1),

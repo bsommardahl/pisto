@@ -43,7 +43,7 @@ let payOrder =
     ...order,
     paid:
       Some({
-        on: Date.now(),
+        on: ConfigurableDate.now(),
         by: cashier.name,
         subTotal: totals.subTotal,
         tax: totals.tax,
@@ -75,7 +75,10 @@ let returnOrder =
       onFinish: Order.orderVm => unit,
     ) =>
   saveOrder(
-    {...order, returned: Some({on: Date.now(), by: cashier.name})},
+    {
+      ...order,
+      returned: Some({on: ConfigurableDate.now(), by: cashier.name}),
+    },
     (vm: Order.orderVm) => {
       vm
       |> Order.fromVm
@@ -102,7 +105,7 @@ let buildOrderItem = (product: Product.t) : OrderItem.t => {
   sku: product.sku,
   name: product.name,
   suggestedPrice: product.suggestedPrice,
-  addedOn: Js.Date.now(),
+  addedOn: ConfigurableDate.now(),
   salePrice: product.suggestedPrice,
   taxCalculation: product.taxCalculation,
 };

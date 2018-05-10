@@ -1,7 +1,7 @@
 type state = {
   language: string,
   deviceId: string,
-  now: Date.t,
+  now: option(Date.t),
 };
 
 type action =
@@ -10,13 +10,13 @@ type action =
   | SaveConfig
   | DeviceIdChanged(string)
   | LanguageChanged(string)
-  | NowChanged(Date.t);
+  | NowChanged(option(Date.t));
 
 let component = ReasonReact.reducerComponent("SyncManagement");
 
 let make = _children => {
   ...component,
-  initialState: () => {language: "EN", deviceId: "", now: Date.now()},
+  initialState: () => {language: "EN", deviceId: "", now: None},
   didMount: self => {
     self.send(LoadConfig);
     ReasonReact.NoUpdate;
@@ -25,17 +25,19 @@ let make = _children => {
     switch (action) {
     | LoadConfig =>
       ReasonReact.SideEffects(
-        (self => self.send(ConfigLoaded(Config.App.get()))),
+        (
+          self => {
+            let cfg = Config.App.get();
+            Js.log(cfg);
+            self.send(ConfigLoaded(cfg));
+          }
+        ),
       )
     | ConfigLoaded(config) =>
       ReasonReact.Update({
         language: config.language,
         deviceId: config.deviceId,
-        now:
-          switch (config.now) {
-          | None => 0.
-          | Some(d) => d
-          },
+        now: config.now,
       })
     | SaveConfig =>
       ReasonReact.SideEffects(
@@ -44,7 +46,7 @@ let make = _children => {
             Config.App.set({
               language: state.language,
               deviceId: state.deviceId,
-              now: Some(state.now),
+              now: state.now,
             })
         ),
       )
@@ -82,10 +84,30 @@ let make = _children => {
         <tr>
           <th> (ReactUtils.sloc("admin.config.application.now")) </th>
           <td>
-            <DateInput
-              value=self.state.now
-              onChange=(d => self.send(NowChanged(d)))
-            />
+            (
+              switch (self.state.now) {
+              | None =>
+                <Button
+                  local=true
+                  label="admin.config.application.now.set"
+                  onClick=((_) => self.send(NowChanged(Some(Date.now()))))
+                />
+              | Some(d) =>
+                <div>
+                  <span>
+                    <DateInput
+                      value=d
+                      onChange=(newD => self.send(NowChanged(Some(newD))))
+                    />
+                  </span>
+                  <Button
+                    local=true
+                    label="admin.config.application.now.default"
+                    onClick=((_) => self.send(NowChanged(None)))
+                  />
+                </div>
+              }
+            )
           </td>
         </tr>
       </table>

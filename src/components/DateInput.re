@@ -39,8 +39,8 @@ let make =
     let getVal = ev => ReactDOMRe.domElementToObj(
                          ReactEventRe.Form.target(ev),
                        )##value;
-    <div className="field date-input" key>
-      <div className="field-title"> (s(title)) </div>
+    <span className="field date-input" key>
+      <span className="field-title"> (s(title)) </span>
       <input
         className="date"
         _type="date"
@@ -49,6 +49,6 @@ let make =
         onBlur=(_ev => self.send(FinishedEditing))
         onFocus=((_) => self.send(StartEditing))
       />
-    </div>;
+    </span>;
   },
 };
