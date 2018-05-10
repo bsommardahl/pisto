@@ -18,12 +18,14 @@ let fieldsAllValid =
 
 let opposite = (b: bool) => b ? false : true;
 
-let isExpenseValid = fields =>
+let isExpenseValid = fields => {
+  Js.log(fields);
   fields
   |> Js.Dict.entries
   |> Array.to_list
   |> List.exists(((_k, v)) => v == false)
   |> opposite;
+};
 
 type validator = {
   field: string,
@@ -421,15 +423,14 @@ let make =
         | None =>
           <Button
             local=true
-            disabled=(isExpenseValid(self.state.fields) ? false : true)
             onClick=((_) => createNewExpense())
             label="action.create"
           />
+        /* disabled=(isExpenseValid(self.state.fields) ? false : true) */
         | Some(e) =>
           <span>
             <Button
               local=true
-              disabled=(isExpenseValid(self.state.fields) ? false : true)
               onClick=((_) => modifyExistingExpense(e))
               label="action.save"
             />
