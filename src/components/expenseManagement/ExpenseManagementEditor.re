@@ -120,7 +120,7 @@ let make =
           id: "",
           name: "None",
         },
-        date: Date.now(),
+        date: ConfigurableDate.now(),
         subTotals: [],
         tax: 0,
         total: 0,

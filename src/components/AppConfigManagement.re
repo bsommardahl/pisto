@@ -1,6 +1,7 @@
 type state = {
   language: string,
   deviceId: string,
+  now: Date.t,
 };
 
 type action =
@@ -8,13 +9,14 @@ type action =
   | ConfigLoaded(Config.App.t)
   | SaveConfig
   | DeviceIdChanged(string)
-  | LanguageChanged(string);
+  | LanguageChanged(string)
+  | NowChanged(Date.t);
 
 let component = ReasonReact.reducerComponent("SyncManagement");
 
 let make = _children => {
   ...component,
-  initialState: () => {language: "EN", deviceId: ""},
+  initialState: () => {language: "EN", deviceId: "", now: Date.now()},
   didMount: self => {
     self.send(LoadConfig);
     ReasonReact.NoUpdate;
@@ -29,6 +31,11 @@ let make = _children => {
       ReasonReact.Update({
         language: config.language,
         deviceId: config.deviceId,
+        now:
+          switch (config.now) {
+          | None => 0.
+          | Some(d) => d
+          },
       })
     | SaveConfig =>
       ReasonReact.SideEffects(
@@ -37,11 +44,13 @@ let make = _children => {
             Config.App.set({
               language: state.language,
               deviceId: state.deviceId,
+              now: Some(state.now),
             })
         ),
       )
     | LanguageChanged(newVal) =>
       ReasonReact.Update({...state, language: newVal})
+    | NowChanged(newVal) => ReasonReact.Update({...state, now: newVal})
     | DeviceIdChanged(newVal) =>
       ReasonReact.Update({...state, deviceId: newVal})
     },
@@ -67,6 +76,15 @@ let make = _children => {
             <input
               value=self.state.deviceId
               onChange=(ev => self.send(DeviceIdChanged(getVal(ev))))
+            />
+          </td>
+        </tr>
+        <tr>
+          <th> (ReactUtils.sloc("admin.config.application.now")) </th>
+          <td>
+            <DateInput
+              value=self.state.now
+              onChange=(d => self.send(NowChanged(d)))
             />
           </td>
         </tr>

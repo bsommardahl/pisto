@@ -59,7 +59,7 @@ let make = _children => {
                    ExpensesLoaded(
                      expenses
                      |> List.filter((e: Expense.t) =>
-                          e.date > (Date.now() |> Date.startOfDay)
+                          e.date > (ConfigurableDate.now() |> Date.startOfDay)
                         ),
                    ),
                  );

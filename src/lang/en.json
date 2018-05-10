@@ -418,5 +418,9 @@
   {
     "key": "validation.totalsDoNotAddUp",
     "content": "Totals Do Not Add Up"
+  },
+  {
+    "key": "admin.config.application.now",
+    "content": "System Time"
   }
 ]

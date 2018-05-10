@@ -85,7 +85,7 @@ let make = _children => {
         | Daily =>
           <PAndLContainer
             startDate=(Date.now() |> Date.startOfDay)
-            endDate=(Date.now() |> Date.endOfDay)
+            endDate=(ConfigurableDate.now() |> Date.endOfDay)
           />
         }
       )

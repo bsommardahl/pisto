@@ -49,6 +49,8 @@ let payOrder =
         tax: totals.tax,
         discount: totals.discounts,
         total: totals.total,
+        externalId: "",
+        method: PaymentMethod.default,
       }),
   };
   let stream =
@@ -110,13 +112,13 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
     id: None,
     customerName,
     orderItems: [],
-    createdOn: Js.Date.now(),
+    createdOn: ConfigurableDate.now(),
     discounts: [],
     paid: None,
     returned: None,
     lastUpdated: None,
     removed: false,
-    meta: "",
+    meta: Js.Json.parseExn("{}"),
   };
   /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
   order;

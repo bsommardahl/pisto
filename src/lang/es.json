@@ -418,5 +418,9 @@
   {
     "key": "validation.totalsDoNotAddUp",
     "content": "Totales No Cuadran"
+  },
+  {
+    "key": "admin.config.application.now",
+    "content": "Hora del Sistema"
   }
 ]
