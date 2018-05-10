@@ -422,5 +422,13 @@
   {
     "key": "admin.config.application.now",
     "content": "Hora del Sistema"
+  },
+  {
+    "key": "admin.config.application.now.default",
+    "content": "Hora Actual"
+  },
+  {
+    "key": "admin.config.application.now.set",
+    "content": "Simular Hora"
   }
 ]
