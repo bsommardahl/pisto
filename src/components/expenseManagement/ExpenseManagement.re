@@ -53,16 +53,12 @@ let make = _children => {
       ReasonReact.SideEffects(
         (
           self =>
-            ExpenseStore.getAll()
+            ExpenseStore.getAllInRange(
+              ConfigurableDate.now() |> Date.startOfDay,
+              ConfigurableDate.now(),
+            )
             |> Js.Promise.then_(expenses => {
-                 self.send(
-                   ExpensesLoaded(
-                     expenses
-                     |> List.filter((e: Expense.t) =>
-                          e.date > (Date.now() |> Date.startOfDay)
-                        ),
-                   ),
-                 );
+                 self.send(ExpensesLoaded(expenses));
                  Js.Promise.resolve();
                })
             |> ignore

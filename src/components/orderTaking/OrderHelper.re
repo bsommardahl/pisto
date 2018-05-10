@@ -45,7 +45,7 @@ let payOrder =
     ...order,
     paid:
       Some({
-        on: Date.now(),
+        on: ConfigurableDate.now(),
         by:
           switch (cashier) {
           | None => "n/a"
@@ -55,8 +55,8 @@ let payOrder =
         tax: totals.tax,
         discount: totals.discounts,
         total: totals.total,
-        method,
-        externalId,
+        externalId: "",
+        method: PaymentMethod.default,
       }),
   };
   let stream =
@@ -81,7 +81,10 @@ let returnOrder =
       onFinish: Order.orderVm => unit,
     ) =>
   saveOrder(
-    {...order, returned: Some({on: Date.now(), by: cashier.name})},
+    {
+      ...order,
+      returned: Some({on: ConfigurableDate.now(), by: cashier.name}),
+    },
     (vm: Order.orderVm) => {
       vm
       |> Order.fromVm
@@ -108,7 +111,7 @@ let buildOrderItem = (product: Product.t) : OrderItem.t => {
   sku: product.sku,
   name: product.name,
   suggestedPrice: product.suggestedPrice,
-  addedOn: Js.Date.now(),
+  addedOn: ConfigurableDate.now(),
   salePrice: product.suggestedPrice,
   taxCalculation: product.taxCalculation,
 };
@@ -118,13 +121,13 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
     id: None,
     customerName,
     orderItems: [],
-    createdOn: Js.Date.now(),
+    createdOn: ConfigurableDate.now(),
     discounts: [],
     paid: None,
     returned: None,
     lastUpdated: None,
     removed: false,
-    meta: "",
+    meta: Js.Json.parseExn("{}"),
   };
   /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
   order;

@@ -10,7 +10,11 @@ let component = ReasonReact.reducerComponent("LogManagement");
 let make = _children => {
   ...component,
   didMount: self => {
-    LogStore.getLogs(Date.now() |> Date.oneMonthBefore, Date.now(), 1)
+    LogStore.getLogs(
+      ConfigurableDate.now() |> Date.oneMonthBefore,
+      ConfigurableDate.now(),
+      1,
+    )
     |> then_(logs => {
          self.send(LoadLogs(logs));
          resolve();

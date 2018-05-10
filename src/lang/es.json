@@ -420,6 +420,18 @@
     "content": "Totales No Cuadran"
   },
   {
+    "key": "admin.config.application.now",
+    "content": "Hora del Sistema"
+  },
+  {
+    "key": "admin.config.application.now.default",
+    "content": "Dia Actual"
+  },
+  {
+    "key": "admin.config.application.now.set",
+    "content": "Simular Dia"
+  },
+  {
     "key": "cashier",
     "content": "Cajero"
   },

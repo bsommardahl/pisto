@@ -420,6 +420,18 @@
     "content": "Totals Do Not Add Up"
   },
   {
+    "key": "admin.config.application.now",
+    "content": "System Time"
+  },
+  {
+    "key": "admin.config.application.now.default",
+    "content": "Default Day"
+  },
+  {
+    "key": "admin.config.application.now.set",
+    "content": "Set Day"
+  },
+  {
     "key": "cashier",
     "content": "Cashier"
   },

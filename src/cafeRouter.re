@@ -88,8 +88,8 @@ let make = _children => {
         | Expenses => <ExpenseManagement />
         | Daily =>
           <PAndLContainer
-            startDate=(Date.now() |> Date.startOfDay)
-            endDate=(Date.now() |> Date.endOfDay)
+            startDate=(ConfigurableDate.now() |> Date.startOfDay)
+            endDate=(ConfigurableDate.now())
           />
         }
       )
