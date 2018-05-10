@@ -26,7 +26,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("ExpenseManagement");
 
-let make = _children => {
+let make = (~startDate, ~endDate, _children) => {
   ...component,
   subscriptions: self => [
     Sub(
@@ -53,10 +53,7 @@ let make = _children => {
       ReasonReact.SideEffects(
         (
           self =>
-            ExpenseStore.getAllInRange(
-              ConfigurableDate.now() |> Date.startOfDay,
-              ConfigurableDate.now(),
-            )
+            ExpenseStore.getAllInRange(startDate, endDate)
             |> Js.Promise.then_(expenses => {
                  self.send(ExpensesLoaded(expenses));
                  Js.Promise.resolve();

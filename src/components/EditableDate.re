@@ -24,7 +24,7 @@ let make = (~date: Date.t, ~onChange, _children) => {
     | DisableMod =>
       ReasonReact.UpdateWithSideEffects(
         {...state, modifying: false, valid: true},
-        (_self => onChange(state.date |> float_of_string)),
+        (_self => onChange(state.date |> Date.fromDisplay)),
       )
     | UpdateDate(newDate) =>
       ReasonReact.Update({
@@ -48,7 +48,7 @@ let make = (~date: Date.t, ~onChange, _children) => {
           local=true
           disabled=(! self.state.valid)
           onClick=((_) => self.send(DisableMod))
-          label="actions.done"
+          label="action.done"
         />
         (
           self.state.valid ?

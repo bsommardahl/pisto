@@ -67,6 +67,8 @@ let make = _children => {
       | None => ""
       | Some(orderId) => orderId
       };
+    let startDate = ConfigurableDate.now() |> Date.startOfDay;
+    let endDate = ConfigurableDate.now() |> Date.endOfDay;
     <div>
       (
         switch (self.state.currentView) {
@@ -78,19 +80,15 @@ let make = _children => {
             onPay=((_c, _o) => goHome())
             onCancel=(o => goToOrder(o))
           />
-        | AllOrders => <AllOrders />
+        | AllOrders => <AllOrders startDate endDate />
         | Admin => <Admin />
         | Products => <ProductManagement />
         | Config => <ConfigManagement />
         | Logs => <LogManagement />
         | ExpenseTypes => <ExpenseTypeManagement />
         | Vendors => <VendorManagement />
-        | Expenses => <ExpenseManagement />
-        | Daily =>
-          <PAndLContainer
-            startDate=(ConfigurableDate.now() |> Date.startOfDay)
-            endDate=(ConfigurableDate.now() |> Date.endOfDay)
-          />
+        | Expenses => <ExpenseManagement startDate endDate />
+        | Daily => <PAndLContainer startDate endDate />
         }
       )
     </div>;

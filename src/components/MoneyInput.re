@@ -25,8 +25,7 @@ let make =
       )
     | StartEditing =>
       ReasonReact.Update({
-        currentValue:
-          state.currentValue |> Util.cleanNonNumeric |> Util.stripLeadingZeros,
+        currentValue: state.currentValue |> float_of_string |> string_of_float,
       })
     },
   initialState: () => {currentValue: amount |> Money.toDisplay},

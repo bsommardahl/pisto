@@ -4,6 +4,10 @@
     "content": "Save"
   },
   {
+    "key": "action.done",
+    "content": "Done"
+  },
+  {
     "key": "action.cancel",
     "content": "Exit"
   },

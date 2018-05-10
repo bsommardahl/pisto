@@ -4,6 +4,10 @@
     "content": "Guardar"
   },
   {
+    "key": "action.done",
+    "content": "Hecho"
+  },
+  {
     "key": "action.cancel",
     "content": "Salir"
   },

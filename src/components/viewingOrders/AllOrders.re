@@ -34,14 +34,9 @@ let loadClosedOrders = (state, send) => {
   |> ignore;
 };
 
-let make = _children => {
+let make = (~startDate, ~endDate, _children) => {
   ...component,
-  initialState: () => {
-    startDate: ConfigurableDate.now() |> Date.startOfDay,
-    endDate: ConfigurableDate.now(),
-    orders: [],
-    interval: (-1),
-  },
+  initialState: () => {startDate, endDate, orders: [], interval: (-1)},
   didMount: self => {
     loadClosedOrders(self.state, self.send);
     ReasonReact.NoUpdate;
