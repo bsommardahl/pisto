@@ -11,7 +11,7 @@ type state = {
 
 let component = ReasonReact.reducerComponent("EditableCustomerName");
 
-let make = (~date: float, ~onChange, _children) => {
+let make = (~date: Date.t, ~onChange, _children) => {
   ...component,
   initialState: () => {
     modifying: false,
@@ -34,18 +34,22 @@ let make = (~date: float, ~onChange, _children) => {
       })
     },
   render: self => {
-    let onCustomerNameChange = ev => {
+    let getVal = ev => {
       let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
-      self.send(UpdateDate(value));
+      value;
     };
     self.state.modifying ?
       <div>
-        <input value=self.state.date onChange=onCustomerNameChange />
-        <button
+        <input
+          value=self.state.date
+          onChange=(ev => self.send(UpdateDate(getVal(ev))))
+        />
+        <Button
+          local=true
           disabled=(! self.state.valid)
-          onClick=((_) => self.send(DisableMod))>
-          (ReactUtils.s("Hecho"))
-        </button>
+          onClick=((_) => self.send(DisableMod))
+          label="actions.done"
+        />
         (
           self.state.valid ?
             <div className="valid"> (ReactUtils.s("Valido")) </div> :

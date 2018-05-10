@@ -315,10 +315,9 @@ let make =
             hidden=(isValid("Date", self.state.date |> Date.toDisplay))
           />
         </div>
-        <input
-          className="date"
-          value=(self.state.date |> Date.toDisplay)
-          onChange=(ev => self.send(ChangeDate(getVal(ev))))
+        <EditableDate
+          date=self.state.date
+          onChange=(d => self.send(ChangeDate(d)))
         />
       </div>
       <div className="section">
