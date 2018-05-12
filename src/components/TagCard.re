@@ -4,5 +4,10 @@ let component = ReasonReact.statelessComponent("TagCard");
 let make = (~tag: string, ~onSelect, _children) => {
   ...component,
   render: _self =>
-    <Button onClick=(_ev => onSelect(tag)) className="tag-card" label=tag />,
+    <Button
+      key=tag
+      onClick=(_ev => onSelect(tag))
+      className="tag-card"
+      label=tag
+    />,
 };

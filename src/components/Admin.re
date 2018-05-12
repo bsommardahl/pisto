@@ -32,6 +32,11 @@ let make = _children => {
           onClick=((_) => go("config"))
           label="admin.config"
         />
+        <Button
+          local=true
+          onClick=((_) => go("webhooks"))
+          label="admin.wehbooks"
+        />
       </div>
     </div>;
   },

@@ -1,7 +1,10 @@
 type response = {
   webhook: Webhook.t,
   payload: Js.Json.t,
+  error: option(Js.Promise.error),
 };
+
+let emptyJson = Js.Json.parseExn("{}");
 
 let convertPayloadToJson = payload =>
   switch (Js.Json.stringifyAny(payload)) {
@@ -23,32 +26,26 @@ let buildRequest = (payload: string) =>
 
 external unsafeConvert : Js.Json.t => Js.t('a) = "%identity";
 
+let catchFetchError = (hook: Webhook.t, promise) : Js.Promise.t(response) =>
+  promise
+  |> Js.Promise.catch((err: Js.Promise.error) => {
+       Js.log("Error when fetching webhook: " ++ hook.name);
+       Js.log(err);
+       let response = {webhook: hook, payload: emptyJson, error: Some(err)};
+       Js.Promise.resolve(response);
+     });
+
 let fetch = (hook: Webhook.t, payload: 'a) : Js.Promise.t(response) =>
   payload
   |> convertPayloadToJson
   |> buildRequest
   |> Fetch.fetchWithInit(hook.url)
   |> Js.Promise.then_(Fetch.Response.json)
-  |> Js.Promise.then_(json => {
-       Js.log(json);
-       Js.Promise.resolve(json);
-     })
-  |> Js.Promise.catch(err => {
-       Js.log("Webhook error with " ++ hook.name);
-       Js.log(err);
-       let json =
-         Js.Json.parseExn(
-           switch (Js.Json.stringifyAny(err)) {
-           | Some(s) => s
-           | None => "{}"
-           },
-         );
-       Js.Promise.resolve(json);
-     })
   |> Js.Promise.then_((json: Js.Json.t) => {
-       let response = {webhook: hook, payload: json};
+       let response = {webhook: hook, payload: json, error: None};
        Js.Promise.resolve(response);
-     });
+     })
+  |> catchFetchError(hook);
 
 let nullWebhook: Webhook.t = {
   id: "n/a",
@@ -69,51 +66,33 @@ let log = (message, promise) =>
 let getWebhooks = (event, source) : Js.Promise.t(list(Webhook.t)) =>
   WebhookStore.getAll()
   |> Js.Promise.then_((list: list(Webhook.t)) => {
-       let filtered =
-         list
-         |> List.filter((x: Webhook.t) =>
-              x.event === event && x.source === source
-            );
-       (
-         switch (filtered |> List.length) {
-         | 0 => [nullWebhook]
-         | _ => list
-         }
-       )
+       Js.log("All webhooks available:");
+       list
+       |> List.filter((x: Webhook.t) => {
+            Js.log(x);
+            x.event === event && x.source === source;
+          })
        |> Js.Promise.resolve;
-     })
-  |> log("gotWebhooks");
+     });
 
-let fetchAllWebhooksButReturnFirstOrder =
-    (list: list(Webhook.t), order: Order.t)
-    : Js.Promise.t(Order.t) =>
-  list
-  |> List.map((w: Webhook.t) => fetch(w, order))
-  |> Array.of_list
-  |> Js.Promise.all
-  |> Js.Promise.then_(arr =>
-       arr |> Array.to_list |. List.nth(0) |> Js.Promise.resolve
-     )
-  |> log("fetch responses")
-  |> Js.Promise.then_((r: response) =>
-       (
-         r.payload
-         |> unsafeConvert
-         |> Order.mapOrderFromJs
-         |> Js.Promise.resolve:
-           Js.Promise.t(Order.t)
-       )
-     )
-  |> log("first fetch responses");
+let fetchAllWebhooks =
+    (list: list(Webhook.t), payload: Js.t('a))
+    : Js.Promise.t(list(response)) =>
+  Js.Promise.(
+    list
+    |> List.map((w: Webhook.t) => fetch(w, payload))
+    |> Array.of_list
+    |> all
+    |> then_(x => resolve(x |> Array.to_list))
+  );
 
-let fireForOrder =
-    (order: Order.t, webhooks: Js.Promise.t(list(Webhook.t)))
-    : Most.stream(Order.t) =>
+let fire =
+    (payload: Js.t('a), webhooks: Js.Promise.t(list(Webhook.t)))
+    : Js.Promise.t(list(response)) =>
   webhooks
   |> Js.Promise.then_((list: list(Webhook.t)) =>
        switch (list |> List.length) {
-       | 0 => Js.Promise.resolve(order)
-       | _ => order |> fetchAllWebhooksButReturnFirstOrder(list)
+       | 0 => Js.Promise.resolve([])
+       | _ => fetchAllWebhooks(list, payload)
        }
-     )
-  |> Most.fromPromise;
+     );

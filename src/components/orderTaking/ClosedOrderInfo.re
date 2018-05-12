@@ -78,8 +78,15 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
         onClick=(
           (_) =>
             WebhookEngine.getWebhooks(ReprintReceipt, Order)
-            |> WebhookEngine.fireForOrder(order |> Order.fromVm)
-            |> Most.observe((response: Order.t) => Js.log(response))
+            |> WebhookEngine.fire(order |> Order.fromVm |> Order.toJs)
+            |> Js.Promise.then_((list: list(WebhookEngine.response)) =>
+                 Js.log(list) |> Js.Promise.resolve
+               )
+            /* |> Most.observe((response: Order.t) => Js.log(response)) */
+            /* |> Js.Promise.then_(() =>
+                 Js.log("finished reprinting receipt with webhook")
+                 |> Js.Promise.resolve
+               ) */
             |> ignore
         )
         label="order.printReceiptCopy"
