@@ -253,9 +253,10 @@ let make = (~goBack, _children) => {
                   local=true
                   onClick=(
                     (_) =>
-                      self.state.order
-                      |> Order.fromVm
-                      |> WebhookEngine.fireForOrder(PrintOrder)
+                      WebhookEngine.getWebhooks(PrintOrder, Order)
+                      |> WebhookEngine.fireForOrder(
+                           self.state.order |> Order.fromVm,
+                         )
                       |> ignore
                   )
                   label="order.printOrder"

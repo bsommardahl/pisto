@@ -60,13 +60,16 @@ let payOrder =
       }),
   };
   let stream =
-    paidOrder |> Order.fromVm |> WebhookEngine.fireForOrder(BeforeOrderPaid);
+    WebhookEngine.getWebhooks(BeforeOrderPaid, Order)
+    |> WebhookEngine.fireForOrder(paidOrder |> Order.fromVm);
   stream
   |> Most.observe((orderFromWebhook: Order.t) =>
        saveOrder(
          orderFromWebhook |> Order.toVm,
          (vm: Order.orderVm) => {
-           orderFromWebhook |> WebhookEngine.fireForOrder(OrderPaid) |> ignore;
+           WebhookEngine.getWebhooks(OrderPaid, Order)
+           |> WebhookEngine.fireForOrder(orderFromWebhook)
+           |> ignore;
            onFinish(vm);
          },
        )
@@ -86,9 +89,8 @@ let returnOrder =
       returned: Some({on: ConfigurableDate.now(), by: cashier.name}),
     },
     (vm: Order.orderVm) => {
-      vm
-      |> Order.fromVm
-      |> WebhookEngine.fireForOrder(OrderReturned)
+      WebhookEngine.getWebhooks(OrderReturned, Order)
+      |> WebhookEngine.fireForOrder(vm |> Order.fromVm)
       |> ignore;
       onFinish(vm);
     },

@@ -77,9 +77,8 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
         local=true
         onClick=(
           (_) =>
-            order
-            |> Order.fromVm
-            |> WebhookEngine.fireForOrder(ReprintReceipt)
+            WebhookEngine.getWebhooks(ReprintReceipt, Order)
+            |> WebhookEngine.fireForOrder(order |> Order.fromVm)
             |> Most.observe((response: Order.t) => Js.log(response))
             |> ignore
         )

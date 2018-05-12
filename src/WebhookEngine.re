@@ -23,13 +23,7 @@ let buildRequest = (payload: string) =>
 
 external unsafeConvert : Js.Json.t => Js.t('a) = "%identity";
 
-let decode = (payload: Js.Json.t) => {
-  Js.log("firing ");
-  Js.log(payload);
-  (payload |> unsafeConvert |> Order.mapOrderFromJs: Order.t);
-};
-
-let fetch = (hook: Webhook.t, payload: 'a) : Most.stream(response) =>
+let fetch = (hook: Webhook.t, payload: 'a) : Js.Promise.t(response) =>
   payload
   |> convertPayloadToJson
   |> buildRequest
@@ -54,8 +48,7 @@ let fetch = (hook: Webhook.t, payload: 'a) : Most.stream(response) =>
   |> Js.Promise.then_((json: Js.Json.t) => {
        let response = {webhook: hook, payload: json};
        Js.Promise.resolve(response);
-     })
-  |> Most.fromPromise;
+     });
 
 let nullWebhook: Webhook.t = {
   id: "n/a",
@@ -65,7 +58,15 @@ let nullWebhook: Webhook.t = {
   event: Unrecognized,
 };
 
-let getWebhooks = (event, source) : Most.stream(Webhook.t) =>
+let log = (message, promise) =>
+  promise
+  |> Js.Promise.then_(payload => {
+       Js.log(message ++ ":: ");
+       Js.log(payload);
+       Js.Promise.resolve(payload);
+     });
+
+let getWebhooks = (event, source) : Js.Promise.t(list(Webhook.t)) =>
   WebhookStore.getAll()
   |> Js.Promise.then_((list: list(Webhook.t)) => {
        let filtered =
@@ -81,36 +82,38 @@ let getWebhooks = (event, source) : Most.stream(Webhook.t) =>
        )
        |> Js.Promise.resolve;
      })
-  |> Most.fromPromise
-  |> Most.flatMap((x: list(Webhook.t)) => x |> Most.fromList)
-  |> Most.map((x: Webhook.t) => {
-       Js.log("Webhook found: " ++ x.name);
-       x;
-     });
+  |> log("gotWebhooks");
+
+let fetchAllWebhooksButReturnFirstOrder =
+    (list: list(Webhook.t), order: Order.t)
+    : Js.Promise.t(Order.t) =>
+  list
+  |> List.map((w: Webhook.t) => fetch(w, order))
+  |> Array.of_list
+  |> Js.Promise.all
+  |> Js.Promise.then_(arr =>
+       arr |> Array.to_list |. List.nth(0) |> Js.Promise.resolve
+     )
+  |> log("fetch responses")
+  |> Js.Promise.then_((r: response) =>
+       (
+         r.payload
+         |> unsafeConvert
+         |> Order.mapOrderFromJs
+         |> Js.Promise.resolve:
+           Js.Promise.t(Order.t)
+       )
+     )
+  |> log("first fetch responses");
 
 let fireForOrder =
-    (event: Webhook.EventType.t, order: Order.t)
-    : Most.stream(Order.t) => {
-  let webhooks = getWebhooks(event, Order);
-  /* need to bail and return the order if there are no matching webhooks */
-  let stream =
-    webhooks
-    |> Most.flatMap((hook: Webhook.t) =>
-         switch (hook.event) {
-         | Unrecognized =>
-           [|{webhook: hook, payload: Js.Json.null}|] |> Most.from
-         | _ => fetch(hook, order)
-         }
-       )
-    |> Most.map((_r: response)
-         /* and here need to convert to order */
-         /* let js = r.payload |> unsafeConvert;
-            js |> Order.mapOrderFromJs */
-         => order);
-  /* stream
-     |> Most.observe(_ =>
-          Js.log("Processed stream for " ++ (event |> Webhook.EventType.toString))
-        )
-     |> ignore; */
-  stream;
-};
+    (order: Order.t, webhooks: Js.Promise.t(list(Webhook.t)))
+    : Most.stream(Order.t) =>
+  webhooks
+  |> Js.Promise.then_((list: list(Webhook.t)) =>
+       switch (list |> List.length) {
+       | 0 => Js.Promise.resolve(order)
+       | _ => order |> fetchAllWebhooksButReturnFirstOrder(list)
+       }
+     )
+  |> Most.fromPromise;
