@@ -257,10 +257,6 @@ let make = (~goBack, _children) => {
                       |> WebhookEngine.fire(
                            self.state.order |> Order.fromVm |> Order.toJs,
                          )
-                      |> Js.Promise.then_(
-                           (list: list(WebhookEngine.response)) =>
-                           Js.log(list) |> Js.Promise.resolve
-                         )
                       |> ignore
                   )
                   label="order.printOrder"

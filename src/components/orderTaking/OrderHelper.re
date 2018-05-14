@@ -59,22 +59,49 @@ let payOrder =
         method: PaymentMethod.default,
       }),
   };
-  let stream =
-    WebhookEngine.getWebhooks(BeforeOrderPaid, Order)
-    |> WebhookEngine.fire(paidOrder |> Order.fromVm |> Order.toJs);
-  stream
-  /* |> Most.observe((orderFromWebhook: Order.t) =>
+  WebhookEngine.getWebhooks(BeforeOrderPaid, Order)
+  |> WebhookEngine.fire(paidOrder |> Order.fromVm |> Order.toJs)
+  |> Js.Promise.then_((responses: list(WebhookEngine.response)) => {
+       let awaitResponses =
+         responses
+         |> List.map((r: WebhookEngine.response) =>
+              switch (r.webhook.behavior, r.payload) {
+              | (Webhook.Behavior.AwaitResponse, Some(payload)) =>
+                Js.log(payload);
+                [
+                  payload
+                  |> WebhookEngine.unsafeConvert
+                  |> Order.mapOrderFromJs
+                  |> Order.toVm,
+                ];
+              | (_, _) => []
+              }
+            )
+         |> List.concat;
+       (
+         switch (awaitResponses |> List.length) {
+         | 0 => paidOrder
+         | _ => awaitResponses |. List.nth(0)
+         }
+       )
+       |> Js.Promise.resolve;
+     })
+  |> Js.Promise.then_((orderFromWebhook: Order.orderVm) =>
        saveOrder(
-         orderFromWebhook |> Order.toVm,
+         orderFromWebhook,
          (vm: Order.orderVm) => {
            WebhookEngine.getWebhooks(OrderPaid, Order)
-           |> WebhookEngine.fire(orderFromWebhook)
+           |> WebhookEngine.fire(
+                orderFromWebhook |> Order.fromVm |> Order.toJs,
+              )
            |> ignore;
            onFinish(vm);
          },
        )
-     ) */
+       |> Js.Promise.resolve
+     )
   |> ignore;
+  ();
 };
 
 let returnOrder =
@@ -129,7 +156,7 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
     returned: None,
     lastUpdated: None,
     removed: false,
-    meta: Js.Json.parseExn("{}"),
+    meta: None,
   };
   /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
   order;

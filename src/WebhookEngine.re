@@ -1,10 +1,8 @@
 type response = {
   webhook: Webhook.t,
-  payload: Js.Json.t,
+  payload: option(Js.Json.t),
   error: option(Js.Promise.error),
 };
-
-let emptyJson = Js.Json.parseExn("{}");
 
 let convertPayloadToJson = payload =>
   switch (Js.Json.stringifyAny(payload)) {
@@ -31,7 +29,7 @@ let catchFetchError = (hook: Webhook.t, promise) : Js.Promise.t(response) =>
   |> Js.Promise.catch((err: Js.Promise.error) => {
        Js.log("Error when fetching webhook: " ++ hook.name);
        Js.log(err);
-       let response = {webhook: hook, payload: emptyJson, error: Some(err)};
+       let response = {webhook: hook, payload: None, error: Some(err)};
        Js.Promise.resolve(response);
      });
 
@@ -42,18 +40,10 @@ let fetch = (hook: Webhook.t, payload: 'a) : Js.Promise.t(response) =>
   |> Fetch.fetchWithInit(hook.url)
   |> Js.Promise.then_(Fetch.Response.json)
   |> Js.Promise.then_((json: Js.Json.t) => {
-       let response = {webhook: hook, payload: json, error: None};
+       let response = {webhook: hook, payload: Some(json), error: None};
        Js.Promise.resolve(response);
      })
   |> catchFetchError(hook);
-
-let nullWebhook: Webhook.t = {
-  id: "n/a",
-  name: "nullWebhook",
-  source: Order,
-  url: "",
-  event: Unrecognized,
-};
 
 let log = (message, promise) =>
   promise
@@ -91,8 +81,5 @@ let fire =
     : Js.Promise.t(list(response)) =>
   webhooks
   |> Js.Promise.then_((list: list(Webhook.t)) =>
-       switch (list |> List.length) {
-       | 0 => Js.Promise.resolve([])
-       | _ => fetchAllWebhooks(list, payload)
-       }
+       fetchAllWebhooks(list, payload)
      );

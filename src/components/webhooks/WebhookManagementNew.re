@@ -3,6 +3,7 @@ type state = {
   url: string,
   event: string,
   source: string,
+  behavior: string,
 };
 
 type action =
@@ -10,19 +11,28 @@ type action =
   | ChangeUrl(string)
   | ChangeEvent(string)
   | ChangeSource(string)
+  | ChangeBehavior(string)
   | ClearInputs;
 
 let component = ReasonReact.reducerComponent("WebhookManagementNew");
 
 let make = (~create, _children) => {
   ...component,
-  initialState: () => {name: "", url: "", event: "", source: "Order"},
+  initialState: () => {
+    name: "",
+    url: "",
+    event: "",
+    source: "Order",
+    behavior: "FireAndForget",
+  },
   reducer: (action, state) =>
     switch (action) {
     | ChangeName(newVal) => ReasonReact.Update({...state, name: newVal})
     | ChangeUrl(newVal) => ReasonReact.Update({...state, url: newVal})
     | ChangeEvent(newVal) => ReasonReact.Update({...state, event: newVal})
     | ChangeSource(newVal) => ReasonReact.Update({...state, source: newVal})
+    | ChangeBehavior(newVal) =>
+      ReasonReact.Update({...state, behavior: newVal})
     | ClearInputs => ReasonReact.Update({...state, name: "", url: ""})
     },
   render: self => {
@@ -32,6 +42,7 @@ let make = (~create, _children) => {
         url: self.state.url,
         event: self.state.event |> Webhook.EventType.toT,
         source: self.state.source |> Webhook.EventSource.toT,
+        behavior: self.state.behavior |> Webhook.Behavior.fromString,
       };
       self.send(ClearInputs);
       create(newWebhook);
@@ -62,6 +73,12 @@ let make = (~create, _children) => {
         <input
           value=self.state.source
           onChange=(ev => self.send(ChangeSource(getVal(ev))))
+        />
+      </td>
+      <td>
+        <input
+          value=self.state.behavior
+          onChange=(ev => self.send(ChangeBehavior(getVal(ev))))
         />
       </td>
       <td>

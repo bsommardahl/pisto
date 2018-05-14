@@ -10,6 +10,7 @@ let make = (~webhook: Webhook.t, ~remove, _children) => {
       <td>
         (ReactUtils.s(webhook.source |> Webhook.EventSource.toString))
       </td>
+      <td> (ReactUtils.s(webhook.behavior |> Webhook.Behavior.toString)) </td>
       <td>
         <button onClick=((_) => remove(webhook))>
           (ReactUtils.s("Eliminar"))

@@ -23,7 +23,7 @@ let make =
             |> List.map((i: OrderItem.t) => {
                  let totals =
                    OrderItemCalculation.getTotals(order.discounts, [i]);
-                 <tr key=i.sku>
+                 <tr>
                    <td>
                      (
                        if (! closed && canRemoveItem) {
