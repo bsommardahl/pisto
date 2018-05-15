@@ -10,6 +10,8 @@ type view =
   | Expenses
   | ExpenseTypes
   | Vendors
+  | Cashiers
+  | Discounts
   | Logs;
 
 type customerName = string;
@@ -47,6 +49,8 @@ let make = _children => {
           | ["logs"] => self.send(Show(Logs))
           | ["expenseTypes"] => self.send(Show(ExpenseTypes))
           | ["vendors"] => self.send(Show(Vendors))
+          | ["discounts"] => self.send(Show(Discounts))
+          | ["cashiers"] => self.send(Show(Cashiers))
           | p => Js.log("I don't know this path. " ++ (p |> joinStrings))
           }
         ),
@@ -88,6 +92,8 @@ let make = _children => {
         | ExpenseTypes => <ExpenseTypeManagement />
         | Vendors => <VendorManagement />
         | Expenses => <ExpenseManagement startDate endDate />
+        | Cashiers => <CashierManagement />
+        | Discounts => <DiscountManagement />
         | Daily => <PAndLContainer startDate endDate />
         }
       )

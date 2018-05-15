@@ -128,6 +128,14 @@
     "content": "Proveedores"
   },
   {
+    "key": "admin.cashiers",
+    "content": "Cajeros"
+  },
+  {
+    "key": "admin.webhooks",
+    "content": "Integraciones"
+  },
+  {
     "key": "admin.vendors.header",
     "content": "Gestion de Proveedores"
   },

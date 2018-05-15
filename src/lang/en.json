@@ -128,6 +128,18 @@
     "content": "Vendors"
   },
   {
+    "key": "admin.discounts",
+    "content": "Discounts"
+  },
+  {
+    "key": "admin.cashiers",
+    "content": "Cashiers"
+  },
+  {
+    "key": "admin.webhooks",
+    "content": "Integrations"
+  },
+  {
     "key": "admin.vendors.header",
     "content": "Vendor Management"
   },

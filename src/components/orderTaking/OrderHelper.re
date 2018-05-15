@@ -127,7 +127,7 @@ let buildNewOrder = (customerName: string) : Order.orderVm => {
     returned: None,
     lastUpdated: None,
     removed: false,
-    meta: Js.Json.parseExn("{}"),
+    meta: None,
   };
   /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
   order;

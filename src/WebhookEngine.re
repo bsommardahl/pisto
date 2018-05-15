@@ -63,6 +63,7 @@ let nullWebhook: Webhook.t = {
   source: Order,
   url: "",
   event: Unrecognized,
+  behavior: FireAndForget,
 };
 
 let getWebhooks = (event, source) : Most.stream(Webhook.t) =>

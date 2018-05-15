@@ -29,8 +29,23 @@ let make = _children => {
         />
         <Button
           local=true
+          onClick=((_) => go("discounts"))
+          label="admin.discounts"
+        />
+        <Button
+          local=true
+          onClick=((_) => go("cashiers"))
+          label="admin.cashiers"
+        />
+        <Button
+          local=true
           onClick=((_) => go("config"))
           label="admin.config"
+        />
+        <Button
+          local=true
+          onClick=((_) => go("webhooks"))
+          label="admin.webhooks"
         />
       </div>
     </div>;
