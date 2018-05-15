@@ -59,19 +59,49 @@ let payOrder =
         method: PaymentMethod.default,
       }),
   };
-  let stream =
-    paidOrder |> Order.fromVm |> WebhookEngine.fireForOrder(BeforeOrderPaid);
-  stream
-  |> Most.observe((orderFromWebhook: Order.t) =>
+  WebhookEngine.getWebhooks(BeforeOrderPaid, Order)
+  |> WebhookEngine.fire(paidOrder |> Order.fromVm |> Order.toJs)
+  |> Js.Promise.then_((responses: list(WebhookEngine.response)) => {
+       let awaitResponses =
+         responses
+         |> List.map((r: WebhookEngine.response) =>
+              switch (r.webhook.behavior, r.payload) {
+              | (Webhook.Behavior.AwaitResponse, Some(payload)) =>
+                Js.log(payload);
+                [
+                  payload
+                  |> WebhookEngine.unsafeConvert
+                  |> Order.mapOrderFromJs
+                  |> Order.toVm,
+                ];
+              | (_, _) => []
+              }
+            )
+         |> List.concat;
+       (
+         switch (awaitResponses |> List.length) {
+         | 0 => paidOrder
+         | _ => awaitResponses |. List.nth(0)
+         }
+       )
+       |> Js.Promise.resolve;
+     })
+  |> Js.Promise.then_((orderFromWebhook: Order.orderVm) =>
        saveOrder(
-         orderFromWebhook |> Order.toVm,
+         orderFromWebhook,
          (vm: Order.orderVm) => {
-           orderFromWebhook |> WebhookEngine.fireForOrder(OrderPaid) |> ignore;
+           WebhookEngine.getWebhooks(OrderPaid, Order)
+           |> WebhookEngine.fire(
+                orderFromWebhook |> Order.fromVm |> Order.toJs,
+              )
+           |> ignore;
            onFinish(vm);
          },
        )
+       |> Js.Promise.resolve
      )
   |> ignore;
+  ();
 };
 
 let returnOrder =
@@ -86,9 +116,8 @@ let returnOrder =
       returned: Some({on: ConfigurableDate.now(), by: cashier.name}),
     },
     (vm: Order.orderVm) => {
-      vm
-      |> Order.fromVm
-      |> WebhookEngine.fireForOrder(OrderReturned)
+      WebhookEngine.getWebhooks(OrderReturned, Order)
+      |> WebhookEngine.fire(vm |> Order.fromVm |> Order.toJs)
       |> ignore;
       onFinish(vm);
     },

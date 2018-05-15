@@ -45,6 +45,16 @@ let fetch = (hook: Webhook.t, payload: 'a) : Js.Promise.t(response) =>
      })
   |> catchFetchError(hook);
 
+<<<<<<< HEAD
+let nullWebhook: Webhook.t = {
+  id: "n/a",
+  name: "nullWebhook",
+  source: Order,
+  url: "",
+  event: Unrecognized,
+  behavior: FireAndForget,
+};
+=======
 let log = (message, promise) =>
   promise
   |> Js.Promise.then_(payload => {
@@ -52,6 +62,7 @@ let log = (message, promise) =>
        Js.log(payload);
        Js.Promise.resolve(payload);
      });
+>>>>>>> 9558b710c78c8a9af200147bab2eaf9dfcc40c25
 
 let getWebhooks = (event, source) : Js.Promise.t(list(Webhook.t)) =>
   WebhookStore.getAll()
