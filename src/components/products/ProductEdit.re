@@ -75,16 +75,18 @@ let make =
       ...(
            ({handleSubmit, handleChange, form, getErrorForField}) => {
              let field = (label, value, fieldType: ProductFormParams.fields) =>
-               <div>
-                 (ReactUtils.sloc(label))
-                 <input
-                   value
-                   onChange=(
-                     ReForm.Helpers.handleDomFormChange(
-                       handleChange(fieldType),
+               <div className="field-input">
+                 <label>
+                   (ReactUtils.sloc(label))
+                   <input
+                     value
+                     onChange=(
+                       ReForm.Helpers.handleDomFormChange(
+                         handleChange(fieldType),
+                       )
                      )
-                   )
-                 />
+                   />
+                 </label>
                  (validationMessage(getErrorForField(fieldType)))
                </div>;
              <form

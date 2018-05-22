@@ -88,7 +88,7 @@ let make = _children => {
           />
         | AllOrders => <AllOrders startDate endDate />
         | Admin => <Admin />
-        | Products => <ProductManagement2 />
+        | Products => <ProductManagement />
         | Config => <ConfigManagement />
         | Logs => <LogManagement />
         | ExpenseTypes => <ExpenseTypeManagement />
