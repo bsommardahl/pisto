@@ -3,7 +3,7 @@ open ReactUtils;
 let tableHeader =
   <tr className="table-header">
     <th className="text-cell"> (sloc("discount.name")) </th>
-    <th className="text-cell"> (sloc("discount.percentage")) </th>
+    <th className="text-cell"> (sloc("discount.percent")) </th>
     <th className="number-cell"> (sloc("discount.total")) </th>
   </tr>;
 
