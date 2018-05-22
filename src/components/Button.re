@@ -3,7 +3,8 @@ let component = ReasonReact.statelessComponent("Button");
 let make =
     (
       ~label: string,
-      ~onClick,
+      ~onClick=(_) => (),
+      ~_type="button",
       ~disabled=false,
       ~local=false,
       ~className="",
@@ -12,6 +13,7 @@ let make =
   ...component,
   render: _self =>
     <button
+      _type
       onClick=((_) => onClick(label))
       disabled
       className=("card " ++ className)>

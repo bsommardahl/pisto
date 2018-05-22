@@ -92,6 +92,14 @@
     "content": "Gestion de Productos"
   },
   {
+    "key": "admin.discounts.header",
+    "content": "Gestion de Descuentos"
+  },
+  {
+    "key": "admin.cashiers.header",
+    "content": "Gestion de Cajeros"
+  },
+  {
     "key": "product.sku",
     "content": "Codigo"
   },
@@ -426,6 +434,10 @@
   {
     "key": "validation.required",
     "content": "Requerido"
+  },
+  {
+    "key": "validation.duplicate",
+    "content": "Debe ser uniquo"
   },
   {
     "key": "validation.totalsDoNotAddUp",

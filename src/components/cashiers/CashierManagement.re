@@ -59,6 +59,20 @@ let make = _children => {
     },
   render: self => {
     let goBack = (_) => ReasonReact.Router.push("/admin");
+    let isUnique = (originalPin, pin)=> { 
+      if(originalPin===pin){
+        None;
+      }
+      else{
+        let duplicates = self.state.cashiers 
+        |> List.filter((c:Cashier.t)=> c.pin===pin);
+        let isDuplicate=(duplicates |> List.length) > 0;
+        
+        isDuplicate
+        ? Some("validation.duplicate") 
+        : None;
+      };
+    };
     let removeCashier = (p: Cashier.t) => {
       CashierStore.remove(p.id)
       |> then_((_) => {
@@ -85,7 +99,7 @@ let make = _children => {
           </div>
         </div>
         <div className="header-options">
-          (ReactUtils.s("Gestion de Descuentos"))
+          (ReactUtils.sloc("admin.cashiers.header"))
         </div>
       </div>
       (
@@ -132,6 +146,7 @@ let make = _children => {
             </table>
             <h3> (ReactUtils.sloc("action.create")) </h3>
             <CashierEdit
+              isUnique
               onSubmit=(
                 ({values}) => createCashier(values.name, values.pin)
               )
@@ -141,6 +156,7 @@ let make = _children => {
           <div>
             <h3> (ReactUtils.sloc("action.edit")) </h3>
             <CashierEdit
+              isUnique
               name=cashier.name
               pin=cashier.pin
               onSubmit=(

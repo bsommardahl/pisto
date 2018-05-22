@@ -10,22 +10,31 @@ module CashierFormParams = {
   ];
 };
 
+let validationMessage = message =>
+  switch (message) {
+  | None => ReasonReact.nullElement
+  | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
+  };
+
 module EditCashierForm = ReForm.Create(CashierFormParams);
 
 let component = ReasonReact.statelessComponent("CashierEdit");
 
-let make = (~name="", ~pin="", ~onSubmit, _children) => {
+let make = (~name="", ~pin="", ~onSubmit, ~isUnique, _children) => {
   ...component,
   render: _self =>
     <EditCashierForm
       onSubmit
       initialState={name, pin}
-      schema=[(`name, Required), (`pin, Required)]>
+      schema=[
+        (`name, Required),
+        (`pin, Custom(v => v.pin |> isUnique(pin))),
+      ]>
       ...(
            ({handleSubmit, handleChange, form, getErrorForField}) =>
              <form
                onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
-               <label>
+               <div>
                  (ReactUtils.s("Name:"))
                  <input
                    value=form.values.name
@@ -33,15 +42,9 @@ let make = (~name="", ~pin="", ~onSubmit, _children) => {
                      ReForm.Helpers.handleDomFormChange(handleChange(`name))
                    )
                  />
-               </label>
-               <p>
-                 (
-                   getErrorForField(`name)
-                   |> Belt.Option.getWithDefault(_, "")
-                   |> ReasonReact.stringToElement
-                 )
-               </p>
-               <label>
+                 (validationMessage(getErrorForField(`name)))
+               </div>
+               <div>
                  (ReactUtils.s("Pin:"))
                  <input
                    value=form.values.pin
@@ -49,17 +52,9 @@ let make = (~name="", ~pin="", ~onSubmit, _children) => {
                      ReForm.Helpers.handleDomFormChange(handleChange(`pin))
                    )
                  />
-               </label>
-               <p>
-                 (
-                   getErrorForField(`pin)
-                   |> Belt.Option.getWithDefault(_, "")
-                   |> ReasonReact.stringToElement
-                 )
-               </p>
-               <button _type="submit">
-                 ("Submit" |> ReasonReact.stringToElement)
-               </button>
+                 (validationMessage(getErrorForField(`pin)))
+               </div>
+               <Button _type="submit" label="action.done" local=true />
              </form>
          )
     </EditCashierForm>,
