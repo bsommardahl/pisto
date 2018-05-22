@@ -119,7 +119,7 @@ let make = _children => {
               <th> (ReactUtils.sloc("product.sku")) </th>
               <th> (ReactUtils.sloc("product.name")) </th>
               <th> (ReactUtils.sloc("product.price")) </th>
-              <th> (ReactUtils.sloc("product.taxMethod")) </th>
+              <th> (ReactUtils.sloc("product.taxCalcMethod")) </th>
               <th> (ReactUtils.sloc("product.tags")) </th>
               <th />
             </tr>

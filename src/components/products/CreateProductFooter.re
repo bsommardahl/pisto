@@ -3,14 +3,14 @@ type state = {
   newName: string,
   newTags: string,
   newPrice: string,
-  newTaxMethod: string,
+  newTaxCalcMethod: string,
 };
 
 type action =
   | ChangeNewSku(string)
   | ChangeNewName(string)
   | ChangeNewPrice(string)
-  | ChangeNewTaxMethod(string)
+  | ChangeNewTaxCalcMethod(string)
   | ChangeNewTags(string)
   | ClearInputs;
 
@@ -23,7 +23,7 @@ let make = (~createProduct, _children) => {
     newName: "",
     newTags: "",
     newPrice: "",
-    newTaxMethod: "",
+    newTaxCalcMethod: "",
   },
   reducer: (action, state) =>
     switch (action) {
@@ -32,8 +32,8 @@ let make = (~createProduct, _children) => {
     | ChangeNewSku(newVal) => ReasonReact.Update({...state, newSku: newVal})
     | ChangeNewPrice(newVal) =>
       ReasonReact.Update({...state, newPrice: newVal})
-    | ChangeNewTaxMethod(newVal) =>
-      ReasonReact.Update({...state, newTaxMethod: newVal})
+    | ChangeNewTaxCalcMethod(newVal) =>
+      ReasonReact.Update({...state, newTaxCalcMethod: newVal})
     | ChangeNewTags(newVal) =>
       ReasonReact.Update({...state, newTags: newVal})
     | ClearInputs =>
@@ -47,7 +47,8 @@ let make = (~createProduct, _children) => {
           name: self.state.newName,
           tags: self.state.newTags |> Js.String.split(",") |> Array.to_list,
           suggestedPrice: self.state.newPrice |> int_of_string,
-          taxCalculation: self.state.newTaxMethod |> Tax.Calculation.toMethod,
+          taxCalculation:
+            self.state.newTaxCalcMethod |> Tax.Calculation.toMethod,
         };
       self.send(ClearInputs);
       createProduct(newProduct);
@@ -79,8 +80,8 @@ let make = (~createProduct, _children) => {
         </td>
         <td>
           <input
-            value=self.state.newTaxMethod
-            onChange=(ev => self.send(ChangeNewTaxMethod(getVal(ev))))
+            value=self.state.newTaxCalcMethod
+            onChange=(ev => self.send(ChangeNewTaxCalcMethod(getVal(ev))))
           />
         </td>
         <td>
