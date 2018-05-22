@@ -10,6 +10,7 @@
     "reason-react",
     "bs-jest",
     "bs-most",
+    "bs-reform",
     "bs-fetch",
     "bs-json",
     "cafe-domain",

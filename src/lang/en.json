@@ -140,6 +140,14 @@
     "content": "Integrations"
   },
   {
+    "key": "admin.discounts.header",
+    "content": "Discount Management"
+  },
+  {
+    "key": "admin.cashiers.header",
+    "content": "Cashier Management"
+  },
+  {
     "key": "admin.vendors.header",
     "content": "Vendor Management"
   },
@@ -430,6 +438,10 @@
   {
     "key": "validation.required",
     "content": "Required"
+  },
+  {
+    "key": "validation.duplicate",
+    "content": "Must be unique"
   },
   {
     "key": "validation.totalsDoNotAddUp",

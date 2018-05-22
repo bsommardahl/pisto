@@ -1,5 +1,3 @@
-
-
 open Js.Promise;
 
 type state = {discounts: list(Discount.t)};
@@ -75,7 +73,9 @@ let make = _children => {
             (ReactUtils.s("Atras"))
           </div>
         </div>
-        <div className="header-options"> (ReactUtils.s("Gestion de Descuentos")) </div>
+        <div className="header-options">
+          (ReactUtils.sloc("admin.discounts.header"))
+        </div>
       </div>
       <div className="discount-management">
         <table className="table">
