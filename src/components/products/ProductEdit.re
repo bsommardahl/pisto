@@ -28,7 +28,7 @@ let validationMessage = message =>
 
 module EditProductForm = ReForm.Create(ProductFormParams);
 
-let component = ReasonReact.statelessComponent("ProductEdit2");
+let component = ReasonReact.statelessComponent("ProductEdit");
 
 let make =
     (~product: option(Product.t)=None, ~onSubmit, ~products, _children) => {

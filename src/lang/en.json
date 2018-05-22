@@ -328,8 +328,8 @@
     "content": "Name"
   },
   {
-    "key": "discount.percentage",
-    "content": "Percentage"
+    "key": "discount.percent",
+    "content": "Percent Discount"
   },
   {
     "key": "discount.total",
