@@ -1,163 +1,220 @@
 open Js.Promise;
 
+type intent =
+  | Viewing
+  | Modifying(Product.t);
+
 type state = {
   products: list(Product.t),
-  bulkImport: string,
+  intent,
 };
 
 type action =
-  | LoadProducts(list(Product.t))
-  | NewProductCreated(Product.t)
-  | ProductRemoved(Product.t)
-  | ProductModified(Product.t)
-  | UpdateBulkImport(string);
+  | LoadProducts
+  | ProductsLoaded(list(Product.t))
+  | RemoveProduct(Product.t)
+  | ModifyProduct(Product.t)
+  | CreateProduct(Product.NewProduct.t)
+  | ProductCreated(Product.t)
+  | Change(intent);
 
 let component = ReasonReact.reducerComponent("ProductManagement");
 
 let make = _children => {
   ...component,
+  initialState: () => {products: [], intent: Viewing},
   didMount: self => {
-    ProductStore.getAll()
-    |> Js.Promise.then_(products => {
-         self.send(LoadProducts(products));
-         Js.Promise.resolve();
-       })
-    |> ignore;
+    self.send(LoadProducts);
     ReasonReact.NoUpdate;
   },
-  initialState: () => {products: [], bulkImport: ""},
   reducer: (action, state) =>
     switch (action) {
-    | LoadProducts(productsLoaded) =>
-      ReasonReact.Update({...state, products: productsLoaded})
-    | ProductRemoved(product) =>
+    | LoadProducts =>
+      ReasonReact.SideEffects(
+        (
+          self =>
+            ProductStore.getAll()
+            |> Js.Promise.then_(products => {
+                 self.send(ProductsLoaded(products));
+                 Js.Promise.resolve();
+               })
+            |> ignore
+        ),
+      )
+    | ProductsLoaded(products) => ReasonReact.Update({...state, products})
+    | Change(intent) => ReasonReact.Update({...state, intent})
+    | RemoveProduct(prod) =>
+      ReasonReact.UpdateWithSideEffects(
+        {
+          ...state,
+          products:
+            state.products |> List.filter((d: Product.t) => d.id !== prod.id),
+        },
+        (
+          _self =>
+            ProductStore.remove(prod.id) |> then_((_) => resolve()) |> ignore
+        ),
+      )
+    | ModifyProduct(product) =>
+      ReasonReact.UpdateWithSideEffects(
+        {
+          intent: Viewing,
+          products:
+            state.products
+            |> List.map((d: Product.t) => d.id === product.id ? product : d),
+        },
+        (
+          _self =>
+            ProductStore.update(product)
+            |> Js.Promise.catch(err => {
+                 Js.log(err);
+                 Js.Promise.resolve(product);
+               })
+            |> ignore
+        ),
+      )
+    | CreateProduct(prod) =>
+      ReasonReact.SideEffects(
+        (
+          self =>
+            ProductStore.add(prod)
+            |> Js.Promise.then_((newProduct: Product.t) => {
+                 self.send(ProductCreated(newProduct));
+                 Js.Promise.resolve();
+               })
+            |> ignore
+        ),
+      )
+    | ProductCreated(prod) =>
       ReasonReact.Update({
         ...state,
-        products:
-          state.products |> List.filter((p: Product.t) => p.id !== product.id),
+        products: List.concat([state.products, [prod]]),
       })
-    | ProductModified(product) =>
-      ReasonReact.Update({
-        ...state,
-        products:
-          state.products
-          |> List.map((p: Product.t) => p.id === product.id ? product : p),
-      })
-    | NewProductCreated(newProduct) =>
-      ReasonReact.Update({
-        ...state,
-        products: List.concat([state.products, [newProduct]]),
-      })
-    | UpdateBulkImport(newVal) =>
-      ReasonReact.Update({...state, bulkImport: newVal})
     },
   render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
     let goBack = (_) => ReasonReact.Router.push("/admin");
-    let removeProduct = (p: Product.t) => {
-      ProductStore.remove(p.id)
-      |> then_((_) => {
-           self.send(ProductRemoved(p));
-           resolve();
-         })
-      |> ignore;
-      ();
-    };
-    let modifyProduct = (modifiedProduct: Product.t) =>
-      ProductStore.update(modifiedProduct)
-      |> then_((_) => {
-           self.send(ProductModified(modifiedProduct));
-           resolve();
-         })
-      |> ignore;
-    let createProduct = (newProduct: Product.NewProduct.t) => {
-      ProductStore.add(newProduct)
-      |> Js.Promise.then_((newProduct: Product.t) => {
-           self.send(NewProductCreated(newProduct));
-           Js.Promise.resolve();
-         })
-      |> ignore;
-      ();
-    };
-    let importBulkProducts = blob =>
-      blob
-      |> Js.String.split("\n")
-      |> Array.to_list
-      |> List.map((line: string) => {
-           let arr = line |> Js.String.split("\t") |> Array.to_list;
-           let newProd: Product.NewProduct.t = {
-             sku: List.nth(arr, 0),
-             name: List.nth(arr, 1),
-             suggestedPrice: List.nth(arr, 2) |> Money.toT,
-             taxCalculation: List.nth(arr, 3) |> Tax.Calculation.toMethod,
-             tags: List.nth(arr, 4) |> Js.String.split(",") |> Array.to_list,
-           };
-           newProd;
-         })
-      |> List.iter(p => createProduct(p));
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          <Button
-            local=true
-            className="wide-card quiet-card"
-            onClick=goBack
-            label="nav.back"
-          />
+          <div className="card wide-card quiet-card" onClick=goBack>
+            (ReactUtils.s("Atras"))
+          </div>
         </div>
         <div className="header-options">
           (ReactUtils.sloc("admin.products.header"))
         </div>
       </div>
-      <div className="product-management">
-        <table className="admin-table">
-          <thead>
-            <tr>
-              <th />
-              <th> (ReactUtils.sloc("product.sku")) </th>
-              <th> (ReactUtils.sloc("product.name")) </th>
-              <th> (ReactUtils.sloc("product.price")) </th>
-              <th> (ReactUtils.sloc("product.taxMethod")) </th>
-              <th> (ReactUtils.sloc("product.tags")) </th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            (
-              self.state.products
-              |> List.map((p: Product.t) =>
-                   <ProductManagementRow
-                     product=p
-                     removeProduct
-                     modifyProduct
-                     key=p.id
-                   />
-                 )
-              |> Array.of_list
-              |> ReasonReact.arrayToElement
-            )
-          </tbody>
-          <CreateProductFooter createProduct />
-        </table>
-        <h3> (ReactUtils.sloc("admin.products.bulkImport.header")) </h3>
-        <p>
-          <i> (ReactUtils.sloc("admin.products.bulkImport.instructions")) </i>
-        </p>
-        <textarea
-          className="bulk-import"
-          value=self.state.bulkImport
-          onChange=(ev => self.send(UpdateBulkImport(getVal(ev))))
-        />
-        <p>
-          <Button
-            local=true
-            onClick=((_) => importBulkProducts(self.state.bulkImport))
-            label="admin.products.bulkImport.importButton"
-          />
-        </p>
-      </div>
+      (
+        switch (self.state.intent) {
+        | Viewing =>
+          <div className="product-management">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th />
+                  <th> (ReactUtils.sloc("product.sku")) </th>
+                  <th> (ReactUtils.sloc("product.name")) </th>
+                  <th> (ReactUtils.sloc("product.price")) </th>
+                  <th> (ReactUtils.sloc("product.taxCalculation")) </th>
+                  <th> (ReactUtils.sloc("product.tags")) </th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                (
+                  self.state.products
+                  |> List.map((prod: Product.t) =>
+                       <tr key=prod.id>
+                         <td>
+                           <Button
+                             local=true
+                             disabled=false
+                             onClick=(
+                               (_) => self.send(Change(Modifying(prod)))
+                             )
+                             label="action.edit"
+                           />
+                         </td>
+                         <td> (ReactUtils.s(prod.sku)) </td>
+                         <td> (ReactUtils.s(prod.name)) </td>
+                         <td>
+                           (
+                             ReactUtils.s(
+                               prod.suggestedPrice |> Money.toDisplay,
+                             )
+                           )
+                         </td>
+                         <td>
+                           (
+                             ReactUtils.s(
+                               prod.taxCalculation
+                               |> Tax.Calculation.toDelimitedString,
+                             )
+                           )
+                         </td>
+                         <td> (ReactUtils.s(prod.tags |> Tags.toCSV)) </td>
+                         <td>
+                           <Button
+                             local=true
+                             className="danger-card"
+                             onClick=((_) => self.send(RemoveProduct(prod)))
+                             label="action.delete"
+                           />
+                         </td>
+                       </tr>
+                     )
+                  |> Array.of_list
+                  |> ReasonReact.arrayToElement
+                )
+              </tbody>
+            </table>
+            <h3> (ReactUtils.sloc("action.create")) </h3>
+            <ProductEdit
+              products=self.state.products
+              onSubmit=(
+                ({values}) =>
+                  self.send(
+                    CreateProduct({
+                      sku: values.sku,
+                      name: values.name,
+                      suggestedPrice: values.price |> Money.toT,
+                      taxCalculation:
+                        values.taxCalculation |> Tax.Calculation.toMethod,
+                      tags: values.tags |> Tags.toList,
+                    }),
+                  )
+              )
+            />
+            <BulkImportProducts
+              onNewProduct=(
+                newProduct => self.send(CreateProduct(newProduct))
+              )
+            />
+          </div>
+        | Modifying(product) =>
+          <div>
+            <h3> (ReactUtils.sloc("action.edit")) </h3>
+            <ProductEdit
+              products=self.state.products
+              product=(Some(product))
+              onSubmit=(
+                ({values}) =>
+                  self.send(
+                    ModifyProduct({
+                      id: product.id,
+                      name: values.name,
+                      sku: values.sku,
+                      suggestedPrice: values.price |> Money.toT,
+                      taxCalculation:
+                        values.taxCalculation |> Tax.Calculation.toMethod,
+                      tags: values.tags |> Tags.toList,
+                    }),
+                  )
+              )
+            />
+          </div>
+        }
+      )
     </div>;
   },
 };

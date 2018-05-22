@@ -112,7 +112,7 @@
     "content": "Precio"
   },
   {
-    "key": "product.taxMethod",
+    "key": "product.taxCalcMethod",
     "content": "Method de Impuesto"
   },
   {
@@ -433,6 +433,10 @@
   },
   {
     "key": "validation.required",
+    "content": "Requerido"
+  },
+  {
+    "key": "Field is required",
     "content": "Requerido"
   },
   {

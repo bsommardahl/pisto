@@ -104,8 +104,8 @@
     "content": "Price"
   },
   {
-    "key": "product.taxMethod",
-    "content": "Tax Method"
+    "key": "product.taxCalculation",
+    "content": "Tax Calc Method"
   },
   {
     "key": "product.tags",
@@ -437,6 +437,10 @@
   },
   {
     "key": "validation.required",
+    "content": "Required"
+  },
+  {
+    "key": "Field is required",
     "content": "Required"
   },
   {

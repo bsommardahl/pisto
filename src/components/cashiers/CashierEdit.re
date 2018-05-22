@@ -35,7 +35,7 @@ let make = (~name="", ~pin="", ~onSubmit, ~isUnique, _children) => {
              <form
                onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
                <div>
-                 (ReactUtils.s("Name:"))
+                 (ReactUtils.sloc("cashier.name"))
                  <input
                    value=form.values.name
                    onChange=(
@@ -45,7 +45,7 @@ let make = (~name="", ~pin="", ~onSubmit, ~isUnique, _children) => {
                  (validationMessage(getErrorForField(`name)))
                </div>
                <div>
-                 (ReactUtils.s("Pin:"))
+                 (ReactUtils.sloc("cashier.pin"))
                  <input
                    value=form.values.pin
                    onChange=(
