@@ -114,16 +114,18 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
               "Delete Order"
             </BsReactstrap.ModalHeader>
             <BsReactstrap.ModalBody>"Are you sure you want to delete this order?"</BsReactstrap.ModalBody>
-            <BsReactstrap.Button 
-              color="primary"
-              onClick=((_)=>self.send(DeleteAndExit))>
-              "Delete"
-            </BsReactstrap.Button>
-            <BsReactstrap.Button 
-              color="secondary"
-              onClick=((_)=>self.send(ShowDialog))>
-              "Cancel"
-            </BsReactstrap.Button>
+            <BsReactstrap.ModalFooter>
+                <BsReactstrap.Button 
+                  color="primary"
+                  onClick=((_)=>self.send(DeleteAndExit))>
+                  "Delete"
+                </BsReactstrap.Button>
+                <BsReactstrap.Button 
+                  color="secondary"
+                  onClick=((_)=>self.send(ShowDialog))>
+                  "Cancel"
+                </BsReactstrap.Button>
+            </BsReactstrap.ModalFooter>
         </BsReactstrap.Modal>  
     (
         switch (self.state.userIntent, order.paid, order.returned, order.id) {
