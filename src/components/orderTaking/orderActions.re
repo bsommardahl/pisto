@@ -1,5 +1,5 @@
 open OrderHelper;
-/*
+
 [@bs.module] external myModal : ReasonReact.reactClass = "./ModalDialog";
 
 [@bs.deriving abstract]
@@ -10,15 +10,15 @@ type jsProps = {
 let make = (~show,children)=>
 ReasonReact.wrapJsForReason(
   ~reactClass = myModal,
-  ~props = jsProps(~show),
-  children,
-);
-*/
+  ~props = {"show":show},
+  children, 
+); 
+
 type userIntent =
   | Building
   | Returning;
 
-type state = {userIntent,isShowing:bool};
+type state = {userIntent,show:bool};
 
 type action =
   | ChangeIntent(userIntent)
@@ -39,7 +39,7 @@ let stringOrDefault = (opt: option(string)) =>
 
 let make = (~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  initialState: () => {userIntent: Building, isShowing:false},
+  initialState: () => {userIntent: Building, show:false},
   
   reducer: (action, state) =>
     switch (action) {
@@ -51,8 +51,8 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         (_self => returnOrder(cashier, order, onFinish)),
       )
     | ShowDialog => 
-      ReasonReact.Update({...state, isShowing:true })
-    | HideDialog => ReasonReact.Update({...state, isShowing:false})
+      ReasonReact.Update({...state, show:true })
+    | HideDialog => ReasonReact.Update({...state, show:false})
     | DeleteAndExit =>
       ReasonReact.SideEffects((_self => removeOrder(order, onFinish)))
     | SaveAndGoToPayScreen =>
@@ -90,7 +90,7 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
       <Button
         local=true
         className="remove-button-card"
-        onClick=((_) => self.send(DeleteAndExit))
+        onClick=((_) => self.send(ShowDialog))
         label="action.delete"
       />;
     let returnButton =
