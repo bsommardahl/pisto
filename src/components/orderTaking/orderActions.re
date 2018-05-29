@@ -1,15 +1,31 @@
 open OrderHelper;
+/*
+[@bs.module] external myModal : ReasonReact.reactClass = "./ModalDialog";
 
+[@bs.deriving abstract]
+type jsProps = {
+  show:bool,
+};
+
+let make = (~show,children)=>
+ReasonReact.wrapJsForReason(
+  ~reactClass = myModal,
+  ~props = jsProps(~show),
+  children,
+);
+*/
 type userIntent =
   | Building
   | Returning;
 
-type state = {userIntent};
+type state = {userIntent,isShowing:bool};
 
 type action =
   | ChangeIntent(userIntent)
   | SaveAndExit
   | SaveAndGoToPayScreen
+  | ShowDialog
+  | HideDialog
   | DeleteAndExit
   | ReturnAndExit(Cashier.t);
 
@@ -23,16 +39,20 @@ let stringOrDefault = (opt: option(string)) =>
 
 let make = (~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  initialState: () => {userIntent: Building},
-  reducer: (action, _state) =>
+  initialState: () => {userIntent: Building, isShowing:false},
+  
+  reducer: (action, state) =>
     switch (action) {
-    | ChangeIntent(intent) => ReasonReact.Update({userIntent: intent})
+    | ChangeIntent(intent) => ReasonReact.Update({...state, userIntent: intent})
     | SaveAndExit =>
       ReasonReact.SideEffects((_self => saveOrder(order, onFinish)))
     | ReturnAndExit(cashier) =>
       ReasonReact.SideEffects(
         (_self => returnOrder(cashier, order, onFinish)),
       )
+    | ShowDialog => 
+      ReasonReact.Update({...state, isShowing:true })
+    | HideDialog => ReasonReact.Update({...state, isShowing:false})
     | DeleteAndExit =>
       ReasonReact.SideEffects((_self => removeOrder(order, onFinish)))
     | SaveAndGoToPayScreen =>
@@ -47,6 +67,7 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         ),
       )
     },
+
   render: self => {
     let items = order.orderItems |> Array.of_list;
     let disablePayButton = items |> Array.length === 0;
