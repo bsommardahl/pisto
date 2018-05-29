@@ -1,6 +1,5 @@
 open OrderHelper;
-open BsReactstrap;
-
+/*
 [@bs.module] external myModal : ReasonReact.reactClass = "./ModalDialog";
 
 [@bs.deriving abstract]
@@ -14,19 +13,18 @@ ReasonReact.wrapJsForReason(
   ~props = {"show":show},
   children, 
 ); 
-
+*/
 type userIntent =
   | Building
   | Returning;
 
-type state = {userIntent,show:bool};
+type state = {userIntent,showModal:bool};
 
 type action =
   | ChangeIntent(userIntent)
   | SaveAndExit
   | SaveAndGoToPayScreen
   | ShowDialog
-  | HideDialog
   | DeleteAndExit
   | ReturnAndExit(Cashier.t);
 
@@ -40,7 +38,7 @@ let stringOrDefault = (opt: option(string)) =>
 
 let make = (~order: Order.orderVm, ~onFinish, _children) => {
   ...component,
-  initialState: () => {userIntent: Building, show:false},
+  initialState: () => {userIntent: Building, showModal:false},
   
   reducer: (action, state) =>
     switch (action) {
@@ -52,8 +50,7 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         (_self => returnOrder(cashier, order, onFinish)),
       )
     | ShowDialog => 
-      ReasonReact.Update({...state, show:true })
-    | HideDialog => ReasonReact.Update({...state, show:false})
+      ReasonReact.Update({...state, showModal:!state.showModal })
     | DeleteAndExit =>
       ReasonReact.SideEffects((_self => removeOrder(order, onFinish)))
     | SaveAndGoToPayScreen =>
@@ -108,7 +105,27 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         label="action.cancel"
       />;
     <div className="order-actions">
-      (
+        <BsReactstrap.Modal 
+        isOpen=(self.state.showModal)
+        toggle = (self.state.showModal)
+        className="Modal"
+        >
+            <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
+              "Delete Order"
+            </BsReactstrap.ModalHeader>
+            <BsReactstrap.ModalBody>"Are you sure you want to delete this order?"</BsReactstrap.ModalBody>
+            <BsReactstrap.Button 
+              color="primary"
+              onClick=((_)=>self.send(DeleteAndExit))>
+              "Delete"
+            </BsReactstrap.Button>
+            <BsReactstrap.Button 
+              color="secondary"
+              onClick=((_)=>self.send(ShowDialog))>
+              "Cancel"
+            </BsReactstrap.Button>
+        </BsReactstrap.Modal>  
+    (
         switch (self.state.userIntent, order.paid, order.returned, order.id) {
         | (Returning, _, _, Some(_id)) =>
           <PinInput
