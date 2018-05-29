@@ -1,4 +1,5 @@
 open OrderHelper;
+open BsReactstrap;
 
 [@bs.module] external myModal : ReasonReact.reactClass = "./ModalDialog";
 
@@ -13,7 +14,6 @@ ReasonReact.wrapJsForReason(
   ~props = {"show":show},
   children, 
 ); 
-
 
 type userIntent =
   | Building
