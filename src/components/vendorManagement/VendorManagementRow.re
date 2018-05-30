@@ -68,11 +68,11 @@ let make = (~vendor, ~remove, ~modify, _children) => {
         toggle = (self.state.showModal)
         className="modal"
         >
-            <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
+            <BsReactstrap.ModalHeader className="modal-header" toggle=(false)>
               "Delete Vendor"
             </BsReactstrap.ModalHeader>
             <BsReactstrap.ModalBody className="modal-content">"Are you sure you want to delete this vendor?"</BsReactstrap.ModalBody>
-            <BsReactstrap.ModalFooter>
+            <BsReactstrap.ModalFooter className="modal-footer">
                 <Button 
                   local=true
                   className="remove-button-card"

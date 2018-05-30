@@ -120,11 +120,11 @@ let make = _children => {
         toggle = (self.state.showModal)
         className="modal"
         >
-            <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
+            <BsReactstrap.ModalHeader className="modal-header" toggle=(false)>
               "Delete Expense Type"
             </BsReactstrap.ModalHeader>
             <BsReactstrap.ModalBody className="modal-content">"Are you sure you want to delete this expense?"</BsReactstrap.ModalBody>
-            <BsReactstrap.ModalFooter>
+            <BsReactstrap.ModalFooter className="modal-footer">
             /*The error says that prod doesn't exist whenever I try to delete it using RemoveExpenseType. */ 
                 <Button 
                   local=true

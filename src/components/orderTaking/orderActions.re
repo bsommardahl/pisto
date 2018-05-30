@@ -111,7 +111,7 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
       toggle = (self.state.showModal)
       className="modal"
       >
-          <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
+          <BsReactstrap.ModalHeader className="modal-header" toggle=(false)>
             "Delete Order"
           </BsReactstrap.ModalHeader>
           <BsReactstrap.ModalBody className="modal-content">"Are you sure you want to delete this order?"</BsReactstrap.ModalBody>
