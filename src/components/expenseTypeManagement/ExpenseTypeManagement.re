@@ -118,12 +118,12 @@ let make = _children => {
       <BsReactstrap.Modal 
         isOpen=(self.state.showModal)
         toggle = (self.state.showModal)
-        className="Modal"
+        className="modal"
         >
             <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
               "Delete Expense Type"
             </BsReactstrap.ModalHeader>
-            <BsReactstrap.ModalBody>"Are you sure you want to delete this expense?"</BsReactstrap.ModalBody>
+            <BsReactstrap.ModalBody className="modal-content">"Are you sure you want to delete this expense?"</BsReactstrap.ModalBody>
             <BsReactstrap.ModalFooter>
             /*The error says that prod doesn't exist whenever I try to delete it using RemoveExpenseType. */ 
                 <Button 
@@ -131,6 +131,7 @@ let make = _children => {
                   className="remove-button-card"
                   label="action.delete"
                   onClick=((_)=>self.send(ShowDialog)/*RemoveExpenseType(prod))*/)/>
+                  <div className="spaceDivider"/>
                 <Button 
                   local=true
                   className="cancel-button-card"
