@@ -73,16 +73,16 @@ let make = (~vendor, ~remove, ~modify, _children) => {
             </BsReactstrap.ModalHeader>
             <BsReactstrap.ModalBody>"Are you sure you want to delete this vendor?"</BsReactstrap.ModalBody>
             <BsReactstrap.ModalFooter>
-                <BsReactstrap.Button 
-                  color="primary"
-                  onClick=((_)=>remove(self.state.originalVendor))>
-                  "Delete"
-                </BsReactstrap.Button>
-                <BsReactstrap.Button 
-                  color="secondary"
-                  onClick=((_)=>self.send(ShowDialog))>
-                  "Cancel"
-                </BsReactstrap.Button>
+                <Button 
+                  local=true
+                  className="remove-button-card"
+                  label="action.delete"
+                  onClick=((_)=>remove(self.state.originalVendor))/>
+                <Button 
+                  local=true
+                  className="cancel-button-card"
+                  label="action.cancelModal"
+                  onClick=((_)=>self.send(ShowDialog))/>
             </BsReactstrap.ModalFooter>
         </BsReactstrap.Modal>  
         (switch (self.state.modifying) {
@@ -99,6 +99,7 @@ let make = (~vendor, ~remove, ~modify, _children) => {
               <td>
                 <Button
                   local=true
+                  className="remove-button-card"
                   onClick=((_) => self.send(ShowDialog)/*remove(self.state.originalVendor)*/)
                   label="action.delete"
                 />

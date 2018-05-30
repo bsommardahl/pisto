@@ -12,6 +12,10 @@
     "content": "Exit"
   },
   {
+    "key":"action.cancelModal",
+    "content": "Cancel"
+  },
+  {
     "key": "action.edit",
     "content": "Edit"
   },

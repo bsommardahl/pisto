@@ -125,17 +125,17 @@ let make = _children => {
             </BsReactstrap.ModalHeader>
             <BsReactstrap.ModalBody>"Are you sure you want to delete this expense?"</BsReactstrap.ModalBody>
             <BsReactstrap.ModalFooter>
-            /*The error says that prod doesn't exist whenever I try to delete it. */ 
-                <BsReactstrap.Button 
-                  color="primary"
-                  onClick=((_)=>self.send(ShowDialog)/*RemoveExpenseType(prod))*/)>
-                  "Delete"
-                </BsReactstrap.Button>
-                <BsReactstrap.Button 
-                  color="secondary"
-                  onClick=((_)=>self.send(ShowDialog))>
-                  "Cancel"
-                </BsReactstrap.Button>
+            /*The error says that prod doesn't exist whenever I try to delete it using RemoveExpenseType. */ 
+                <Button 
+                  local=true
+                  className="remove-button-card"
+                  label="action.delete"
+                  onClick=((_)=>self.send(ShowDialog)/*RemoveExpenseType(prod))*/)/>
+                <Button 
+                  local=true
+                  className="cancel-button-card"
+                  label="action.cancelModal"
+                  onClick=((_)=>self.send(ShowDialog))/>
             </BsReactstrap.ModalFooter>
         </BsReactstrap.Modal> 
       (

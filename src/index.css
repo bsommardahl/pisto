@@ -162,7 +162,14 @@ input.customer-name-input {
   margin-top: 0px;
   margin-bottom: 0px;
 }
+.cancel-button-card{
+  background-color: gray;
+  color:black;
 
+
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 table.order-list {
   width: 100%;
 }
