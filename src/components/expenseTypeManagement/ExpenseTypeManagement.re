@@ -119,7 +119,7 @@ let make = _children => {
                 <tr>
                   <th />
                   <th> (ReactUtils.sloc("expenseType.name")) </th>
-                  <th> (ReactUtils.sloc("expenseType.percent")) </th>
+                 /* <th> (ReactUtils.sloc("expenseType.percent")) </th>*/
                   <th />
                 </tr>
               </thead>

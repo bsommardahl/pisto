@@ -1,19 +1,5 @@
 open OrderHelper;
-/*
-[@bs.module] external myModal : ReasonReact.reactClass = "./ModalDialog";
 
-[@bs.deriving abstract]
-type jsProps = {
-  show:bool,
-};
-
-let make = (~show,children)=>
-ReasonReact.wrapJsForReason(
-  ~reactClass = myModal,
-  ~props = {"show":show},
-  children, 
-); 
-*/
 type userIntent =
   | Building
   | Returning;
@@ -105,28 +91,6 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         label="action.cancel"
       />;
     <div className="order-actions">
-        <BsReactstrap.Modal 
-        isOpen=(self.state.showModal)
-        toggle = (self.state.showModal)
-        className="Modal"
-        >
-            <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
-              "Delete Order"
-            </BsReactstrap.ModalHeader>
-            <BsReactstrap.ModalBody>"Are you sure you want to delete this order?"</BsReactstrap.ModalBody>
-            <BsReactstrap.ModalFooter>
-                <BsReactstrap.Button 
-                  color="primary"
-                  onClick=((_)=>self.send(DeleteAndExit))>
-                  "Delete"
-                </BsReactstrap.Button>
-                <BsReactstrap.Button 
-                  color="secondary"
-                  onClick=((_)=>self.send(ShowDialog))>
-                  "Cancel"
-                </BsReactstrap.Button>
-            </BsReactstrap.ModalFooter>
-        </BsReactstrap.Modal>  
     (
         switch (self.state.userIntent, order.paid, order.returned, order.id) {
         | (Returning, _, _, Some(_id)) =>
@@ -142,6 +106,28 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         }
       )
       cancelButton
+      <BsReactstrap.Modal 
+      isOpen=(self.state.showModal)
+      toggle = (self.state.showModal)
+      className="Modal"
+      >
+          <BsReactstrap.ModalHeader toggle=(self.state.showModal)>
+            "Delete Order"
+          </BsReactstrap.ModalHeader>
+          <BsReactstrap.ModalBody>"Are you sure you want to delete this order?"</BsReactstrap.ModalBody>
+          <BsReactstrap.ModalFooter>
+              <BsReactstrap.Button 
+                color="primary"
+                onClick=((_)=>self.send(DeleteAndExit))>
+                "Delete"
+              </BsReactstrap.Button>
+              <BsReactstrap.Button 
+                color="secondary"
+                onClick=((_)=>self.send(ShowDialog))>
+                "Cancel"
+              </BsReactstrap.Button>
+          </BsReactstrap.ModalFooter>
+    </BsReactstrap.Modal>  
     </div>;
   },
 };
