@@ -52,6 +52,30 @@
     "content": "Daily"
   },
   {
+    "key":"modal.deleteOrder",
+    "content": "Delete Order"
+  },
+  {
+    "key":"modal.deleteExpense",
+    "content":"Delete Expense Type"
+  },
+  {
+    "key":"modal.deleteVendor",
+    "content":"Delete Vendor"
+  },
+  {
+    "key":"modal.deleteOrderContent",
+    "content": "Are you sure you want to delete this order?"
+  },
+  {
+    "key":"modal.deleteExpenseContent",
+    "content":"Are you sure you want to delete this expense?"
+  },
+  {
+    "key":"modal.deleteVendorContent",
+    "content":"Are you sure you want to delete this vendor?"
+  },
+  {
     "key": "menu.admin",
     "content": "Admin"
   },
