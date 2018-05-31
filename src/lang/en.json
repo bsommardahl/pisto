@@ -12,6 +12,10 @@
     "content": "Exit"
   },
   {
+    "key":"action.cancelModal",
+    "content": "Cancel"
+  },
+  {
     "key": "action.edit",
     "content": "Edit"
   },
@@ -221,7 +225,7 @@
   },
   {
     "key": "order.printReceiptCopy",
-    "content": "Print Reciept Copy"
+    "content": "Print Receipt Copy"
   },
   {
     "key": "order.created.header",

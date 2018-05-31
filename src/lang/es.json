@@ -12,6 +12,10 @@
     "content": "Salir"
   },
   {
+    "key":"action.cancelModal",
+    "content": "Cancelar"
+  },
+  {
     "key": "action.edit",
     "content": "Editar"
   },

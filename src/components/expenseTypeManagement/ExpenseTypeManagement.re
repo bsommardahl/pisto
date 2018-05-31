@@ -7,10 +7,12 @@ type intent =
 type state = {
   expenseTypes: list(ExpenseType.t),
   intent,
+  showModal:bool
 };
 
 type action =
   | LoadExpenseTypes
+  | ShowDialog
   | ExpenseTypesLoaded(list(ExpenseType.t))
   | RemoveExpenseType(ExpenseType.t)
   | ModifyExpenseType(ExpenseType.t)
@@ -22,7 +24,7 @@ let component = ReasonReact.reducerComponent("ExpenseTypeManagement");
 
 let make = _children => {
   ...component,
-  initialState: () => {expenseTypes: [], intent: Viewing},
+  initialState: () => {expenseTypes: [], intent: Viewing,showModal:false},
   didMount: self => {
     self.send(LoadExpenseTypes);
     ReasonReact.NoUpdate;
@@ -44,6 +46,7 @@ let make = _children => {
     | ExpenseTypesLoaded(expenseTypes) =>
       ReasonReact.Update({...state, expenseTypes})
     | Change(intent) => ReasonReact.Update({...state, intent})
+    | ShowDialog => ReasonReact.Update({...state , showModal:!state.showModal})
     | RemoveExpenseType(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
@@ -62,6 +65,7 @@ let make = _children => {
     | ModifyExpenseType(expenseType) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          showModal:false,
           intent: Viewing,
           expenseTypes:
             state.expenseTypes
@@ -110,6 +114,31 @@ let make = _children => {
           (ReactUtils.sloc("admin.expenseTypes.header"))
         </div>
       </div>
+      <div>
+      <BsReactstrap.Modal 
+        isOpen=(self.state.showModal)
+        toggle = (self.state.showModal)
+        className="modal"
+        >
+            <BsReactstrap.ModalHeader className="modal-header" toggle=(false)>
+              "Delete Expense Type"
+            </BsReactstrap.ModalHeader>
+            <BsReactstrap.ModalBody className="modal-content">"Are you sure you want to delete this expense?"</BsReactstrap.ModalBody>
+            <BsReactstrap.ModalFooter className="modal-footer">
+            /*The error says that prod doesn't exist whenever I try to delete it using RemoveExpenseType. */ 
+                <Button 
+                  local=true
+                  className="remove-button-card"
+                  label="action.delete"
+                  onClick=((_)=>self.send(ShowDialog)/*RemoveExpenseType(prod))*/)/>
+                  <div className="spaceDivider"/>
+                <Button 
+                  local=true
+                  className="cancel-button-card"
+                  label="action.cancelModal"
+                  onClick=((_)=>self.send(ShowDialog))/>
+            </BsReactstrap.ModalFooter>
+        </BsReactstrap.Modal> 
       (
         switch (self.state.intent) {
         | Viewing =>
@@ -119,7 +148,7 @@ let make = _children => {
                 <tr>
                   <th />
                   <th> (ReactUtils.sloc("expenseType.name")) </th>
-                  <th> (ReactUtils.sloc("expenseType.percent")) </th>
+                 /* <th> (ReactUtils.sloc("expenseType.percent")) </th>*/
                   <th />
                 </tr>
               </thead>
@@ -144,7 +173,7 @@ let make = _children => {
                              local=true
                              className="danger-card"
                              onClick=(
-                               (_) => self.send(RemoveExpenseType(prod))
+                               (_) => self.send(ShowDialog)
                              )
                              label="action.delete"
                            />
@@ -183,7 +212,7 @@ let make = _children => {
             />
           </div>
         }
-      )
+      )</div>
     </div>;
   },
 };
