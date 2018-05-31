@@ -87,10 +87,7 @@ let make = (~vendor, ~remove, ~modify, _children) => {
               <Button
                 local=true
                 className="remove-button-card"
-                onClick=(
-                  (_) =>
-                    self.send(ShowDialog) /*remove(self.state.originalVendor)*/
-                )
+                onClick=((_) => self.send(ShowDialog))
                 label="action.delete"
               />
             </td>
