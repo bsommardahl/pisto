@@ -77,7 +77,7 @@ let make = _children => {
             contentLabel="modal.deleteCashierContent"
             label="modal.deleteCashier"
             isOpen=true
-            onConfirm=(() => self.send(WebhookRemoved(dis)))
+            onConfirm=(() => removeWebhook(dis))
             onCancel=(() => self.send(HideDialog))
           />
         | Viewing =>
