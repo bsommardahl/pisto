@@ -72,6 +72,14 @@
     "content": "Delete Cashier"
   },
   {
+    "key": "modal.deleteProduct",
+    "content": "Delete Product"
+  },
+  {
+    "key": "modal.deleteProductContent",
+    "content": "Are you sure you want to delete this product?"
+  },
+  {
     "key": "modal.deleteCashierContent",
     "content": "Are you sure you want to delete this cashier?"
   },

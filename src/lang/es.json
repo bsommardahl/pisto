@@ -80,20 +80,28 @@
     "content": "Seguro que quiere eliminar este descuento?"
   },
   {
+    "key": "modal.deleteProduct",
+    "content": "Eliminar Producto"
+  },
+  {
+    "key": "modal.deleteProductContent",
+    "content": "Esta seguro que quiere eliminar este producto?"
+  },
+  {
     "key": "modal.deleteDiscountContent",
-    "content": "Seguro que quiere eliminar este descuento?"
+    "content": "Esta seguro que quiere eliminar este descuento?"
   },
   {
     "key": "modal.deleteOrderContent",
-    "content": "Seguro que quiere eliminar esta orden?"
+    "content": "Esta seguro que quiere eliminar esta orden?"
   },
   {
     "key": "modal.deleteExpenseContent",
-    "content": "Seguro que quiere eliminar este gasto?"
+    "content": "Esta seguro que quiere eliminar este gasto?"
   },
   {
     "key": "modal.deleteVendorContent",
-    "content": "Seguro que quiere eliminar este vendedor?"
+    "content": "Esta seguro que quiere eliminar este vendedor?"
   },
   {
     "key": "admin.header",

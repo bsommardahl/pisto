@@ -2,6 +2,7 @@ open Js.Promise;
 
 type intent =
   | Viewing
+  | Deleting(Product.t)
   | Modifying(Product.t);
 
 type state = {
@@ -13,6 +14,8 @@ type action =
   | LoadProducts
   | ProductsLoaded(list(Product.t))
   | RemoveProduct(Product.t)
+  | ShowDialog(Product.t)
+  | HideDialog
   | ModifyProduct(Product.t)
   | CreateProduct(Product.NewProduct.t)
   | ProductCreated(Product.t)
@@ -42,11 +45,14 @@ let make = _children => {
         ),
       )
     | ProductsLoaded(products) => ReasonReact.Update({...state, products})
+    | ShowDialog(prod) =>
+      ReasonReact.Update({...state, intent: Deleting(prod)})
+    | HideDialog => ReasonReact.Update({...state, intent: Viewing})
     | Change(intent) => ReasonReact.Update({...state, intent})
     | RemoveProduct(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
-          ...state,
+          intent: Viewing,
           products:
             state.products |> List.filter((d: Product.t) => d.id !== prod.id),
         },
@@ -106,6 +112,14 @@ let make = _children => {
       </div>
       (
         switch (self.state.intent) {
+        | Deleting(prod) =>
+          <DeleteModal
+            contentLabel="modal.deleteProductContent"
+            label="modal.deleteProduct"
+            isOpen=true
+            onConfirm=(() => self.send(RemoveProduct(prod)))
+            onCancel=(() => self.send(HideDialog))
+          />
         | Viewing =>
           <div className="product-management">
             <table className="table">
@@ -157,7 +171,7 @@ let make = _children => {
                            <Button
                              local=true
                              className="danger-card"
-                             onClick=((_) => self.send(RemoveProduct(prod)))
+                             onClick=((_) => self.send(ShowDialog(prod)))
                              label="action.delete"
                            />
                          </td>
