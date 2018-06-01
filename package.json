@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "bs-css": "^6.7.0",
     "bs-fetch": "^0.2.1",
     "bs-jest": "^0.3.2",
     "bs-json": "^1.0.1",

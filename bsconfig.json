@@ -15,7 +15,8 @@
     "bs-json",
     "cafe-domain",
     "cafe-data",
-    "bs-reactstrap"
+    "bs-reactstrap",
+    "bs-css"
   ],
   "reason": {
     "react-jsx": 2
