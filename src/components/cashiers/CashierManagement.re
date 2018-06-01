@@ -117,7 +117,7 @@ let make = _children => {
             contentLabel="modal.deleteCashierContent"
             label="modal.deleteCashier"
             isOpen=true
-            onConfirm=(() => self.send(CashierRemoved(cashier)))
+            onConfirm=(() => removeCashier(cashier))
             onCancel=(() => self.send(HideDialog))
           />
           | Viewing =>
