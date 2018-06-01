@@ -2,6 +2,7 @@ open Js.Promise;
 
 type intent =
   | Viewing
+  | Deleting(Cashier.t)
   | Modifying(Cashier.t);
 
 type state = {
@@ -11,6 +12,8 @@ type state = {
 
 type action =
   | LoadCashiers(list(Cashier.t))
+  | ShowDialog(Cashier.t)
+  | HideDialog
   | CashierRemoved(Cashier.t)
   | ModifyCashier(Cashier.t)
   | NewCashierCreated(Cashier.t)
@@ -33,10 +36,12 @@ let make = _children => {
   reducer: (action, state) =>
     switch (action) {
     | LoadCashiers(cashiers) => ReasonReact.Update({...state, cashiers})
+    | ShowDialog(cashier)=>ReasonReact.Update({...state,intent:Deleting(cashier)})
+    | HideDialog=>ReasonReact.Update({...state,intent:Viewing})
     | Change(intent) => ReasonReact.Update({...state, intent})
     | CashierRemoved(dis) =>
       ReasonReact.Update({
-        ...state,
+        intent:Viewing,
         cashiers:
           state.cashiers |> List.filter((d: Cashier.t) => d.id !== dis.id),
       })
@@ -73,6 +78,9 @@ let make = _children => {
         : None;
       };
     };
+    let displayDialog = (p:Cashier.t)=>{
+      self.send(ShowDialog(p));
+    };
     let removeCashier = (p: Cashier.t) => {
       CashierStore.remove(p.id)
       |> then_((_) => {
@@ -104,7 +112,15 @@ let make = _children => {
       </div>
       (
         switch (self.state.intent) {
-        | Viewing =>
+          | Deleting(cashier) =>
+          <DeleteModal
+            contentLabel="modal.deleteCashierContent"
+            label="modal.deleteCashier"
+            isOpen=true
+            onConfirm=(() => self.send(CashierRemoved(cashier)))
+            onCancel=(() => self.send(HideDialog))
+          />
+          | Viewing =>
           <div className="cashier-management">
             <table className="table">
               <thead>
@@ -133,7 +149,7 @@ let make = _children => {
                          <td>
                            <Button
                              local=true
-                             onClick=((_) => removeCashier(d))
+                             onClick=((_) => displayDialog(d))
                              label="action.delete"
                            />
                          </td>

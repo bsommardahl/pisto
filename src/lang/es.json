@@ -72,6 +72,14 @@
     "content": "Eliminar Descuento"
   },
   {
+    "key": "modal.deleteCashier",
+    "content": "Eliminar cajero"
+  },
+  {
+    "key": "modal.deleteCashierContent",
+    "content": "Seguro que quiere eliminar este descuento?"
+  },
+  {
     "key": "modal.deleteDiscountContent",
     "content": "Seguro que quiere eliminar este descuento?"
   },
