@@ -21,6 +21,7 @@ let make = (~onCancel=() => (), ~onFinish, ~className="", _children) => {
     switch (action) {
     | KeyDown(27) =>
       ReasonReact.UpdateWithSideEffects({value: ""}, ((_) => onCancel()))
+    | KeyDown(8) => ReasonReact.Update({value: state.value})
     | KeyDown(13) =>
       ReasonReact.UpdateWithSideEffects(
         {value: ""},
