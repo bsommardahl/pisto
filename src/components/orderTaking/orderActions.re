@@ -117,28 +117,5 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
         onCancel=(() => self.send(HideDialog))
       />
     </div>;
-    /* <BsReactstrap.Modal
-         isOpen=(self.state.showModal)
-         toggle = (self.state.showModal)
-         className="modal"
-         >
-             <BsReactstrap.ModalHeader className="modal-header" toggle=(false)>
-               "Delete Order"
-             </BsReactstrap.ModalHeader>
-             <BsReactstrap.ModalBody className="modal-content">"Are you sure you want to delete this order?"</BsReactstrap.ModalBody>
-             <BsReactstrap.ModalFooter className="modal-footer">
-                 <Button
-                   local=true
-                   className="remove-button-card"
-                   label="action.delete"
-                   onClick=((_)=>self.send(DeleteAndExit))/>
-                   <div className="spaceDivider"/>
-                 <Button
-                   local=true
-                   className="cancel-button-card"
-                   label="action.cancelModal"
-                   onClick=((_)=>self.send(ShowDialog))/>
-             </BsReactstrap.ModalFooter>
-       </BsReactstrap.Modal>  */
   },
 };

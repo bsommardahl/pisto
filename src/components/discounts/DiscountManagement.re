@@ -2,7 +2,8 @@ open Js.Promise;
 
 type intent =
   | Viewing
-  | Modifying(Discount.t);
+  | Modifying(Discount.t)
+  | Deleting(Discount.t);
 
 type state = {
   discounts: list(Discount.t),
@@ -12,6 +13,8 @@ type state = {
 type action =
   | LoadDiscounts
   | DiscountsLoaded(list(Discount.t))
+  | ShowDialog(Discount.t)
+  | HideDialog
   | RemoveDiscount(Discount.t)
   | ModifyDiscount(Discount.t)
   | CreateDiscount(Discount.NewDiscount.t)
@@ -41,12 +44,15 @@ let make = _children => {
             |> ignore
         ),
       )
+    | ShowDialog(discount) =>
+      ReasonReact.Update({...state, intent: Deleting(discount)})
+    | HideDialog => ReasonReact.Update({...state, intent: Viewing})
     | DiscountsLoaded(discounts) => ReasonReact.Update({...state, discounts})
     | Change(intent) => ReasonReact.Update({...state, intent})
     | RemoveDiscount(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
-          ...state,
+          intent: Viewing,
           discounts:
             state.discounts
             |> List.filter((d: Discount.t) => d.id !== prod.id),
@@ -145,9 +151,7 @@ let make = _children => {
                            <Button
                              local=true
                              className="danger-card"
-                             onClick=(
-                               (_) => self.send(RemoveDiscount(prod))
-                             )
+                             onClick=((_) => self.send(ShowDialog(prod)))
                              label="action.delete"
                            />
                          </td>
@@ -190,6 +194,14 @@ let make = _children => {
               )
             />
           </div>
+        | Deleting(discount) =>
+          <DeleteModal
+            contentLabel="modal.deleteDiscountContent"
+            label="modal.deleteDiscount"
+            isOpen=true
+            onConfirm=(() => self.send(RemoveDiscount(discount)))
+            onCancel=(() => self.send(HideDialog))
+          />
         }
       )
     </div>;

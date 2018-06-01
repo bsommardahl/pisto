@@ -12,7 +12,7 @@
     "content": "Exit"
   },
   {
-    "key":"action.cancelModal",
+    "key": "action.cancelModal",
     "content": "Cancel"
   },
   {
@@ -52,28 +52,36 @@
     "content": "Daily"
   },
   {
-    "key":"modal.deleteOrder",
+    "key": "modal.deleteOrder",
     "content": "Delete Order"
   },
   {
-    "key":"modal.deleteExpense",
-    "content":"Delete Expense Type"
+    "key": "modal.deleteExpense",
+    "content": "Delete Expense Type"
   },
   {
-    "key":"modal.deleteVendor",
-    "content":"Delete Vendor"
+    "key": "modal.deleteVendor",
+    "content": "Delete Vendor"
   },
   {
-    "key":"modal.deleteOrderContent",
+    "key": "modal.deleteDiscount",
+    "content": "Delete Discount"
+  },
+  {
+    "key": "modal.deleteDiscountContent",
+    "content": "Are you sure you want to delete this discount?"
+  },
+  {
+    "key": "modal.deleteOrderContent",
     "content": "Are you sure you want to delete this order?"
   },
   {
-    "key":"modal.deleteExpenseContent",
-    "content":"Are you sure you want to delete this expense?"
+    "key": "modal.deleteExpenseContent",
+    "content": "Are you sure you want to delete this expense?"
   },
   {
-    "key":"modal.deleteVendorContent",
-    "content":"Are you sure you want to delete this vendor?"
+    "key": "modal.deleteVendorContent",
+    "content": "Are you sure you want to delete this vendor?"
   },
   {
     "key": "menu.admin",
