@@ -52,6 +52,10 @@
     "content": "Daily"
   },
   {
+    "key": "modal.SearchProduct",
+    "content": "Search Product"
+  },
+  {
     "key": "modal.deleteOrder",
     "content": "Delete Order"
   },
@@ -230,6 +234,10 @@
   {
     "key": "order.startNew",
     "content": "Start Order"
+  },
+  {
+    "key": "order.searchProduct",
+    "content": "Search Product"
   },
   {
     "key": "order.defaultCustomerName",
