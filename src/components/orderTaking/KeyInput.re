@@ -14,6 +14,12 @@ type action =
 
 let component = ReasonReact.reducerComponent("KeyInput");
 
+let stringOrDefault = (opt: option(string)) =>
+  switch (opt) {
+  | None => ""
+  | Some(s) => s
+  };
+
 let make = (~onCancel=() => (), ~onFinish, ~className="", _children) => {
   ...component,
   initialState: () => {value: ""},
@@ -21,7 +27,8 @@ let make = (~onCancel=() => (), ~onFinish, ~className="", _children) => {
     switch (action) {
     | KeyDown(27) =>
       ReasonReact.UpdateWithSideEffects({value: ""}, ((_) => onCancel()))
-    | KeyDown(8) => ReasonReact.Update({value: state.value})
+    | KeyDown(8) =>
+      ReasonReact.Update({value: Js.String.slice(0, -1, state.value)})
     | KeyDown(13) =>
       ReasonReact.UpdateWithSideEffects(
         {value: ""},
