@@ -7,15 +7,13 @@ type state = {
   tags: list(string),
   order: Order.orderVm,
   closedOrder: bool,
-  allDiscounts:list(Discount.t)
 };
 
 type action =
   | SelectProduct(Product.t)
   | ProductsLoaded(list(Product.t))
-  | LoadOrder(Order.orderVm)
-  |DiscountsLoaded(list(Discount.t))
-  |RemoveDiscount(Discount.t);
+  | LoadOrder(Order.orderVm);
+
 
 let component = ReasonReact.reducerComponent("SearchModal");
 
@@ -25,27 +23,14 @@ let make =
       ~onCancel=() => (),
       ~isOpen=false,
       ~label: string,
-      /* ~contentLabel: string,*/
       _children,
     ) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
-    | DiscountsLoaded(discounts) =>
-    ReasonReact.Update({...state, allDiscounts: discounts})
     | ProductsLoaded(products) =>
       let tags = Product.getTags(products);
-      ReasonReact.Update({...state, tags, allProducts: products})
-    |RemoveDiscount(dis)=> ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          discounts:
-            state.order.discounts
-            |> List.filter((d: Discount.t) => d.id !== dis.id),
-        },
-        allDiscounts: List.concat([state.allDiscounts, [dis]]),
-      })  
+      ReasonReact.Update({...state, tags, allProducts: products})  
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
@@ -81,16 +66,9 @@ let make =
       tags: [],
       order: buildNewOrder(customerName),
       closedOrder: false,
-      allDiscounts:[],
     };
   },
   didMount: self => {
-    DiscountStore.getAll()
-    |> then_(discounts => {
-         self.send(DiscountsLoaded(discounts));
-         resolve();
-       })
-    |> ignore;
     ProductStore.getAll()
     |> then_(prods => {
          self.send(ProductsLoaded(prods));
@@ -110,8 +88,7 @@ let make =
       ReasonReact.NoUpdate;
     };
   },
-  render: self =>{
-  let discountDeselected = discount => self.send(RemoveDiscount(discount));
+  render: self =>
     <BsReactstrap.Modal isOpen className="modal">
       <BsReactstrap.ModalHeader className="modal-header">
         (ReactUtils.sloc(label))
@@ -129,18 +106,10 @@ let make =
       <BsReactstrap.ModalFooter className="modal-footer">
         <Button
           local=true
-          className="pay-button-card"
-          label="action.save"
-          onClick=((_) => onConfirm())
-        />
-        <div className="spaceDivider" />
-        <Button
-          local=true
           className="cancel-button-card"
           label="action.cancelModal"
           onClick=((_) => onCancel())
         />
       </BsReactstrap.ModalFooter>
-    </BsReactstrap.Modal>
-    },
+    </BsReactstrap.Modal>,
 };
