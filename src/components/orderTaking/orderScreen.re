@@ -19,6 +19,7 @@ type state = {
   modifying,
   allDiscounts: list(Discount.t),
   sku: string,
+  showDialog: bool,
 };
 
 type action =
@@ -33,7 +34,9 @@ type action =
   | ProductsLoaded(list(Product.t))
   | DiscountsLoaded(list(Discount.t))
   | ApplyDiscount(Discount.t)
-  | RemoveDiscount(Discount.t);
+  | RemoveDiscount(Discount.t)
+  | ShowDialog
+  | HideDialog;
 
 let dbUrl = "http://localhost:5984/orders";
 
@@ -125,6 +128,8 @@ let make = (~goBack, _children) => {
             ]),
         },
       })
+    | ShowDialog => ReasonReact.Update({...state, showDialog: true})
+    | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   initialState: () => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
@@ -142,6 +147,7 @@ let make = (~goBack, _children) => {
       modifying: Nothing,
       allDiscounts: [],
       sku: "",
+      showDialog: false,
     };
   },
   didMount: self => {
@@ -178,11 +184,24 @@ let make = (~goBack, _children) => {
     let discountSelected = discount => self.send(ApplyDiscount(discount));
     let discountDeselected = discount => self.send(RemoveDiscount(discount));
     <div className="order">
+      <SearchModal
+        label="modal.SearchProduct"
+        isOpen=self.state.showDialog
+        onCancel=((_) => self.send(HideDialog))
+      />
       <div className="order-header">
         <OrderActions
           order=self.state.order
           onFinish=((_) => self.send(CloseOrderScreen))
         />
+        <div className="order-actions">
+          <Button
+            local=true
+            className="pay-button-card"
+            label="order.searchProduct"
+            onClick=((_) => self.send(ShowDialog))
+          />
+        </div>
         <div className="customer-name">
           <EditableText
             mode=TouchToEdit

@@ -1,24 +1,17 @@
-type state = {
-  customerName: string,
-  showDialog: bool,
-};
+type state = {customerName: string};
 
 type action =
-  | UpdateCustomerName(string)
-  | ShowDialog
-  | HideDialog;
+  | UpdateCustomerName(string);
 
 let component = ReasonReact.reducerComponent("Home");
 
 let make = (~onStartNewOrder, _children) => {
   ...component,
-  initialState: () => {customerName: "", showDialog: false},
-  reducer: (action, state) =>
+  initialState: () => {customerName: ""},
+  reducer: (action, _state) =>
     switch (action) {
     | UpdateCustomerName(customerName) =>
-      ReasonReact.Update({...state, customerName})
-    | ShowDialog => ReasonReact.Update({...state, showDialog: true})
-    | HideDialog => ReasonReact.Update({...state, showDialog: false})
+      ReasonReact.Update({customerName: customerName})
     },
   render: self => {
     let handleChange = ({ReasonReact.send}, event) => {
@@ -26,11 +19,6 @@ let make = (~onStartNewOrder, _children) => {
       send(UpdateCustomerName(value));
     };
     <div className="home">
-      <SearchModal
-        label="modal.SearchProduct"
-        isOpen=self.state.showDialog
-        onCancel=((_) => self.send(HideDialog))
-      />
       <div className="header">
         <input
           _type="text"
@@ -43,12 +31,6 @@ let make = (~onStartNewOrder, _children) => {
           local=true
           onClick=(_event => onStartNewOrder(self.state.customerName))
           label="order.startNew"
-        />
-        <Button
-          local=true
-          className="pay-button-card"
-          label="order.searchProduct"
-          onClick=((_) => self.send(ShowDialog))
         />
       </div>
       <OpenOrders />

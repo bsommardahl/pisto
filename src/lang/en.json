@@ -53,7 +53,7 @@
   },
   {
     "key": "modal.SearchProduct",
-    "content": "Search Product"
+    "content": "Search"
   },
   {
     "key": "modal.deleteOrder",
@@ -237,7 +237,7 @@
   },
   {
     "key": "order.searchProduct",
-    "content": "Search Product"
+    "content": "Search"
   },
   {
     "key": "order.defaultCustomerName",
