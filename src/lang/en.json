@@ -528,6 +528,10 @@
     "content": "Cashier"
   },
   {
+    "key": "action.select",
+    "content": "Select"
+  },
+  {
     "key": "paymentMethod",
     "content": "Payment Method"
   },
