@@ -260,6 +260,15 @@ table.admin-table thead th {
   opacity: .1;
   text-transform:lowercase;
 }
+.product-search{
+  font-size: 30px; 
+  color: white;  
+  border: 0px; 
+  width: 100%;
+  background-color: #000000;
+  opacity: .1;
+  text-transform:lowercase;
+}
 .pay-for-order{
   width: 400px;
   background-color: #EEEEEE;

@@ -96,7 +96,7 @@ let make = (~onCancel=() => (), ~isOpen=false, ~label: string, _children) => {
         (ReactUtils.sloc(label))
       </BsReactstrap.ModalHeader>
       <BsReactstrap.ModalBody className="modal-content">
-        <SkuSearch
+        <ProductSearch
           allProducts=self.state.allProducts
           productFound=(p => self.send(SelectProduct(p)))
         />
