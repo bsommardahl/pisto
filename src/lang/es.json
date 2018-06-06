@@ -56,6 +56,14 @@
     "content": "Admin"
   },
   {
+    "key": "modal.SearchProduct",
+    "content": "Buscar"
+  },
+  {
+    "key": "action.select",
+    "content": "Select"
+  },
+  {
     "key": "modal.deleteOrder",
     "content": "Eliminar"
   },

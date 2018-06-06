@@ -22,6 +22,9 @@ body {
   height: auto;
   display:inline-block;
 }
+.heightDivider{
+  height:15px;
+}
 .modal{
   position: fixed;
   z-index:1;
@@ -255,6 +258,16 @@ table.admin-table thead th {
   width: 100%;
   background-color: #000000;
   opacity: .1;
+  text-transform:lowercase;
+}
+.product-search{
+  font-size: 30px; 
+  color: white;  
+  border: 0px; 
+  width: 100%;
+  background-color: #000000;
+  opacity: .1;
+  text-transform:lowercase;
 }
 .pay-for-order{
   width: 400px;
