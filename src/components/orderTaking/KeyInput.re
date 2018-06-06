@@ -20,7 +20,14 @@ let stringOrDefault = (opt: option(string)) =>
   | Some(s) => s
   };
 
-let make = (~onCancel=() => (), ~onFinish, ~className="", _children) => {
+let make =
+    (
+      ~onCancel=() => (),
+      ~acceptInput=true,
+      ~onFinish,
+      ~className="",
+      _children,
+    ) => {
   ...component,
   initialState: () => {value: ""},
   reducer: (action, state) =>
@@ -75,7 +82,10 @@ let make = (~onCancel=() => (), ~onFinish, ~className="", _children) => {
     | Reset => ReasonReact.Update({value: ""})
     },
   subscriptions: self => {
-    let logKey = ev => self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
+    let logKey = ev =>
+      if (acceptInput) {
+        self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
+      };
     [
       Sub(
         () => addEventListener(window, "keydown", logKey),

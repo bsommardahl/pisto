@@ -1,6 +1,12 @@
 let component = ReasonReact.statelessComponent("SkuSearch");
 
-let make = (~allProducts: list(Product.t), ~productFound, _children) => {
+let make =
+    (
+      ~acceptInput=true,
+      ~allProducts: list(Product.t),
+      ~productFound,
+      _children,
+    ) => {
   ...component,
   render: _self => {
     let findProduct = sku => {
@@ -10,6 +16,10 @@ let make = (~allProducts: list(Product.t), ~productFound, _children) => {
         productFound(matches |. List.nth(0));
       };
     };
-    <KeyInput className="sku-search" onFinish=(sku => findProduct(sku)) />;
+    <KeyInput
+      acceptInput
+      className="sku-search"
+      onFinish=(sku => findProduct(sku))
+    />;
   },
 };

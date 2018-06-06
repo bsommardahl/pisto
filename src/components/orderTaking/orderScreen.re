@@ -20,6 +20,7 @@ type state = {
   allDiscounts: list(Discount.t),
   sku: string,
   showDialog: bool,
+  skuEnabled: bool,
 };
 
 type action =
@@ -117,19 +118,24 @@ let make = (~goBack, _children) => {
         },
       })
     | SelectProduct(product) =>
-      ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          orderItems:
-            List.concat([
-              state.order.orderItems,
-              [buildOrderItem(product)],
-            ]),
+      ReasonReact.UpdateWithSideEffects(
+        {
+          ...state,
+          order: {
+            ...state.order,
+            orderItems:
+              List.concat([
+                state.order.orderItems,
+                [buildOrderItem(product)],
+              ]),
+          },
         },
-      })
-    | ShowDialog => ReasonReact.Update({...state, showDialog: true})
-    | HideDialog => ReasonReact.Update({...state, showDialog: false})
+        (self => self.send(HideDialog)),
+      )
+    | ShowDialog =>
+      ReasonReact.Update({...state, skuEnabled: false, showDialog: true})
+    | HideDialog =>
+      ReasonReact.Update({...state, skuEnabled: true, showDialog: false})
     },
   initialState: () => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
@@ -148,6 +154,7 @@ let make = (~goBack, _children) => {
       allDiscounts: [],
       sku: "",
       showDialog: false,
+      skuEnabled: true,
     };
   },
   didMount: self => {
@@ -187,6 +194,8 @@ let make = (~goBack, _children) => {
       <SearchModal
         label="modal.SearchProduct"
         isOpen=self.state.showDialog
+        allProducts=self.state.allProducts
+        onSelect=(p => self.send(SelectProduct(p)))
         onCancel=((_) => self.send(HideDialog))
       />
       <div className="order-header">
@@ -212,6 +221,7 @@ let make = (~goBack, _children) => {
       </div>
       <div className="right-side">
         <SkuSearch
+          acceptInput=self.state.skuEnabled
           allProducts=self.state.allProducts
           productFound=(p => self.send(SelectProduct(p)))
         />
