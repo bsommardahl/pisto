@@ -37,7 +37,9 @@ type action =
   | ApplyDiscount(Discount.t)
   | RemoveDiscount(Discount.t)
   | ShowDialog
-  | HideDialog;
+  | HideDialog
+  | EnableSku
+  | DisableSku;
 
 let dbUrl = "http://localhost:5984/orders";
 
@@ -133,9 +135,17 @@ let make = (~goBack, _children) => {
         (self => self.send(HideDialog)),
       )
     | ShowDialog =>
-      ReasonReact.Update({...state, skuEnabled: false, showDialog: true})
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showDialog: true},
+        (self => self.send(DisableSku)),
+      )
     | HideDialog =>
-      ReasonReact.Update({...state, skuEnabled: true, showDialog: false})
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showDialog: false},
+        (self => self.send(EnableSku)),
+      )
+    | EnableSku => ReasonReact.Update({...state, skuEnabled: true})
+    | DisableSku => ReasonReact.Update({...state, skuEnabled: false})
     },
   initialState: () => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
