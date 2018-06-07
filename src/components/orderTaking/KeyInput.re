@@ -77,21 +77,25 @@ let make =
       )
     | KeyDown(key) =>
       ReasonReact.Update({
-        value: state.value ++ (key |> Js.String.fromCharCode),
+        value:acceptInput?state.value ++ (key |> Js.String.fromCharCode):state.value,
       })
     | Reset => ReasonReact.Update({value: ""})
     },
   subscriptions: self => {
     let logKey = ev =>
-      if (acceptInput) {
-        self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
-      };
-    [
-      Sub(
-        () => addEventListener(window, "keydown", logKey),
-        () => removeEventListener(window, "keydown", logKey),
-      ),
-    ];
+
+      
+      self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
+    
+ 
+  [
+    Sub(
+      () => addEventListener(window, "keydown", logKey),
+      () => removeEventListener(window, "keydown", logKey),
+    ),
+  ];
+
+   
   },
   render: self =>
     <input
