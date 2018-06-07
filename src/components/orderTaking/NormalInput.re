@@ -27,13 +27,14 @@ let make = (~value="", ~onFinish, ~className="", _children) => {
     <div>
       <input
         onChange=(ev => self.send(Change(getVal(ev))))
-        className=("key-input " ++ className)
+        className=("search-input " ++ className)
         value=self.state.value
+        placeholder="Search a product..."
       />
       <Button
         onClick=((_) => onFinish(self.state.value))
         local=true
-        label="action.done"
+        label="modal.SearchProduct"
       />
     </div>;
   },

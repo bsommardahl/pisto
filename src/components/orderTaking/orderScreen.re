@@ -202,7 +202,7 @@ let make = (~goBack, _children) => {
     let discountDeselected = discount => self.send(RemoveDiscount(discount));
     <div className="order">
       <SearchModal
-        label="modal.SearchProduct"
+        label="modal.SearchProductHeader"
         isOpen=self.state.showDialog
         allProducts=self.state.allProducts
         onSelect=(p => self.send(SelectProduct(p)))

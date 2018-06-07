@@ -31,45 +31,50 @@ let make =
       })
     },
   render: self =>
-    <BsReactstrap.Modal isOpen className="modal">
-      <BsReactstrap.ModalHeader className="modal-header">
-        (ReactUtils.sloc(label))
-      </BsReactstrap.ModalHeader>
-      <BsReactstrap.ModalBody className="modal-content">
-        <NormalInput onFinish=(text => self.send(FilterProduct(text))) />
-        <table>
-          <tbody>
-            (
-              self.state.products
-              |> List.map((i: Product.t) =>
-                   <tr>
-                     <td>
-                       <Button
-                         onClick=((_) => onSelect(i))
-                         label="action.select"
-                         local=true
-                       />
-                     </td>
-                     <td> (ReactUtils.s(i.sku)) </td>
-                     <td> (ReactUtils.s(i.name)) </td>
-                     <td>
-                       (ReactUtils.s(i.suggestedPrice |> Money.toDisplay))
-                     </td>
-                   </tr>
-                 )
-              |> Array.of_list
-              |> ReasonReact.arrayToElement
-            )
-          </tbody>
-        </table>
-      </BsReactstrap.ModalBody>
-      <BsReactstrap.ModalFooter className="modal-footer">
-        <Button
-          local=true
-          className="cancel-button-card"
-          label="action.cancelModal"
-          onClick=((_) => onCancel())
-        />
-      </BsReactstrap.ModalFooter>
-    </BsReactstrap.Modal>,
+    <div>
+      <BsReactstrap.Modal isOpen className="modal">
+        <BsReactstrap.ModalHeader className="modal-header">
+          (ReactUtils.sloc(label))
+        </BsReactstrap.ModalHeader>
+        <BsReactstrap.ModalBody className="modal-content">
+          <NormalInput onFinish=(text => self.send(FilterProduct(text))) />
+          <div className="order-items">
+            <table>
+              <tbody>
+                (
+                  self.state.products
+                  |> List.map((i: Product.t) =>
+                       <tr>
+                         <td>
+                           <Button
+                             onClick=((_) => onSelect(i))
+                             label="action.select"
+                             className="small-card pay-button-card"
+                             local=true
+                           />
+                         </td>
+                         <td> (ReactUtils.s(i.sku)) </td>
+                         <td> (ReactUtils.s(i.name)) </td>
+                         <td>
+                           (ReactUtils.s(i.suggestedPrice |> Money.toDisplay))
+                         </td>
+                       </tr>
+                     )
+                  |> Array.of_list
+                  |> ReasonReact.arrayToElement
+                )
+              </tbody>
+            </table>
+          </div>
+        </BsReactstrap.ModalBody>
+        <BsReactstrap.ModalFooter className="modal-footer">
+          <Button
+            local=true
+            className="cancel-button-card"
+            label="action.cancelModal"
+            onClick=((_) => onCancel())
+          />
+        </BsReactstrap.ModalFooter>
+      </BsReactstrap.Modal>
+    </div>,
 };

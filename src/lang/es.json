@@ -60,6 +60,10 @@
     "content": "Buscar"
   },
   {
+    "key": "modal.SearchProductHeader",
+    "content": "Buscar Producto"
+  },
+  {
     "key": "action.select",
     "content": "Select"
   },
