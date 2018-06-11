@@ -195,13 +195,14 @@ let make = _children => {
                       taxCalculation:
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
+                      onHand:0,
+                      startDate:None,
+                      endDate:None,
+                      department:"",
+                      unit:"",
+                      products:[]
                     }),
                   )
-              )
-            />
-            <BulkImportProducts
-              onNewProduct=(
-                newProduct => self.send(CreateProduct(newProduct))
               )
             />
           </div>
@@ -222,6 +223,12 @@ let make = _children => {
                       taxCalculation:
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
+                      onHand:0,
+                      startDate:None,
+                      endDate:None,
+                      department:"",
+                      unit:"",
+                      products:[]
                     }),
                   )
               )

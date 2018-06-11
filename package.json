@@ -9,6 +9,7 @@
     "bs-json": "^1.0.1",
     "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^3.0.0",
+    "bs-reactstrap": "^0.1.2",
     "bs-reform": "^5.1.1",
     "cafe-data": "github:bsommardahl/cafe-data",
     "cafe-domain": "github:bsommardahl/cafe-domain",
