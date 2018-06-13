@@ -44,7 +44,10 @@ let make = (~value="1", ~numbers=1, _children) => {
       )
     | Subtract =>
       ReasonReact.UpdateWithSideEffects(
-        {...state, numbers: state.numbers - 1},
+        {
+          ...state,
+          numbers: state.numbers > 1 ? state.numbers - 1 : state.numbers,
+        },
         (self => self.send(ChangeToString)),
       )
     | ChangeToString =>
