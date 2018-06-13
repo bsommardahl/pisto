@@ -103,9 +103,9 @@ let make =
       ~expense=?,
       ~allVendors,
       ~allExpenseTypes,
-      ~onCreate=(_) => (),
-      ~onModify=(_) => (),
-      ~onRemove=(_) => (),
+      ~onCreate=_ => (),
+      ~onModify=_ => (),
+      ~onRemove=_ => (),
       ~onCancel,
       _children,
     ) => {
@@ -228,6 +228,7 @@ let make =
         subTotals: getUpdatedSubTotals(self.state),
         tax: self.state.tax,
         total: self.state.total,
+        movements: [],
       };
       onCreate(newExpense);
     };
@@ -241,6 +242,7 @@ let make =
         subTotals: getUpdatedSubTotals(self.state),
         tax: self.state.tax,
         total: self.state.total,
+        movements: e.movements,
       };
       onModify(modified);
     };
@@ -260,7 +262,7 @@ let make =
           |> List.map((v: Vendor.t) => {
                let className =
                  v.id === self.state.vendor.id ? "card card-selected" : "card";
-               <div className onClick=((_) => self.send(ChangeVendor(v)))>
+               <div className onClick=(_ => self.send(ChangeVendor(v)))>
                  (s(v.name))
                </div>;
              })
@@ -281,8 +283,7 @@ let make =
                let className =
                  e.id === self.state.expenseType.id ?
                    "card card-selected" : "card";
-               <div
-                 className onClick=((_) => self.send(ChangeExpenseType(e)))>
+               <div className onClick=(_ => self.send(ChangeExpenseType(e)))>
                  (s(e.name))
                </div>;
              })
@@ -347,7 +348,7 @@ let make =
                      <td>
                        <Button
                          local=true
-                         onClick=((_) => self.send(RemoveSubTotal(sub)))
+                         onClick=(_ => self.send(RemoveSubTotal(sub)))
                          label="action.delete"
                        />
                      </td>
@@ -380,7 +381,7 @@ let make =
               <td>
                 <Button
                   local=true
-                  onClick=((_) => self.send(AddSubTotal))
+                  onClick=(_ => self.send(AddSubTotal))
                   label="expense.subTotal.add"
                 />
               </td>
@@ -422,7 +423,7 @@ let make =
         | None =>
           <Button
             local=true
-            onClick=((_) => createNewExpense())
+            onClick=(_ => createNewExpense())
             label="action.create"
           />
         /* disabled=(isExpenseValid(self.state.fields) ? false : true) */
@@ -430,19 +431,19 @@ let make =
           <span>
             <Button
               local=true
-              onClick=((_) => modifyExistingExpense(e))
+              onClick=(_ => modifyExistingExpense(e))
               label="action.save"
             />
             <Button
               local=true
               className="danger-card"
-              onClick=((_) => onRemove(e))
+              onClick=(_ => onRemove(e))
               label="action.delete"
             />
           </span>
         }
       )
-      <Button local=true onClick=((_) => onCancel()) label="action.cancel" />
+      <Button local=true onClick=(_ => onCancel()) label="action.cancel" />
     </div>;
   },
 };

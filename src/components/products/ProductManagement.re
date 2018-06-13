@@ -58,7 +58,7 @@ let make = _children => {
         },
         (
           _self =>
-            ProductStore.remove(prod.id) |> then_((_) => resolve()) |> ignore
+            ProductStore.remove(prod.id) |> then_(_ => resolve()) |> ignore
         ),
       )
     | ModifyProduct(product) =>
@@ -98,7 +98,7 @@ let make = _children => {
       })
     },
   render: self => {
-    let goBack = (_) => ReasonReact.Router.push("/admin");
+    let goBack = _ => ReasonReact.Router.push("/admin");
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
@@ -144,7 +144,7 @@ let make = _children => {
                              local=true
                              disabled=false
                              onClick=(
-                               (_) => self.send(Change(Modifying(prod)))
+                               _ => self.send(Change(Modifying(prod)))
                              )
                              label="action.edit"
                            />
@@ -171,7 +171,7 @@ let make = _children => {
                            <Button
                              local=true
                              className="danger-card"
-                             onClick=((_) => self.send(ShowDialog(prod)))
+                             onClick=(_ => self.send(ShowDialog(prod)))
                              label="action.delete"
                            />
                          </td>
@@ -195,12 +195,13 @@ let make = _children => {
                       taxCalculation:
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
-                      onHand:0,
-                      startDate:None,
-                      endDate:None,
-                      department:"",
-                      unit:"",
-                      products:[]
+                      onHand: 0,
+                      startDate: None,
+                      endDate: None,
+                      department: "",
+                      unit: "",
+                      products: [],
+                      location: "",
                     }),
                   )
               )
@@ -223,12 +224,13 @@ let make = _children => {
                       taxCalculation:
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
-                      onHand:0,
-                      startDate:None,
-                      endDate:None,
-                      department:"",
-                      unit:"",
-                      products:[]
+                      onHand: product.onHand,
+                      startDate: product.startDate,
+                      endDate: product.endDate,
+                      department: product.department,
+                      unit: product.unit,
+                      products: product.products,
+                      location: product.location,
                     }),
                   )
               )
