@@ -1,13 +1,4 @@
-type state = {value: int};
-
-type action =
-  | Add(int)
-  | Subtract(int)
-  | Change(int);
-
-let component = ReasonReact.reducerComponent("OrderItems");
-
-let toInt = text => text |> Number.fromString;
+let component = ReasonReact.statelessComponent("OrderItems");
 
 let make =
     (
@@ -20,14 +11,7 @@ let make =
       _children,
     ) => {
   ...component,
-  initialState: () => {value: 1},
-  reducer: (action, _state) =>
-    switch (action) {
-    | Change(number) => ReasonReact.Update({value: number})
-    | Add(number) => ReasonReact.Update({value: number + 1})
-    | Subtract(number) => ReasonReact.Update({value: number - 1})
-    },
-  render: self => {
+  render: _self => {
     let totals =
       OrderItemCalculation.getTotals(order.discounts, order.orderItems);
     <div className="order-items">
@@ -57,10 +41,7 @@ let make =
                    <td>
                      (
                        if (! closed && canRemoveItem) {
-                         <QuantitySelector
-                           onPlus=(value => self.send(Add(value)))
-                           onSubtract=(value => self.send(Subtract(value)))
-                         />;
+                         <QuantitySelector />;
                        } else {
                          ReasonReact.nullElement;
                        }

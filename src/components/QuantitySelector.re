@@ -1,8 +1,15 @@
-type state = {value: string};
+type state = {
+  value: string,
+  numbers: int,
+};
 
 type action =
   | Reset
-  | Change(string);
+  | StringToInt
+  | Change(string)
+  | Add
+  | Subtract
+  | ChangeToString;
 
 let component = ReasonReact.reducerComponent("QuantitySelector");
 
@@ -12,13 +19,37 @@ let intOrDefault = (opt: option(string)) =>
   | Some(s) => s
   };
 
-let make = (~value="1", ~onPlus, ~onSubtract, _children) => {
+type t = int;
+
+let cleanNonNumeric = n => n |> Js.String.replaceByRe([%bs.re "/\\D/g"], "");
+
+let fromString = (str: string) : t =>
+  switch (str |> cleanNonNumeric) {
+  | "" => 0
+  | s => s |> int_of_string
+  };
+
+let make = (~value="1", ~numbers=1, _children) => {
   ...component,
-  initialState: () => {value: value},
-  reducer: (action, _state) =>
+  initialState: () => {value, numbers},
+  reducer: (action, state) =>
     switch (action) {
-    | Change(number) => ReasonReact.Update({value: number})
-    | Reset => ReasonReact.Update({value: "1"})
+    | Change(text) => ReasonReact.Update({...state, value: text})
+    | StringToInt =>
+      ReasonReact.Update({...state, numbers: fromString(state.value)})
+    | Add =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, numbers: state.numbers + 1},
+        (self => self.send(ChangeToString)),
+      )
+    | Subtract =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, numbers: state.numbers - 1},
+        (self => self.send(ChangeToString)),
+      )
+    | ChangeToString =>
+      ReasonReact.Update({...state, value: Js.Int.toString(state.numbers)})
+    | Reset => ReasonReact.Update({...state, value: "1"})
     },
   render: self => {
     let getVal = ev => ReactDOMRe.domElementToObj(
@@ -29,7 +60,7 @@ let make = (~value="1", ~onPlus, ~onSubtract, _children) => {
         className="small-card"
         local=true
         label="action.minus"
-        onClick=(_ => onSubtract(self.state.value))
+        onClick=(_ => self.send(Subtract))
       />
       <input
         className="quantityInput"
@@ -40,7 +71,7 @@ let make = (~value="1", ~onPlus, ~onSubtract, _children) => {
         className="small-card pay-button-card"
         local=true
         label="action.plus"
-        onClick=(_ => onPlus(self.state.value))
+        onClick=(_ => self.send(Add))
       />
     </div>;
   },
