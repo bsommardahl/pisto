@@ -25,6 +25,16 @@ body {
 .heightDivider{
   height:15px;
 }
+.quantitySelectorDiv{
+display: inline-block;
+}
+.quantityInput{
+  width:35%;
+}
+.quantityMinusButton{
+  position:"top-right";
+
+}
 .modal{
   position: fixed;
   z-index:1;
@@ -159,9 +169,9 @@ input.customer-name-input {
   background-color: blueviolet;
   color: white; 
 }
-.order-items table { width: 100%; border-collapse: collapse; text-align: right; }
-.order-items table tbody td { height: 30px; }
 
+.order-items table { width: 100%; border-collapse: collapse; text-align: left; }
+.order-items table tbody td { height: 30px; }
 .order-items table tfoot th { height: 30px; }
 .order-items table tfoot td { width: 75px; }
 .order-items table tfoot tr.divider td { border-top: 2px solid black; }

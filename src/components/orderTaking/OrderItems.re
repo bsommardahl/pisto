@@ -1,4 +1,13 @@
-let component = ReasonReact.statelessComponent("OrderItems");
+type state = {value: int};
+
+type action =
+  | Add(int)
+  | Subtract(int)
+  | Change(int);
+
+let component = ReasonReact.reducerComponent("OrderItems");
+
+let toInt = text => text |> Number.fromString;
 
 let make =
     (
@@ -11,7 +20,14 @@ let make =
       _children,
     ) => {
   ...component,
-  render: _self => {
+  initialState: () => {value: 1},
+  reducer: (action, _state) =>
+    switch (action) {
+    | Change(number) => ReasonReact.Update({value: number})
+    | Add(number) => ReasonReact.Update({value: number + 1})
+    | Subtract(number) => ReasonReact.Update({value: number - 1})
+    },
+  render: self => {
     let totals =
       OrderItemCalculation.getTotals(order.discounts, order.orderItems);
     <div className="order-items">
@@ -29,9 +45,21 @@ let make =
                        if (! closed && canRemoveItem) {
                          <Button
                            className="small-card danger-card"
-                           onClick=((_) => onRemoveItem(i))
+                           onClick=(_ => onRemoveItem(i))
                            label="action.delete"
                            local=true
+                         />;
+                       } else {
+                         ReasonReact.nullElement;
+                       }
+                     )
+                   </td>
+                   <td>
+                     (
+                       if (! closed && canRemoveItem) {
+                         <QuantitySelector
+                           onPlus=(value => self.send(Add(value)))
+                           onSubtract=(value => self.send(Subtract(value)))
                          />;
                        } else {
                          ReasonReact.nullElement;
@@ -51,7 +79,9 @@ let make =
         <tfoot>
           <tr className="divider">
             <th colSpan=2> (ReactUtils.sloc("order.subTotal")) </th>
-            <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
+            <td className="footTable">
+              (ReactUtils.s(totals.subTotal |> Money.toDisplay))
+            </td>
           </tr>
           (
             if (order.discounts |> List.length > 0) {
@@ -79,7 +109,7 @@ let make =
              <button
                className="card small-card card-discount"
                disabled=(closed || canDeselectDiscount ? true : false)
-               onClick=((_) => deselectDiscount(d))>
+               onClick=(_ => deselectDiscount(d))>
                (ReactUtils.s(d.name))
              </button>
            )
