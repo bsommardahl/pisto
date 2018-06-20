@@ -1,23 +1,11 @@
-type state = {
-  value: string,
-  numbers: int,
-};
+type state = {value: int};
 
 type action =
-  | Reset
-  | StringToInt
   | Change(string)
   | Add
-  | Subtract
-  | ChangeToString;
+  | Subtract;
 
 let component = ReasonReact.reducerComponent("QuantitySelector");
-
-let intOrDefault = (opt: option(string)) =>
-  switch (opt) {
-  | None => "1"
-  | Some(s) => s
-  };
 
 type t = int;
 
@@ -29,30 +17,28 @@ let fromString = (str: string) : t =>
   | s => s |> int_of_string
   };
 
-let make = (~value="1", ~numbers=1, _children) => {
+let make = (~onChange, ~value, _children) => {
   ...component,
-  initialState: () => {value, numbers},
+  initialState: () => {value: value},
   reducer: (action, state) =>
     switch (action) {
-    | Change(text) => ReasonReact.Update({...state, value: text})
-    | StringToInt =>
-      ReasonReact.Update({...state, numbers: fromString(state.value)})
+    | Change(text) =>
+      ReasonReact.UpdateWithSideEffects(
+        {value: text |> int_of_string},
+        (self => onChange(self.state.value)),
+      )
     | Add =>
+      Js.log(value);
       ReasonReact.UpdateWithSideEffects(
-        {...state, numbers: state.numbers + 1},
-        (self => self.send(ChangeToString)),
-      )
+        {value: state.value + 1},
+        (self => onChange(self.state.value)),
+      );
     | Subtract =>
+      Js.log(value);
       ReasonReact.UpdateWithSideEffects(
-        {
-          ...state,
-          numbers: state.numbers > 1 ? state.numbers - 1 : state.numbers,
-        },
-        (self => self.send(ChangeToString)),
-      )
-    | ChangeToString =>
-      ReasonReact.Update({...state, value: Js.Int.toString(state.numbers)})
-    | Reset => ReasonReact.Update({...state, value: "1"})
+        {value: state.value > 1 ? state.value - 1 : state.value},
+        (self => onChange(self.state.value)),
+      );
     },
   render: self => {
     let getVal = ev => ReactDOMRe.domElementToObj(
@@ -67,7 +53,7 @@ let make = (~value="1", ~numbers=1, _children) => {
       />
       <input
         className="quantityInput"
-        value=self.state.value
+        value=(self.state.value |> string_of_int)
         onChange=(ev => self.send(Change(getVal(ev))))
       />
       <Button

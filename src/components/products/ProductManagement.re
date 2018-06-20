@@ -201,6 +201,8 @@ let make = _children => {
                       department: "",
                       unit: "",
                       products: [],
+                      weight: 0,
+                      location: "",
                     }),
                   )
               )
@@ -229,6 +231,8 @@ let make = _children => {
                       department: "",
                       unit: "",
                       products: [],
+                      weight: 0,
+                      location: "",
                     }),
                   )
               )

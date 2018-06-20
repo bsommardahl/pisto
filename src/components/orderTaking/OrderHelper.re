@@ -137,6 +137,8 @@ let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
   };
 
 let buildOrderItem = (product: Product.t) : OrderItem.t => {
+  id: 0,
+  quantity: 1,
   sku: product.sku,
   name: product.name,
   suggestedPrice: product.suggestedPrice,

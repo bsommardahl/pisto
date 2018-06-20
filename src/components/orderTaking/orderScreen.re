@@ -29,12 +29,13 @@ type action =
   | DeselectTag
   | LoadOrder(Order.orderVm)
   | CloseOrderScreen
-  | RemoveOrderItem(OrderItem.t)
   | ChangePaidDate(float)
   | ChangeCustomerName(string)
+  | ChangeOrder(Order.orderVm)
   | ProductsLoaded(list(Product.t))
   | DiscountsLoaded(list(Discount.t))
   | ApplyDiscount(Discount.t)
+  /* | RemoveOrderItem(OrderItem.t)  */
   | RemoveDiscount(Discount.t)
   | ShowDialog
   | HideDialog
@@ -54,6 +55,8 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, tags, allProducts: products});
     | DiscountsLoaded(discounts) =>
       ReasonReact.Update({...state, allDiscounts: discounts})
+    | ChangeOrder(order) => 
+    ReasonReact.UpdateWithSideEffects({...state,order:{...state.order,orderItems:List.concat([state.order.orderItems])}}, _=>{  Js.log(state.order)})
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
@@ -76,16 +79,28 @@ let make = (~goBack, _children) => {
           |> List.filter((d: Discount.t) => d.id !== dis.id),
       })
     | RemoveDiscount(dis) =>
-      ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          discounts:
-            state.order.discounts
-            |> List.filter((d: Discount.t) => d.id !== dis.id),
+       ReasonReact.Update({
+         ...state,
+         order: {
+           ...state.order,
+           discounts:
+             state.order.discounts
+             |> List.filter((d: Discount.t) => d.id !== dis.id),
+         },
+         allDiscounts: List.concat([state.allDiscounts, [dis]]),
+       })
+       /* | RemoveOrderItem(orderItem) =>
+      Js.log("here");
+      ReasonReact.Update(
+        {
+          ...state,
+          order: {
+            ...state.order,
+            orderItems:
+              state.order.orderItems |> List.filter(i => i !== orderItem),
+          },
         },
-        allDiscounts: List.concat([state.allDiscounts, [dis]]),
-      })
+      ); */
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
         ...state,
@@ -110,15 +125,6 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
     | CloseOrderScreen => ReasonReact.SideEffects((_self => goBack()))
-    | RemoveOrderItem(orderItem) =>
-      ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          orderItems:
-            state.order.orderItems |> List.filter(i => i !== orderItem),
-        },
-      })
     | SelectProduct(product) =>
       ReasonReact.UpdateWithSideEffects(
         {
@@ -206,19 +212,19 @@ let make = (~goBack, _children) => {
         isOpen=self.state.showDialog
         allProducts=self.state.allProducts
         onSelect=(p => self.send(SelectProduct(p)))
-        onCancel=((_) => self.send(HideDialog))
+        onCancel=(_ => self.send(HideDialog))
       />
       <div className="order-header">
         <OrderActions
           order=self.state.order
-          onFinish=((_) => self.send(CloseOrderScreen))
+          onFinish=(_ => self.send(CloseOrderScreen))
         />
         <div className="order-actions">
           <Button
             local=true
             className="pay-button-card"
             label="order.searchProduct"
-            onClick=((_) => self.send(ShowDialog))
+            onClick=(_ => self.send(ShowDialog))
           />
         </div>
         <div className="customer-name">
@@ -238,8 +244,7 @@ let make = (~goBack, _children) => {
         <OrderItems
           closed=self.state.closedOrder
           order=self.state.order
-          deselectDiscount=discountDeselected
-          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
+          onChange=(order => self.send(ChangeOrder(order)))
         />
       </div>
       <div className="left-side">
@@ -291,7 +296,7 @@ let make = (~goBack, _children) => {
                 <Button
                   local=true
                   onClick=(
-                    (_) =>
+                    _ =>
                       WebhookEngine.getWebhooks(PrintOrder, Order)
                       |> WebhookEngine.fire(
                            self.state.order |> Order.fromVm |> Order.toJs,
