@@ -12,8 +12,18 @@ type modifying =
 
 type state = {
   allProducts: list(Product.t),
+  id: option(string),
+  customerName: string,
+  orderItems: list(OrderItem.t),
+  discounts: list(Discount.t),
+  createdOn: float,
+  lastUpdated: option(float),
+  returned: option(Return.t),
+  paid: option(Paid.t),
   tags: list(string),
   viewing,
+  meta: option(Js.Json.t),
+  removed: bool,
   order: Order.orderVm,
   closedOrder: bool,
   modifying,
@@ -28,10 +38,11 @@ type action =
   | SelectProduct(Product.t)
   | DeselectTag
   | LoadOrder(Order.orderVm)
+  |UpdateOrder
   | CloseOrderScreen
   | ChangePaidDate(float)
   | ChangeCustomerName(string)
-  | ChangeOrder(Order.orderVm)
+  | ChangeOrder(list(OrderItem.t))
   | ProductsLoaded(list(Product.t))
   | DiscountsLoaded(list(Discount.t))
   | ApplyDiscount(Discount.t)
@@ -46,6 +57,23 @@ let dbUrl = "http://localhost:5984/orders";
 
 let component = ReasonReact.reducerComponent("Order");
 
+let buildOrder = state : Order.orderVm => {
+  let order: Order.orderVm = {
+    id: state.id,
+    customerName: state.customerName,
+    orderItems: state.orderItems,
+    createdOn: state.createdOn,
+    discounts: state.discounts,
+    paid: state.paid,
+    returned: state.returned,
+    lastUpdated: state.lastUpdated,
+    removed: state.removed,
+    meta: state.meta,
+  };
+  /* order |> Order.fromVm |> WebhookEngine.fireForOrder(OrderStarted) |> ignore; */
+  order;
+};
+
 let make = (~goBack, _children) => {
   ...component,
   reducer: (action, state) =>
@@ -55,12 +83,17 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, tags, allProducts: products});
     | DiscountsLoaded(discounts) =>
       ReasonReact.Update({...state, allDiscounts: discounts})
-    | ChangeOrder(order) => 
-    ReasonReact.UpdateWithSideEffects({...state,order:{...state.order,orderItems:List.concat([state.order.orderItems])}}, _=>{  Js.log(state.order)})
+    | ChangeOrder(order) =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, orderItems: List.concat([state.orderItems])},
+        (_ => Js.log(state.orderItems)),
+      )
+    | UpdateOrder =>
+    ReasonReact.Update({...state, order:buildOrder(state)})
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
-        order,
+        order:order,
         closedOrder:
           switch (order.paid) {
           | Some(_) => true
@@ -70,37 +103,31 @@ let make = (~goBack, _children) => {
     | ApplyDiscount(dis) =>
       ReasonReact.Update({
         ...state,
-        order: {
-          ...state.order,
-          discounts: List.concat([state.order.discounts, [dis]]),
-        },
+          discounts: List.concat([state.discounts, [dis]]),
         allDiscounts:
           state.allDiscounts
           |> List.filter((d: Discount.t) => d.id !== dis.id),
       })
     | RemoveDiscount(dis) =>
-       ReasonReact.Update({
-         ...state,
-         order: {
-           ...state.order,
-           discounts:
-             state.order.discounts
-             |> List.filter((d: Discount.t) => d.id !== dis.id),
+      ReasonReact.Update({
+        ...state,
+          discounts:
+            state.discounts
+            |> List.filter((d: Discount.t) => d.id !== dis.id),
+        allDiscounts: List.concat([state.allDiscounts, [dis]]),
+      })
+    /* | RemoveOrderItem(orderItem) =>
+       Js.log("here");
+       ReasonReact.Update(
+         {
+           ...state,
+           order: {
+             ...state.order,
+             orderItems:
+               state.order.orderItems |> List.filter(i => i !== orderItem),
+           },
          },
-         allDiscounts: List.concat([state.allDiscounts, [dis]]),
-       })
-       /* | RemoveOrderItem(orderItem) =>
-      Js.log("here");
-      ReasonReact.Update(
-        {
-          ...state,
-          order: {
-            ...state.order,
-            orderItems:
-              state.order.orderItems |> List.filter(i => i !== orderItem),
-          },
-        },
-      ); */
+       ); */
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
         ...state,
@@ -129,14 +156,11 @@ let make = (~goBack, _children) => {
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
-          order: {
-            ...state.order,
             orderItems:
               List.concat([
-                state.order.orderItems,
+                state.orderItems,
                 [buildOrderItem(product)],
               ]),
-          },
         },
         (self => self.send(HideDialog)),
       )
@@ -161,6 +185,16 @@ let make = (~goBack, _children) => {
       | None => "order.defaultCustomerName" |> Lang.translate
       };
     {
+      orderItems: [],
+      discounts: [],
+      meta: None,
+      removed: false,
+      createdOn: 0.0,
+      lastUpdated: None,
+      id: None,
+      paid: None,
+      customerName: "",
+      returned: None,
       closedOrder: false,
       allProducts: [],
       tags: [],
@@ -243,7 +277,9 @@ let make = (~goBack, _children) => {
         />
         <OrderItems
           closed=self.state.closedOrder
-          order=self.state.order
+          orderItems=self.state.orderItems
+          discounts=self.state.discounts
+          deselectDiscount=discountDeselected
           onChange=(order => self.send(ChangeOrder(order)))
         />
       </div>

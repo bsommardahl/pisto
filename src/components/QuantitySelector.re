@@ -53,6 +53,7 @@ let make = (~onChange, ~value, _children) => {
       />
       <input
         className="quantityInput"
+        _type="numbers"
         value=(self.state.value |> string_of_int)
         onChange=(ev => self.send(Change(getVal(ev))))
       />
