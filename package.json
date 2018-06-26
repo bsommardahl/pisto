@@ -29,9 +29,10 @@
     "eject": "react-scripts eject",
     "prepare": "npm link bs-platform",
     "re:clean": "bsb -clean-world",
-    "deploy": "heroku container:push web --app cafe-new",
-    "docker:build": "docker build -t 'cafe:latest' .",
-    "docker:run": "docker run 'cafe:latest'"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "gh-pages": "^1.2.0"
+  }
 }
