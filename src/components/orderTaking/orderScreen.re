@@ -45,7 +45,6 @@ type action =
   | ProductsLoaded(list(Product.t))
   | DiscountsLoaded(list(Discount.t))
   | ApplyDiscount(Discount.t)
-  | RemoveOrderItem(OrderItem.t) 
   | RemoveDiscount(Discount.t)
   | ShowDialog
   | HideDialog
@@ -123,15 +122,6 @@ let make = (~goBack, _children) => {
             |> List.filter((d: Discount.t) => d.id !== dis.id),
         allDiscounts: List.concat([state.allDiscounts, [dis]]),
       })
-    | RemoveOrderItem(orderItem) =>
-       Js.log("here");
-       ReasonReact.Update(
-         {
-           ...state,
-             orderItems:
-               state.orderItems |> List.filter(i => i !== orderItem),
-         },
-       );
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
         ...state,
@@ -279,7 +269,6 @@ let make = (~goBack, _children) => {
           orderItems=self.state.orderItems
           discounts=self.state.discounts
           deselectDiscount=discountDeselected
-          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
           onChange=(orderItems => self.send(ChangeOrder(orderItems)))
         />
       </div>
