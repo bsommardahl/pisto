@@ -24,7 +24,7 @@ type state = {
   viewing,
   meta: option(Js.Json.t),
   removed: bool,
-  order: Order.orderVm,
+  /* order: Order.orderVm, */
   closedOrder: bool,
   modifying,
   allDiscounts: list(Discount.t),
@@ -38,7 +38,6 @@ type action =
   | SelectProduct(Product.t)
   | DeselectTag
   | LoadOrder(Order.orderVm)
-  |UpdateOrder
   | CloseOrderScreen
   | ChangePaidDate(float)
   | ChangeCustomerName(string)
@@ -46,7 +45,7 @@ type action =
   | ProductsLoaded(list(Product.t))
   | DiscountsLoaded(list(Discount.t))
   | ApplyDiscount(Discount.t)
-  /* | RemoveOrderItem(OrderItem.t)  */
+  | RemoveOrderItem(OrderItem.t) 
   | RemoveDiscount(Discount.t)
   | ShowDialog
   | HideDialog
@@ -83,19 +82,27 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, tags, allProducts: products});
     | DiscountsLoaded(discounts) =>
       ReasonReact.Update({...state, allDiscounts: discounts})
-    | ChangeOrder(order) =>
+    | ChangeOrder(orderItems) =>
       ReasonReact.UpdateWithSideEffects(
-        {...state, orderItems: List.concat([state.orderItems])},
+    {...state, orderItems:orderItems/*List.concat([state.orderItems])*/},
         (_ => Js.log(state.orderItems)),
       )
-    | UpdateOrder =>
-    ReasonReact.Update({...state, order:buildOrder(state)})
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
-        order:order,
+        orderItems:order.orderItems,
+        discounts:order.discounts,
+        customerName:order.customerName,
+        paid:order.paid,
+        returned:order.returned,
+        id:order.id,
+        removed:order.removed,
+        lastUpdated:order.lastUpdated,
+        createdOn:order.createdOn,
+        meta:order.meta,
+
         closedOrder:
-          switch (order.paid) {
+          switch (state.paid) {
           | Some(_) => true
           | None => false
           },
@@ -116,37 +123,29 @@ let make = (~goBack, _children) => {
             |> List.filter((d: Discount.t) => d.id !== dis.id),
         allDiscounts: List.concat([state.allDiscounts, [dis]]),
       })
-    /* | RemoveOrderItem(orderItem) =>
+    | RemoveOrderItem(orderItem) =>
        Js.log("here");
        ReasonReact.Update(
          {
            ...state,
-           order: {
-             ...state.order,
              orderItems:
-               state.order.orderItems |> List.filter(i => i !== orderItem),
-           },
+               state.orderItems |> List.filter(i => i !== orderItem),
          },
-       ); */
+       );
     | ChangeCustomerName(name) =>
       ReasonReact.Update({
         ...state,
-        order: {
-          ...state.order,
           customerName: name,
-        },
       })
     | ChangePaidDate(date) =>
       ReasonReact.Update({
         ...state,
-        order: {
-          ...state.order,
+
           paid:
-            switch (state.order.paid) {
+            switch (state.paid) {
             | None => None
             | Some(paid) => Some({...paid, on: date})
             },
-        },
       })
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
@@ -199,7 +198,7 @@ let make = (~goBack, _children) => {
       allProducts: [],
       tags: [],
       viewing: Tags,
-      order: buildNewOrder(customerName),
+      /* order: buildNewOrder(customerName), */
       modifying: Nothing,
       allDiscounts: [],
       sku: "",
@@ -225,7 +224,7 @@ let make = (~goBack, _children) => {
     | None => ReasonReact.NoUpdate
     | Some(orderId) =>
       getOrderVm(orderId)
-      |> Js.Promise.then_(vm => {
+      |> Js.Promise.then_(vm=> {
            self.send(LoadOrder(vm));
            Js.Promise.resolve();
          })
@@ -234,7 +233,7 @@ let make = (~goBack, _children) => {
     };
   },
   render: self => {
-    Js.log("orderscreen:: " ++ self.state.order.customerName);
+    Js.log("orderscreen:: " ++ self.state.customerName);
     let deselectTag = _event => self.send(DeselectTag);
     let selectTag = tag => self.send(SelectTag(tag));
     let selectProduct = product => self.send(SelectProduct(product));
@@ -250,7 +249,7 @@ let make = (~goBack, _children) => {
       />
       <div className="order-header">
         <OrderActions
-          order=self.state.order
+          order=buildOrder(self.state)
           onFinish=(_ => self.send(CloseOrderScreen))
         />
         <div className="order-actions">
@@ -264,7 +263,7 @@ let make = (~goBack, _children) => {
         <div className="customer-name">
           <EditableText
             mode=TouchToEdit
-            text=self.state.order.customerName
+            text=self.state.customerName
             onChange=(newName => self.send(ChangeCustomerName(newName)))
           />
         </div>
@@ -280,14 +279,15 @@ let make = (~goBack, _children) => {
           orderItems=self.state.orderItems
           discounts=self.state.discounts
           deselectDiscount=discountDeselected
-          onChange=(order => self.send(ChangeOrder(order)))
+          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
+          onChange=(orderItems => self.send(ChangeOrder(orderItems)))
         />
       </div>
       <div className="left-side">
         (
           if (self.state.closedOrder) {
             <ClosedOrderInfo
-              order=self.state.order
+              order=buildOrder(self.state)
               paidDateChanged=(newDate => self.send(ChangePaidDate(newDate)))
             />;
           } else {
@@ -335,7 +335,7 @@ let make = (~goBack, _children) => {
                     _ =>
                       WebhookEngine.getWebhooks(PrintOrder, Order)
                       |> WebhookEngine.fire(
-                           self.state.order |> Order.fromVm |> Order.toJs,
+                        buildOrder(self.state)|> Order.fromVm |> Order.toJs,
                          )
                       |> ignore
                   )

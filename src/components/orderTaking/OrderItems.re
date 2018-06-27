@@ -5,7 +5,7 @@ type state = {
 };
 
 type action =
-  | RemoveOrderItem(OrderItem.t)
+  /* | RemoveOrderItem(OrderItem.t) */
   | ChangeQuantity(OrderItem.t, int);
 /* | RemoveDiscount(Discount.t) */
 let component = ReasonReact.reducerComponent("OrderItems");
@@ -19,14 +19,14 @@ let make =
       ~canRemoveItem=true,
       ~onChange=_ => (),
       ~deselectDiscount=_d => (),
-      /* ~onRemoveItem=_i => (), */
+      ~onRemoveItem=_i => (),
       _children,
     ) => {
   ...component,
   initialState: () => { orderItems:orderItems,},
   reducer: (action, state) =>
     switch (action) {
-    | RemoveOrderItem(orderItem) =>
+    /* | RemoveOrderItem(orderItem) =>
        Js.log("here");
        ReasonReact.UpdateWithSideEffects(
          {
@@ -35,17 +35,17 @@ let make =
                state.orderItems |> List.filter((i:OrderItem.t) => i.sku !== orderItem.sku),
          },
          (self => onChange(self.state.orderItems)),
-       );
+       ); */
     | ChangeQuantity(orderItem, quantity) =>
       Js.log(quantity);
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
             orderItems:
-              state.orderItems
+              orderItems
               |> List.map((i: OrderItem.t) =>
                    if (i.id === orderItem.id) {
-                     {...i, quantity};
+                     {...i, quantity:quantity};
                    } else {
                      i;
                    }
@@ -87,7 +87,7 @@ let make =
                        if (! closed && canRemoveItem) {
                          <Button
                            className="small-card danger-card"
-                           onClick=(_ => self.send(RemoveOrderItem(i)))
+                           onClick=(_=>onRemoveItem(i))
                            label="action.delete"
                            local=true
                          />;
