@@ -1,88 +1,71 @@
-type state = {
-  orderItems: list(OrderItem.t),
-  /* discounts:list(Discount.t),
-  allDiscounts: list(Discount.t), */
-};
+type state = {orderItems: list(OrderItem.t)};
 
 type action =
   | RemoveOrderItem(OrderItem.t)
-  | ChangeQuantity(OrderItem.t, int)
-  /* | RemoveDiscount(Discount.t); */
+  | ChangeQuantity(OrderItem.t, int);
 
-  let component = ReasonReact.reducerComponent("OrderItems");
+let component = ReasonReact.reducerComponent("OrderItems");
 
 let make =
     (
       ~closed: bool,
-      ~orderItems:list(OrderItem.t),
-      ~discounts:list(Discount.t),
+      ~orderItems: list(OrderItem.t),
+      ~discounts: list(Discount.t),
       ~canDeselectDiscount=true,
       ~canRemoveItem=true,
       ~onChange=_ => (),
       ~deselectDiscount=_d => (),
-      /* ~onRemoveItem=_i => (), */
       _children,
     ) => {
   ...component,
-  initialState: () => { orderItems:orderItems,},
-  reducer: (action, state) =>
+  initialState: () => {orderItems: orderItems},
+  reducer: (action, _state) =>
     switch (action) {
     | RemoveOrderItem(orderItem) =>
-       Js.log("here");
-       ReasonReact.UpdateWithSideEffects(
-         {
-           ...state,
-             orderItems:
-               orderItems |> List.filter((i:OrderItem.t) => i.sku !== orderItem.sku),
-         },
-         (self => onChange(self.state.orderItems)),
-       );
+      Js.log("here");
+      ReasonReact.UpdateWithSideEffects(
+        {
+          orderItems:
+            orderItems
+            |> List.filter((i: OrderItem.t) => i.sku !== orderItem.sku),
+        },
+        (self => onChange(self.state.orderItems)),
+      );
     | ChangeQuantity(orderItem, quantity) =>
       Js.log(quantity);
       ReasonReact.UpdateWithSideEffects(
         {
-          ...state,
-            orderItems:
-              orderItems
-              |> List.map((i: OrderItem.t) =>
-                   if (i.id === orderItem.id) {
-                     {...i, quantity:quantity};
-                   } else {
-                     i;
-                   }
-                 ),
-        },             
+          orderItems:
+            orderItems
+            |> List.map((i: OrderItem.t) =>
+                 if (i.sku === orderItem.sku) {
+                   {...i, quantity};
+                 } else {
+                   i;
+                 }
+               ),
+        },
         (self => onChange(self.state.orderItems)),
       );
-      /* | RemoveDiscount(dis) =>
-      ReasonReact.Update({
-        ...state,
-          discounts:
-            state.discounts
-            |> List.filter((d: Discount.t) => d.id !== dis.id),
-        allDiscounts: List.concat([state.allDiscounts, [dis]]),
-      }) */
     },
   render: self => {
     let totals =
       OrderItemCalculation.getTotals(discounts, self.state.orderItems);
-    /* let discountDeselected = discount => self.send(RemoveDiscount(discount)); */
     <div className="order-items">
       <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
       <table>
         <tbody>
           (
-       orderItems
+            orderItems
             |> List.map((i: OrderItem.t) => {
-                 let totals =
-                   OrderItemCalculation.getTotals(discounts, [i]);
+                 let totals = OrderItemCalculation.getTotals(discounts, [i]);
                  <tr>
                    <td>
                      (
                        if (! closed && canRemoveItem) {
                          <Button
                            className="small-card danger-card"
-                           onClick=(_=> self.send(RemoveOrderItem(i)))
+                           onClick=(_ => self.send(RemoveOrderItem(i)))
                            label="action.delete"
                            local=true
                          />;
