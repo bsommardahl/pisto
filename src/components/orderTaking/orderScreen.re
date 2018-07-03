@@ -24,7 +24,6 @@ type state = {
   viewing,
   meta: option(Js.Json.t),
   removed: bool,
-  /* order: Order.orderVm, */
   closedOrder: bool,
   modifying,
   allDiscounts: list(Discount.t),
@@ -41,7 +40,7 @@ type action =
   | CloseOrderScreen
   | ChangePaidDate(float)
   | ChangeCustomerName(string)
-  | ChangeOrder(list(OrderItem.t))
+  | ChangeOrderItems(list(OrderItem.t))
   | ProductsLoaded(list(Product.t))
   | DiscountsLoaded(list(Discount.t))
   | ApplyDiscount(Discount.t)
@@ -81,7 +80,7 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, tags, allProducts: products});
     | DiscountsLoaded(discounts) =>
       ReasonReact.Update({...state, allDiscounts: discounts})
-    | ChangeOrder(orderItems) =>
+    | ChangeOrderItems(orderItems) =>
       ReasonReact.UpdateWithSideEffects(
         {...state, orderItems /*List.concat([state.orderItems])*/},
         (_ => Js.log(state.orderItems)),
@@ -259,7 +258,7 @@ let make = (~goBack, _children) => {
           orderItems=self.state.orderItems
           discounts=self.state.discounts
           deselectDiscount=discountDeselected
-          onChange=(orderItems => self.send(ChangeOrder(orderItems)))
+          onChange=(orderItems => self.send(ChangeOrderItems(orderItems)))
         />
       </div>
       <div className="left-side">

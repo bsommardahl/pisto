@@ -22,7 +22,6 @@ let make =
   reducer: (action, _state) =>
     switch (action) {
     | RemoveOrderItem(orderItem) =>
-      Js.log("here");
       ReasonReact.UpdateWithSideEffects(
         {
           orderItems:
@@ -30,9 +29,8 @@ let make =
             |> List.filter((i: OrderItem.t) => i.sku !== orderItem.sku),
         },
         (self => onChange(self.state.orderItems)),
-      );
+      )
     | ChangeQuantity(orderItem, quantity) =>
-      Js.log(quantity);
       ReasonReact.UpdateWithSideEffects(
         {
           orderItems:
@@ -46,7 +44,7 @@ let make =
                ),
         },
         (self => onChange(self.state.orderItems)),
-      );
+      )
     },
   render: self => {
     let totals = OrderItemCalculation.getTotals(discounts, orderItems);

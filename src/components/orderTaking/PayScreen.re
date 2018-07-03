@@ -12,14 +12,6 @@ type state = {
   order: Order.orderVm,
   orderItems: list(OrderItem.t),
   discounts: list(Discount.t),
-  createdOn: float,
-  lastUpdated: option(float),
-  returned: option(Return.t),
-  paid: option(Paid.t),
-  id:option(string),
-  meta: option(Js.Json.t),
-  removed: bool,
-  customerName: string,
   method: option(PaymentMethod.t),
   externalId: string,
   cashier: option(Cashier.t),
@@ -83,32 +75,19 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
       )
     | CashierChanged(cashier) =>
       ReasonReact.Update({...state, cashier, doing: Paying})
-    | OrderLoaded(order) => ReasonReact.Update({...state, 
-    order,
-    orderItems:order.orderItems,
-    discounts:order.discounts,
-    customerName:order.customerName,
-    paid:order.paid,
-    returned:order.returned,
-    id:order.id,
-    removed:order.removed,
-    lastUpdated:order.lastUpdated,
-    createdOn:order.createdOn,
-    meta:order.meta,})
+    | OrderLoaded(order) =>
+      ReasonReact.Update({
+        ...state,
+        order,
+        orderItems: order.orderItems,
+        discounts: order.discounts,
+      })
     | Cancel => ReasonReact.SideEffects((_ => onCancel(state.order)))
     },
   initialState: () => {
     order: buildNewOrder(""),
     orderItems: [],
     discounts: [],
-    meta: None,
-    removed: false,
-    createdOn: 0.0,
-    lastUpdated: None,
-    id: None,
-    paid: None,
-    customerName: "",
-    returned: None,
     method: None,
     externalId: "",
     cashier: None,
