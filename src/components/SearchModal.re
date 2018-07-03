@@ -1,119 +1,80 @@
-open OrderHelper;
-
-open Js.Promise;
-
-type state = {
-  allProducts: list(Product.t),
-  tags: list(string),
-  order: Order.orderVm,
-  closedOrder: bool,
-};
+type state = {products: list(Product.t)};
 
 type action =
-  | SelectProduct(Product.t)
-  | ProductsLoaded(list(Product.t))
-  | RemoveOrderItem(OrderItem.t)
-  | LoadOrder(Order.orderVm);
+  | FilterProduct(string);
 
 let component = ReasonReact.reducerComponent("SearchModal");
 
-let make = (~onCancel=() => (), ~isOpen=false, ~label: string, _children) => {
+let lowercase = text => Js.String.toLowerCase(text);
+
+let make =
+    (
+      ~onCancel=() => (),
+      ~onSelect,
+      ~isOpen=false,
+      ~allProducts: list(Product.t),
+      ~label: string,
+      _children,
+    ) => {
   ...component,
-  reducer: (action, state) =>
+  initialState: () => {products: []},
+  reducer: (action, _state) =>
     switch (action) {
-    | ProductsLoaded(products) =>
-      let tags = Product.getTags(products);
-      ReasonReact.Update({...state, tags, allProducts: products});
-    | LoadOrder(order) =>
+    | FilterProduct(text) =>
       ReasonReact.Update({
-        ...state,
-        order,
-        closedOrder:
-          switch (order.paid) {
-          | Some(_) => true
-          | None => false
-          },
-      })
-    | RemoveOrderItem(orderItem) =>
-      ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          orderItems:
-            state.order.orderItems |> List.filter(i => i !== orderItem),
-        },
-      })
-    | SelectProduct(product) =>
-      ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          orderItems:
-            List.concat([
-              state.order.orderItems,
-              [buildOrderItem(product)],
-            ]),
-        },
+        products:
+          allProducts
+          |> List.filter((x: Product.t) =>
+               lowercase(x.name)
+               |> Js.String.indexOf(lowercase(text)) > (-1)
+             ),
       })
     },
-  initialState: () => {
-    let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
-    let customerName =
-      switch (Util.QueryParam.get("customerName", queryString)) {
-      | Some(name) => name |> Js.Global.decodeURIComponent
-      | None => "order.defaultCustomerName" |> Lang.translate
-      };
-    {
-      allProducts: [],
-      tags: [],
-      order: buildNewOrder(customerName),
-      closedOrder: false,
-    };
-  },
-  didMount: self => {
-    ProductStore.getAll()
-    |> then_(prods => {
-         self.send(ProductsLoaded(prods));
-         resolve();
-       })
-    |> ignore;
-    let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
-    switch (Util.QueryParam.get("orderId", queryString)) {
-    | None => ReasonReact.NoUpdate
-    | Some(orderId) =>
-      getOrderVm(orderId)
-      |> Js.Promise.then_(vm => {
-           self.send(LoadOrder(vm));
-           Js.Promise.resolve();
-         })
-      |> ignore;
-      ReasonReact.NoUpdate;
-    };
-  },
   render: self =>
-    <BsReactstrap.Modal isOpen className="modal">
-      <BsReactstrap.ModalHeader className="modal-header">
-        (ReactUtils.sloc(label))
-      </BsReactstrap.ModalHeader>
-      <BsReactstrap.ModalBody className="modal-content">
-        <ProductSearch
-          allProducts=self.state.allProducts
-          productFound=(p => self.send(SelectProduct(p)))
-        />
-        <div className="heightDivider" />
-        <DisplayProduct
-          closed=self.state.closedOrder
-          order=self.state.order
-          onRemoveItem=(i => self.send(RemoveOrderItem(i)))
-        />
-      </BsReactstrap.ModalBody>
-      <BsReactstrap.ModalFooter className="modal-footer">
-        <Button
-          local=true
-          className="cancel-button-card"
-          label="action.cancelModal"
-          onClick=((_) => onCancel())
-        />
-      </BsReactstrap.ModalFooter>
-    </BsReactstrap.Modal>,
+    <div>
+      <BsReactstrap.Modal isOpen className="modal">
+        <BsReactstrap.ModalHeader className="modal-header">
+          (ReactUtils.sloc(label))
+        </BsReactstrap.ModalHeader>
+        <BsReactstrap.ModalBody className="modal-content">
+          <NormalInput onFinish=(text => self.send(FilterProduct(text))) />
+          <div className="order-items">
+            <table>
+              <tbody>
+                (
+                  self.state.products
+                  |> List.map((i: Product.t) =>
+                       <tr>
+                         <td>
+                           <Button
+                             onClick=((_) => onSelect(i))
+                             label="action.select"
+                             className="small-card pay-button-card"
+                             local=true
+                           />
+                         </td>
+                         <td> (ReactUtils.s(i.sku)) </td>
+                         <td> (ReactUtils.s(i.name)) </td>
+                         <td>
+                           (ReactUtils.s(i.suggestedPrice |> Money.toDisplay))
+                         </td>
+                       </tr>
+                     )
+                  |> Array.of_list
+                  |> ReasonReact.arrayToElement
+                )
+              </tbody>
+            </table>
+          </div>
+        </BsReactstrap.ModalBody>
+        <BsReactstrap.ModalFooter className="modal-footer">
+          <Button
+            local=true
+            className="cancel-button-card"
+            label="action.cancelModal"
+            onClick=((_) => onCancel())
+          />
+        </BsReactstrap.ModalFooter>
+      </BsReactstrap.Modal>
+    </div>,
 };

@@ -48,7 +48,7 @@ body {
   margin:15% auto;
   padding:20px;
   border: 1 px solid #888;
-  width:50%;
+  width:65%;
   font-size: 20px;
   position: relative;
   animation-name: animatetop;
@@ -111,6 +111,13 @@ input.customer-name-input {
   padding: 0 10px 0 10px;
 }
 .pin-entry input { font-size: 25px;}
+.search-input{
+  width: 75%;
+  font-size: 20px; 
+  box-sizing: border-box;
+  background-color:white;
+  height:55%;
+}
 .card {
   border: 0px;
   border-radius: 8px;

@@ -56,6 +56,10 @@
     "content": "Search"
   },
   {
+    "key": "modal.SearchProductHeader",
+    "content": "Search Product"
+  },
+  {
     "key": "modal.deleteOrder",
     "content": "Delete Order"
   },

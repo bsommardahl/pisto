@@ -20,6 +20,7 @@ type state = {
   allDiscounts: list(Discount.t),
   sku: string,
   showDialog: bool,
+  skuEnabled: bool,
 };
 
 type action =
@@ -36,7 +37,9 @@ type action =
   | ApplyDiscount(Discount.t)
   | RemoveDiscount(Discount.t)
   | ShowDialog
-  | HideDialog;
+  | HideDialog
+  | EnableSku
+  | DisableSku;
 
 let dbUrl = "http://localhost:5984/orders";
 
@@ -117,19 +120,32 @@ let make = (~goBack, _children) => {
         },
       })
     | SelectProduct(product) =>
-      ReasonReact.Update({
-        ...state,
-        order: {
-          ...state.order,
-          orderItems:
-            List.concat([
-              state.order.orderItems,
-              [buildOrderItem(product)],
-            ]),
+      ReasonReact.UpdateWithSideEffects(
+        {
+          ...state,
+          order: {
+            ...state.order,
+            orderItems:
+              List.concat([
+                state.order.orderItems,
+                [buildOrderItem(product)],
+              ]),
+          },
         },
-      })
-    | ShowDialog => ReasonReact.Update({...state, showDialog: true})
-    | HideDialog => ReasonReact.Update({...state, showDialog: false})
+        (self => self.send(HideDialog)),
+      )
+    | ShowDialog =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showDialog: true},
+        (self => self.send(DisableSku)),
+      )
+    | HideDialog =>
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showDialog: false},
+        (self => self.send(EnableSku)),
+      )
+    | EnableSku => ReasonReact.Update({...state, skuEnabled: true})
+    | DisableSku => ReasonReact.Update({...state, skuEnabled: false})
     },
   initialState: () => {
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
@@ -148,6 +164,7 @@ let make = (~goBack, _children) => {
       allDiscounts: [],
       sku: "",
       showDialog: false,
+      skuEnabled: true,
     };
   },
   didMount: self => {
@@ -185,8 +202,10 @@ let make = (~goBack, _children) => {
     let discountDeselected = discount => self.send(RemoveDiscount(discount));
     <div className="order">
       <SearchModal
-        label="modal.SearchProduct"
+        label="modal.SearchProductHeader"
         isOpen=self.state.showDialog
+        allProducts=self.state.allProducts
+        onSelect=(p => self.send(SelectProduct(p)))
         onCancel=((_) => self.send(HideDialog))
       />
       <div className="order-header">
@@ -212,6 +231,7 @@ let make = (~goBack, _children) => {
       </div>
       <div className="right-side">
         <SkuSearch
+          acceptInput=self.state.skuEnabled
           allProducts=self.state.allProducts
           productFound=(p => self.send(SelectProduct(p)))
         />
