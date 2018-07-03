@@ -63,7 +63,7 @@ let make =
                          <Button
                            className="small-card danger-card"
                            onClick=(_ => self.send(RemoveOrderItem(i)))
-                           label="action.delete"
+                           label="actionSymbol.delete"
                            local=true
                          />;
                        } else {

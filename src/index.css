@@ -29,7 +29,7 @@ body {
 display: inline-block;
 }
 .quantityInput{
-  width:35%;
+  width:20%;
 }
 .quantityMinusButton{
   position:"top-right";
