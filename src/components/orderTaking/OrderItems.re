@@ -1,7 +1,4 @@
-type state = {
-  orderItems: list(OrderItem.t),
-  quantity: int,
-};
+type state = {orderItems: list(OrderItem.t)};
 
 type action =
   | RemoveOrderItem(OrderItem.t)
@@ -21,14 +18,13 @@ let make =
       _children,
     ) => {
   ...component,
-  initialState: () => {orderItems, quantity: 1},
-  reducer: (action, state) =>
+  initialState: () => {orderItems: orderItems},
+  reducer: (action, _state) =>
     switch (action) {
     | RemoveOrderItem(orderItem) =>
       Js.log("here");
       ReasonReact.UpdateWithSideEffects(
         {
-          ...state,
           orderItems:
             orderItems
             |> List.filter((i: OrderItem.t) => i.sku !== orderItem.sku),
@@ -48,14 +44,12 @@ let make =
                    i;
                  }
                ),
-          quantity,
         },
         (self => onChange(self.state.orderItems)),
       );
     },
   render: self => {
-    let totals =
-      OrderItemCalculation.getTotals(discounts, self.state.orderItems);
+    let totals = OrderItemCalculation.getTotals(discounts, orderItems);
     <div className="order-items">
       <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
       <table>
