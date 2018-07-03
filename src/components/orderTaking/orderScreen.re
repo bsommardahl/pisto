@@ -173,7 +173,7 @@ let make = (~goBack, _children) => {
       lastUpdated: None,
       id: None,
       paid: None,
-      customerName: "",
+      customerName,
       returned: None,
       closedOrder: false,
       allProducts: [],
