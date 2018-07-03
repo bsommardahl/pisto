@@ -83,23 +83,22 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, allDiscounts: discounts})
     | ChangeOrder(orderItems) =>
       ReasonReact.UpdateWithSideEffects(
-    {...state, orderItems:orderItems/*List.concat([state.orderItems])*/},
+        {...state, orderItems /*List.concat([state.orderItems])*/},
         (_ => Js.log(state.orderItems)),
       )
     | LoadOrder(order) =>
       ReasonReact.Update({
         ...state,
-        orderItems:order.orderItems,
-        discounts:order.discounts,
-        customerName:order.customerName,
-        paid:order.paid,
-        returned:order.returned,
-        id:order.id,
-        removed:order.removed,
-        lastUpdated:order.lastUpdated,
-        createdOn:order.createdOn,
-        meta:order.meta,
-
+        orderItems: order.orderItems,
+        discounts: order.discounts,
+        customerName: order.customerName,
+        paid: order.paid,
+        returned: order.returned,
+        id: order.id,
+        removed: order.removed,
+        lastUpdated: order.lastUpdated,
+        createdOn: order.createdOn,
+        meta: order.meta,
         closedOrder:
           switch (state.paid) {
           | Some(_) => true
@@ -109,7 +108,7 @@ let make = (~goBack, _children) => {
     | ApplyDiscount(dis) =>
       ReasonReact.Update({
         ...state,
-          discounts: List.concat([state.discounts, [dis]]),
+        discounts: List.concat([state.discounts, [dis]]),
         allDiscounts:
           state.allDiscounts
           |> List.filter((d: Discount.t) => d.id !== dis.id),
@@ -117,25 +116,20 @@ let make = (~goBack, _children) => {
     | RemoveDiscount(dis) =>
       ReasonReact.Update({
         ...state,
-          discounts:
-            state.discounts
-            |> List.filter((d: Discount.t) => d.id !== dis.id),
+        discounts:
+          state.discounts |> List.filter((d: Discount.t) => d.id !== dis.id),
         allDiscounts: List.concat([state.allDiscounts, [dis]]),
       })
     | ChangeCustomerName(name) =>
-      ReasonReact.Update({
-        ...state,
-          customerName: name,
-      })
+      ReasonReact.Update({...state, customerName: name})
     | ChangePaidDate(date) =>
       ReasonReact.Update({
         ...state,
-
-          paid:
-            switch (state.paid) {
-            | None => None
-            | Some(paid) => Some({...paid, on: date})
-            },
+        paid:
+          switch (state.paid) {
+          | None => None
+          | Some(paid) => Some({...paid, on: date})
+          },
       })
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
@@ -145,11 +139,8 @@ let make = (~goBack, _children) => {
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
-            orderItems:
-              List.concat([
-                state.orderItems,
-                [buildOrderItem(product)],
-              ]),
+          orderItems:
+            List.concat([state.orderItems, [buildOrderItem(product)]]),
         },
         (self => self.send(HideDialog)),
       )
@@ -188,7 +179,6 @@ let make = (~goBack, _children) => {
       allProducts: [],
       tags: [],
       viewing: Tags,
-      /* order: buildNewOrder(customerName), */
       modifying: Nothing,
       allDiscounts: [],
       sku: "",
@@ -214,7 +204,7 @@ let make = (~goBack, _children) => {
     | None => ReasonReact.NoUpdate
     | Some(orderId) =>
       getOrderVm(orderId)
-      |> Js.Promise.then_(vm=> {
+      |> Js.Promise.then_(vm => {
            self.send(LoadOrder(vm));
            Js.Promise.resolve();
          })
@@ -239,7 +229,7 @@ let make = (~goBack, _children) => {
       />
       <div className="order-header">
         <OrderActions
-          order=buildOrder(self.state)
+          order=(buildOrder(self.state))
           onFinish=(_ => self.send(CloseOrderScreen))
         />
         <div className="order-actions">
@@ -276,7 +266,7 @@ let make = (~goBack, _children) => {
         (
           if (self.state.closedOrder) {
             <ClosedOrderInfo
-              order=buildOrder(self.state)
+              order=(buildOrder(self.state))
               paidDateChanged=(newDate => self.send(ChangePaidDate(newDate)))
             />;
           } else {
@@ -324,7 +314,9 @@ let make = (~goBack, _children) => {
                     _ =>
                       WebhookEngine.getWebhooks(PrintOrder, Order)
                       |> WebhookEngine.fire(
-                        buildOrder(self.state)|> Order.fromVm |> Order.toJs,
+                           buildOrder(self.state)
+                           |> Order.fromVm
+                           |> Order.toJs,
                          )
                       |> ignore
                   )
