@@ -7,8 +7,6 @@ type view =
   | Products
   | Config
   | Daily
-  | Expenses
-  | ExpenseTypes
   | Vendors
   | Cashiers
   | Webhooks
@@ -46,9 +44,7 @@ let make = _children => {
           | ["products"] => self.send(Show(Products))
           | ["config"] => self.send(Show(Config))
           | ["daily"] => self.send(Show(Daily))
-          | ["expenses"] => self.send(Show(Expenses))
           | ["logs"] => self.send(Show(Logs))
-          | ["expenseTypes"] => self.send(Show(ExpenseTypes))
           | ["vendors"] => self.send(Show(Vendors))
           | ["discounts"] => self.send(Show(Discounts))
           | ["webhooks"] => self.send(Show(Webhooks))
@@ -91,9 +87,7 @@ let make = _children => {
         | Products => <ProductManagement />
         | Config => <ConfigManagement />
         | Logs => <LogManagement />
-        | ExpenseTypes => <ExpenseTypeManagement />
         | Vendors => <VendorManagement />
-        | Expenses => <ExpenseManagement startDate endDate />
         | Cashiers => <CashierManagement />
         | Webhooks => <WebhookManagement />
         | Discounts => <DiscountManagement />

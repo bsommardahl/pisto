@@ -196,11 +196,13 @@ let make = _children => {
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
                       onHand: 0,
+                      weight: 0,
                       startDate: None,
                       endDate: None,
                       department: "",
                       unit: "",
                       products: [],
+                      location: "",
                     }),
                   )
               )
@@ -223,12 +225,14 @@ let make = _children => {
                       taxCalculation:
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
-                      onHand: 0,
-                      startDate: None,
-                      endDate: None,
-                      department: "",
-                      unit: "",
-                      products: [],
+                      onHand: product.onHand,
+                      startDate: product.startDate,
+                      endDate: product.endDate,
+                      department: product.department,
+                      weight: product.weight,
+                      unit: product.unit,
+                      products: product.products,
+                      location: product.location,
                     }),
                   )
               )
