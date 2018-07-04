@@ -156,10 +156,10 @@ input.customer-name-input {
 .smallItems-card {
  border-radius:50%;
  height: 10;
- width:10;
+ width:20;
  margin-right: 10%;
  justify-content: center;
-  font-size: 14px;
+ font-size: 14px;
 }
 .danger-card { 
   background-color: darkred;
