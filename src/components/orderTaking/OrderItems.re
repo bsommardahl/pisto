@@ -61,7 +61,7 @@ let make =
                      (
                        if (! closed && canRemoveItem) {
                          <Button
-                           className="small-card danger-card"
+                           className="smallItems-card danger-card"
                            onClick=(_ => self.send(RemoveOrderItem(i)))
                            label="actionSymbol.delete"
                            local=true

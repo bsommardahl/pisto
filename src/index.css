@@ -153,7 +153,14 @@ input.customer-name-input {
   margin: 5px;
   font-size: 13px;
 }
-
+.smallItems-card {
+ border-radius:50%;
+ height: 10;
+ width:10;
+ margin-right: 10%;
+ justify-content: center;
+  font-size: 14px;
+}
 .danger-card { 
   background-color: darkred;
   color: #DDDDDD;

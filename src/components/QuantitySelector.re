@@ -46,7 +46,7 @@ let make = (~onChange, ~value, _children) => {
                        )##value;
     <div className="quantitySelectorDiv">
       <Button
-        className="small-card"
+        className="smallItems-card"
         local=true
         label="action.minus"
         onClick=(_ => self.send(Subtract))
@@ -58,7 +58,7 @@ let make = (~onChange, ~value, _children) => {
         onChange=(ev => self.send(Change(getVal(ev))))
       />
       <Button
-        className="small-card pay-button-card"
+        className="smallItems-card pay-button-card"
         local=true
         label="action.plus"
         onClick=(_ => self.send(Add))
