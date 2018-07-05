@@ -12,6 +12,18 @@
     "content": "Exit"
   },
   {
+    "key": "action.plus",
+    "content": "+"
+  },
+  {
+    "key": "action.minus",
+    "content": "-"
+  },
+  {
+    "key": "actionSymbol.delete",
+    "content": "x"
+  },
+  {
     "key": "action.cancelModal",
     "content": "Cancel"
   },

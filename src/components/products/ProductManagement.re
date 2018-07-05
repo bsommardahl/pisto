@@ -196,12 +196,12 @@ let make = _children => {
                         values.taxCalculation |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
                       onHand: 0,
-                      weight: 0,
                       startDate: None,
                       endDate: None,
                       department: "",
                       unit: "",
                       products: [],
+                      weight: 0,
                       location: "",
                     }),
                   )

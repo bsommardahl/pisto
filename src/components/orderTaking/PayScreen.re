@@ -74,7 +74,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
     | CashierChanged(cashier) =>
       ReasonReact.Update({...state, cashier, doing: Paying})
     | OrderLoaded(order) => ReasonReact.Update({...state, order})
-    | Cancel => ReasonReact.SideEffects(((_) => onCancel(state.order)))
+    | Cancel => ReasonReact.SideEffects((_ => onCancel(state.order)))
     },
   initialState: () => {
     order: buildNewOrder(""),
@@ -116,7 +116,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
           <Button
             local=true
             className="quiet-card"
-            onClick=((_) => self.send(Cancel))
+            onClick=(_ => self.send(Cancel))
             label="action.cancel"
           />
         </div>
@@ -127,7 +127,8 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
       <div className="pay-for-order">
         <OrderItems
           closed=false
-          order=self.state.order
+          orderItems=self.state.order.orderItems
+          discounts=self.state.order.discounts
           canDeselectDiscount=false
           canRemoveItem=false
         />
@@ -139,7 +140,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
                 (method, externalId) =>
                   self.send(SelectPaymentMethod((method, externalId)))
               )
-              onInvalid=((_) => self.send(PaymentMethodInvalid))
+              onInvalid=(_ => self.send(PaymentMethodInvalid))
             />
           | GettingCashier =>
             <div>
@@ -160,7 +161,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
                 <Button
                   local=true
                   label="action.pay"
-                  onClick=((_) => self.send(PayOrder))
+                  onClick=(_ => self.send(PayOrder))
                 />
               </div>
             </div>

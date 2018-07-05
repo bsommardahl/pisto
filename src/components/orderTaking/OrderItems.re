@@ -1,36 +1,69 @@
-let component = ReasonReact.statelessComponent("OrderItems");
+type state = {orderItems: list(OrderItem.t)};
+
+type action =
+  | RemoveOrderItem(OrderItem.t)
+  | ChangeQuantity(OrderItem.t, int);
+
+let component = ReasonReact.reducerComponent("OrderItems");
 
 let make =
     (
       ~closed: bool,
-      ~order: Order.orderVm,
+      ~orderItems: list(OrderItem.t),
+      ~discounts: list(Discount.t),
       ~canDeselectDiscount=true,
       ~canRemoveItem=true,
+      ~onChange=_ => (),
       ~deselectDiscount=_d => (),
-      ~onRemoveItem=_i => (),
       _children,
     ) => {
   ...component,
-  render: _self => {
-    let totals =
-      OrderItemCalculation.getTotals(order.discounts, order.orderItems);
+  initialState: () => {orderItems: orderItems},
+  reducer: (action, _state) =>
+    switch (action) {
+    | RemoveOrderItem(orderItem) =>
+      ReasonReact.UpdateWithSideEffects(
+        {
+          orderItems:
+            orderItems
+            |> List.filter((i: OrderItem.t) => i.id !== orderItem.id),
+        },
+        (self => onChange(self.state.orderItems)),
+      )
+    | ChangeQuantity(orderItem, quantity) =>
+      ReasonReact.UpdateWithSideEffects(
+        {
+          orderItems:
+            orderItems
+            |> List.map((i: OrderItem.t) =>
+                 if (i.id === orderItem.id) {
+                   {...i, quantity};
+                 } else {
+                   i;
+                 }
+               ),
+        },
+        (self => onChange(self.state.orderItems)),
+      )
+    },
+  render: self => {
+    let totals = OrderItemCalculation.getTotals(discounts, orderItems);
     <div className="order-items">
       <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
       <table>
         <tbody>
           (
-            order.orderItems
+            orderItems
             |> List.map((i: OrderItem.t) => {
-                 let totals =
-                   OrderItemCalculation.getTotals(order.discounts, [i]);
+                 let totals = OrderItemCalculation.getTotals(discounts, [i]);
                  <tr>
                    <td>
                      (
                        if (! closed && canRemoveItem) {
                          <Button
-                           className="small-card danger-card"
-                           onClick=((_) => onRemoveItem(i))
-                           label="action.delete"
+                           className="smallItems-card danger-card"
+                           onClick=(_ => self.send(RemoveOrderItem(i)))
+                           label="actionSymbol.delete"
                            local=true
                          />;
                        } else {
@@ -38,7 +71,29 @@ let make =
                        }
                      )
                    </td>
+                   <td className="quantity">
+                     (
+                       if (! closed && canRemoveItem) {
+                         <QuantitySelector
+                           onChange=(
+                             quantity =>
+                               self.send(ChangeQuantity(i, quantity))
+                           )
+                           value=i.quantity
+                         />;
+                       } else {
+                         ReactUtils.s(i.quantity |> string_of_int);
+                       }
+                     )
+                   </td>
                    <td> (ReactUtils.s(i.name)) </td>
+                   <td>
+                     (
+                       ReactUtils.s(
+                         (i.suggestedPrice / 100 |> string_of_int) ++ ".00",
+                       )
+                     )
+                   </td>
                    <td>
                      (ReactUtils.s(totals.subTotal |> Money.toDisplay))
                    </td>
@@ -50,13 +105,15 @@ let make =
         </tbody>
         <tfoot>
           <tr className="divider">
-            <th colSpan=2> (ReactUtils.sloc("order.subTotal")) </th>
-            <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
+            <th colSpan=4> (ReactUtils.sloc("order.subTotal")) </th>
+            <td className="footTable">
+              (ReactUtils.s(totals.subTotal |> Money.toDisplay))
+            </td>
           </tr>
           (
-            if (order.discounts |> List.length > 0) {
+            if (discounts |> List.length > 0) {
               <tr>
-                <th colSpan=2> (ReactUtils.sloc("order.discounts")) </th>
+                <th colSpan=4> (ReactUtils.sloc("order.discounts")) </th>
                 <td> (ReactUtils.s(totals.discounts |> Money.toDisplay)) </td>
               </tr>;
             } else {
@@ -64,22 +121,22 @@ let make =
             }
           )
           <tr>
-            <th colSpan=2> (ReactUtils.sloc("order.tax")) </th>
+            <th colSpan=4> (ReactUtils.sloc("order.tax")) </th>
             <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
           </tr>
           <tr>
-            <th colSpan=2> (ReactUtils.sloc("order.total")) </th>
+            <th colSpan=4> (ReactUtils.sloc("order.total")) </th>
             <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
           </tr>
         </tfoot>
       </table>
       (
-        order.discounts
+        discounts
         |> List.map((d: Discount.t) =>
              <button
                className="card small-card card-discount"
                disabled=(closed || canDeselectDiscount ? true : false)
-               onClick=((_) => deselectDiscount(d))>
+               onClick=(_ev => deselectDiscount(d))>
                (ReactUtils.s(d.name))
              </button>
            )

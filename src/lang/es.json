@@ -16,6 +16,18 @@
     "content": "Cancelar"
   },
   {
+    "key": "action.plus",
+    "content": "+"
+  },
+  {
+    "key": "action.minus",
+    "content": "-"
+  },
+  {
+    "key": "actionSymbol.delete",
+    "content": "x"
+  },
+  {
     "key": "action.edit",
     "content": "Editar"
   },

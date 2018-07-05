@@ -17,7 +17,7 @@
     "pouchdb-find": "^6.4.3",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
-    "react-modal": "^3.4.4",
+    "react-modal": "^3.5.1",
     "reason-react": "^0.3.4",
     "reason-scripts": "0.8.0",
     "refetch": "github:bsommardahl/refetch#upgrading"
