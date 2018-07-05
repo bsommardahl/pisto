@@ -22,6 +22,11 @@ body {
   height: auto;
   display:inline-block;
 }
+.quantityDivider{
+  width:0px;
+  height: auto;
+  display:inline-block;
+}
 .heightDivider{
   height:15px;
 }
@@ -29,7 +34,7 @@ body {
 display: inline-block;
 }
 .quantityInput{
-  width:20%;
+  width:15%;
 }
 .quantityMinusButton{
   position:"top-right";
@@ -154,9 +159,9 @@ input.customer-name-input {
   font-size: 13px;
 }
 .smallItems-card {
- border-radius:50%;
- height: 10;
- width:20;
+ border-radius:35%;
+ height: 5;
+ width:10;
  margin-right: 10%;
  justify-content: center;
  font-size: 14px;
@@ -166,7 +171,7 @@ input.customer-name-input {
   color: #DDDDDD;
 }
 .order .right-side {
-  width: 300px;
+  width: 375px;
   background-color: #BBBBBB;
   float: right;
   padding: 10px;
@@ -177,8 +182,8 @@ input.customer-name-input {
   color: white; 
 }
 
-.order-items table { width: 100%; border-collapse: collapse; text-align: left; }
-.order-items table tbody td { height: 30px; }
+.order-items table { width: 100%; border-collapse: collapse; text-align: left;}
+.order-items table tbody td { height: 30px;}
 .order-items table tfoot th { height: 30px; }
 .order-items table tfoot td { width: 75px; }
 .order-items table tfoot tr.divider td { border-top: 2px solid black; }

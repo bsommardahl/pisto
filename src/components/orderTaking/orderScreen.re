@@ -82,10 +82,11 @@ let make = (~goBack, _children) => {
       ReasonReact.Update({...state, allDiscounts: discounts})
     | ChangeOrderItems(orderItems) =>
       ReasonReact.UpdateWithSideEffects(
-        {...state, orderItems /*List.concat([state.orderItems])*/},
+        {...state, orderItems},
         (_ => Js.log(state.orderItems)),
       )
     | LoadOrder(order) =>
+      Js.log(order);
       ReasonReact.Update({
         ...state,
         orderItems: order.orderItems,
@@ -103,7 +104,7 @@ let make = (~goBack, _children) => {
           | Some(_) => true
           | None => false
           },
-      })
+      });
     | ApplyDiscount(dis) =>
       ReasonReact.Update({
         ...state,
@@ -139,7 +140,16 @@ let make = (~goBack, _children) => {
         {
           ...state,
           orderItems:
-            List.concat([state.orderItems, [buildOrderItem(product)]]),
+            List.concat([
+              state.orderItems,
+              [
+                buildOrderItem(
+                  product,
+                  (Date.now() |> string_of_float)
+                  ++ (state.orderItems |> List.length |> string_of_int),
+                ),
+              ],
+            ]),
         },
         (self => self.send(HideDialog)),
       )

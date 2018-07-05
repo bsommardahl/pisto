@@ -7,16 +7,6 @@ type action =
 
 let component = ReasonReact.reducerComponent("QuantitySelector");
 
-type t = int;
-
-let cleanNonNumeric = n => n |> Js.String.replaceByRe([%bs.re "/\\D/g"], "");
-
-let fromString = (str: string) : t =>
-  switch (str |> cleanNonNumeric) {
-  | "" => 0
-  | s => s |> int_of_string
-  };
-
 let make = (~onChange, ~value, _children) => {
   ...component,
   initialState: () => {value: value},
@@ -24,7 +14,7 @@ let make = (~onChange, ~value, _children) => {
     switch (action) {
     | Change(text) =>
       ReasonReact.UpdateWithSideEffects(
-        {value: text |> int_of_string},
+        {value: text |> Number.fromString},
         (self => onChange(self.state.value)),
       )
     | Add =>
@@ -45,6 +35,7 @@ let make = (~onChange, ~value, _children) => {
                          ReactEventRe.Form.target(ev),
                        )##value;
     <div className="quantitySelectorDiv">
+      <div className="quantityDivider" />
       <Button
         className="smallItems-card"
         local=true
@@ -57,6 +48,7 @@ let make = (~onChange, ~value, _children) => {
         value=(self.state.value |> string_of_int)
         onChange=(ev => self.send(Change(getVal(ev))))
       />
+      <div className="quantityDivider" />
       <Button
         className="smallItems-card pay-button-card"
         local=true

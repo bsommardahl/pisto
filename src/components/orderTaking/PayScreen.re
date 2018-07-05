@@ -10,8 +10,6 @@ type doing =
 type state = {
   doing,
   order: Order.orderVm,
-  orderItems: list(OrderItem.t),
-  discounts: list(Discount.t),
   method: option(PaymentMethod.t),
   externalId: string,
   cashier: option(Cashier.t),
@@ -75,19 +73,11 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
       )
     | CashierChanged(cashier) =>
       ReasonReact.Update({...state, cashier, doing: Paying})
-    | OrderLoaded(order) =>
-      ReasonReact.Update({
-        ...state,
-        order,
-        orderItems: order.orderItems,
-        discounts: order.discounts,
-      })
+    | OrderLoaded(order) => ReasonReact.Update({...state, order})
     | Cancel => ReasonReact.SideEffects((_ => onCancel(state.order)))
     },
   initialState: () => {
     order: buildNewOrder(""),
-    orderItems: [],
-    discounts: [],
     method: None,
     externalId: "",
     cashier: None,
@@ -137,8 +127,8 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
       <div className="pay-for-order">
         <OrderItems
           closed=false
-          orderItems=self.state.orderItems
-          discounts=self.state.discounts
+          orderItems=self.state.order.orderItems
+          discounts=self.state.order.discounts
           canDeselectDiscount=false
           canRemoveItem=false
         />

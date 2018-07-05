@@ -26,7 +26,7 @@ let make =
         {
           orderItems:
             orderItems
-            |> List.filter((i: OrderItem.t) => i.sku !== orderItem.sku),
+            |> List.filter((i: OrderItem.t) => i.id !== orderItem.id),
         },
         (self => onChange(self.state.orderItems)),
       )
@@ -36,7 +36,7 @@ let make =
           orderItems:
             orderItems
             |> List.map((i: OrderItem.t) =>
-                 if (i.sku === orderItem.sku) {
+                 if (i.id === orderItem.id) {
                    {...i, quantity};
                  } else {
                    i;
@@ -82,11 +82,18 @@ let make =
                            value=i.quantity
                          />;
                        } else {
-                         ReasonReact.nullElement;
+                         ReactUtils.s(i.quantity |> string_of_int);
                        }
                      )
                    </td>
                    <td> (ReactUtils.s(i.name)) </td>
+                   <td>
+                     (
+                       ReactUtils.s(
+                         (i.suggestedPrice / 100 |> string_of_int) ++ ".00",
+                       )
+                     )
+                   </td>
                    <td>
                      (ReactUtils.s(totals.subTotal |> Money.toDisplay))
                    </td>
