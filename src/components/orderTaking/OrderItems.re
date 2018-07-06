@@ -90,7 +90,9 @@ let make =
                    <td>
                      (
                        ReactUtils.s(
-                         (i.suggestedPrice / 100 |> string_of_int) ++ ".00",
+                         (i.suggestedPrice |> float_of_int)
+                         /. 100.
+                         |> string_of_float,
                        )
                      )
                    </td>
