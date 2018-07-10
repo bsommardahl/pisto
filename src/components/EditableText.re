@@ -48,12 +48,7 @@ let make =
     | ValueChanged(value) =>
       ReasonReact.UpdateWithSideEffects(
         {...state, value},
-        (
-          self =>
-            if (submitBehavior === SubmitOnKey) {
-              onChange(self.state.value);
-            }
-        ),
+        (self => onChange(self.state.value)),
       )
     | KeyDown(27) =>
       ReasonReact.UpdateWithSideEffects(
@@ -99,8 +94,6 @@ let make =
           hidden=(! required || required && self.state.value !== "")
         />
       </div> :
-      <div onClick=((_) => self.send(EnableMod))>
-        (ReactUtils.s(text))
-      </div>;
+      <div onClick=(_ => self.send(EnableMod))> (ReactUtils.s(text)) </div>;
   },
 };
