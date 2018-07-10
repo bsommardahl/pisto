@@ -148,7 +148,7 @@ let make =
         |> List.map((d: Discount.t) =>
              <button
                className="card small-card card-discount"
-               disabled=(closed || canDeselectDiscount ? true : false)
+               key=d.id
                onClick=(_ev => deselectDiscount(d))>
                (ReactUtils.s(d.name))
              </button>
