@@ -42,7 +42,11 @@ let make =
   reducer: (action, state) =>
     switch (action) {
     | EnableMod =>
-      ReasonReact.Update({...state, modifying: mode === TouchToEdit})
+      ReasonReact.Update({
+        ...state,
+        value: text,
+        modifying: mode === TouchToEdit,
+      })
     | DisableMod =>
       ReasonReact.Update({...state, modifying: mode === EditOnly})
     | ValueChanged(value) =>
