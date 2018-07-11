@@ -54,6 +54,16 @@ let make =
         {...state, value},
         (self => onChange(self.state.value)),
       )
+    | KeyDown(164) =>
+      ReasonReact.Update({
+        ...state,
+        value: state.value ++ (164 |> Js.String.fromCharCode),
+      })
+    | KeyDown(165) =>
+      ReasonReact.Update({
+        ...state,
+        value: state.value ++ (165 |> Js.String.fromCharCode),
+      })
     | KeyDown(27) =>
       ReasonReact.UpdateWithSideEffects(
         {...state, value: state.original},
