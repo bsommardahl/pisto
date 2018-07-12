@@ -16,6 +16,18 @@
     "content": "Cancelar"
   },
   {
+    "key": "action.addNote",
+    "content": ">"
+  },
+  {
+    "key": "action.addNotes",
+    "content": "Add Notes"
+  },
+  {
+    "key": "action.addNoteModal",
+    "content": "Add"
+  },
+  {
     "key": "action.plus",
     "content": "+"
   },

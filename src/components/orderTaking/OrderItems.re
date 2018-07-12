@@ -1,8 +1,13 @@
-type state = {orderItems: list(OrderItem.t)};
+type state = {
+  orderItems: list(OrderItem.t),
+  showDialog: bool,
+};
 
 type action =
   | RemoveOrderItem(OrderItem.t)
-  | ChangeQuantity(OrderItem.t, int);
+  | ChangeQuantity(OrderItem.t, int)
+  | ShowDialog
+  | HideDialog;
 
 let component = ReasonReact.reducerComponent("OrderItems");
 
@@ -18,12 +23,13 @@ let make =
       _children,
     ) => {
   ...component,
-  initialState: () => {orderItems: orderItems},
-  reducer: (action, _state) =>
+  initialState: () => {orderItems, showDialog: false},
+  reducer: (action, state) =>
     switch (action) {
     | RemoveOrderItem(orderItem) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           orderItems:
             orderItems
             |> List.filter((i: OrderItem.t) => i.id !== orderItem.id),
@@ -33,6 +39,7 @@ let make =
     | ChangeQuantity(orderItem, quantity) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           orderItems:
             orderItems
             |> List.map((i: OrderItem.t) =>
@@ -45,10 +52,17 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
+    | ShowDialog => ReasonReact.Update({...state, showDialog: true})
+    | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
     let totals = OrderItemCalculation.getTotals(discounts, orderItems);
     <div className="order-items">
+      <OrderItemsNotes
+        isOpen=self.state.showDialog
+        label="action.addNotes"
+        onCancel=(_ => self.send(HideDialog))
+      />
       <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
       <table>
         <tbody>
@@ -83,6 +97,19 @@ let make =
                          />;
                        } else {
                          ReactUtils.s(i.quantity |> string_of_int);
+                       }
+                     )
+                   </td>
+                   <td>
+                     (
+                       if (! closed && canRemoveItem) {
+                         <Button
+                           className="smallItems-card"
+                           onClick=(_ => self.send(ShowDialog))
+                           label=">"
+                         />;
+                       } else {
+                         ReasonReact.nullElement;
                        }
                      )
                    </td>
