@@ -3,13 +3,7 @@ type note = {
   value: string,
 };
 let str = ReasonReact.stringToElement;
-module OrderItemsNote = {
-  let component = ReasonReact.statelessComponent("OrderItemsNote");
-  let make = (~note, children) => {
-    ...component,
-    render: _ => <div> (str(note.value)) </div>,
-  };
-};
+
 type state = {
   value: string,
   notes: list(note),
@@ -52,17 +46,20 @@ let make = (~onCancel=() => (), ~isOpen=false, ~label: string, _children) => {
         <BsReactstrap.ModalBody className="modal-content">
           <NotesInput onFinish=(value => self.send(AddNote(value))) />
           <div>
-            (
-              ReasonReact.arrayToElement(
-                Array.of_list(
-                  List.map(
-                    note =>
-                      <OrderItemsNote key=(string_of_int(note.id)) note />,
-                    self.state.notes,
-                  ),
-                ),
-              )
-            )
+            <table>
+              <tbody>
+                (
+                  self.state.notes
+                  |> List.map((note: note) =>
+                       <div key=(string_of_int(note.id))>
+                         (str(note.value))
+                       </div>
+                     )
+                  |> Array.of_list
+                  |> ReasonReact.arrayToElement
+                )
+              </tbody>
+            </table>
           </div>
         </BsReactstrap.ModalBody>
         <BsReactstrap.ModalFooter className="modal-footer">
