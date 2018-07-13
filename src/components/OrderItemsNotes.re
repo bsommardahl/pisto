@@ -7,10 +7,12 @@ let str = ReasonReact.stringToElement;
 type state = {
   value: string,
   notes: list(note),
+  canRemoveNote: bool,
 };
 
 type action =
   | AddNote(string)
+  | RemoveNote(note)
   | DisplayNotes;
 
 let lastId = ref(0);
@@ -23,14 +25,23 @@ let component = ReasonReact.reducerComponent("OrderItemsNotes");
 
 let make = (~onCancel=() => (), ~isOpen=false, ~label: string, _children) => {
   ...component,
-  initialState: () => {value: "", notes: [{id: 0, value: ""}]},
+  initialState: () => {
+    value: "",
+    notes: [{id: 0, value: ""}],
+    canRemoveNote: false,
+  },
   reducer: (action, state) =>
     switch (action) {
     | AddNote(value) =>
       ReasonReact.UpdateWithSideEffects(
-        {...state, value},
+        {...state, value, canRemoveNote: true},
         (self => self.send(DisplayNotes)),
       )
+    | RemoveNote(note) =>
+      ReasonReact.Update({
+        ...state,
+        notes: state.notes |> List.filter((n: note) => n.id !== note.id),
+      })
     | DisplayNotes =>
       ReasonReact.Update({
         ...state,
@@ -51,9 +62,25 @@ let make = (~onCancel=() => (), ~isOpen=false, ~label: string, _children) => {
                 (
                   self.state.notes
                   |> List.map((note: note) =>
-                       <div key=(string_of_int(note.id))>
-                         (str(note.value))
-                       </div>
+                       <tr>
+                         <td>
+                           (
+                             self.state.canRemoveNote ?
+                               <Button
+                                 onClick=(_ => self.send(RemoveNote(note)))
+                                 label="action.delete"
+                                 className="small-card remove-button-card"
+                                 local=true
+                               /> :
+                               ReasonReact.nullElement
+                           )
+                         </td>
+                         <td>
+                           <div key=(string_of_int(note.id))>
+                             (str(note.value))
+                           </div>
+                         </td>
+                       </tr>
                      )
                   |> Array.of_list
                   |> ReasonReact.arrayToElement
