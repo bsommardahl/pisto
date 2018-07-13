@@ -90,7 +90,20 @@ let make =
                    <td>
                      (
                        ReactUtils.s(
-                         (i.suggestedPrice / 100 |> string_of_int) ++ ".00",
+                         mod_float(
+                           (i.suggestedPrice |> float_of_int) /. 100.,
+                           1.,
+                         )
+                         !== 0. ?
+                           (i.suggestedPrice |> float_of_int)
+                           /. 100.
+                           |> string_of_float :
+                           (
+                             (i.suggestedPrice |> float_of_int)
+                             /. 100.
+                             |> string_of_float
+                           )
+                           ++ "00",
                        )
                      )
                    </td>
@@ -135,7 +148,7 @@ let make =
         |> List.map((d: Discount.t) =>
              <button
                className="card small-card card-discount"
-               disabled=(closed || canDeselectDiscount ? true : false)
+               key=d.id
                onClick=(_ev => deselectDiscount(d))>
                (ReactUtils.s(d.name))
              </button>
