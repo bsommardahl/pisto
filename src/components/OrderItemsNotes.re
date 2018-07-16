@@ -4,70 +4,41 @@ type note = {
 };
 let str = ReasonReact.stringToElement;
 
-type state = {
-  value: string,
-  notes: list(note),
-  canRemoveNote: bool,
-};
+let component = ReasonReact.statelessComponent("OrderItemsNotes");
 
-type action =
-  | AddNote(string)
-  | RemoveNote(note)
-  | DisplayNotes;
-
-let lastId = ref(0);
-let newNote = (value: string) => {
-  lastId := lastId^ + 1;
-  {id: lastId^, value};
-};
-
-let component = ReasonReact.reducerComponent("OrderItemsNotes");
-
-let make = (~onCancel=() => (), ~isOpen=false, ~label: string, _children) => {
+let make =
+    (
+      ~onCancel=() => (),
+      ~value: string,
+      ~notes: list(note),
+      ~addNote,
+      ~removeNote=_n => (),
+      ~canRemoveNote: bool,
+      ~isOpen=false,
+      ~label: string,
+      _children,
+    ) => {
   ...component,
-  initialState: () => {
-    value: "",
-    notes: [{id: 0, value: ""}],
-    canRemoveNote: false,
-  },
-  reducer: (action, state) =>
-    switch (action) {
-    | AddNote(value) =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, value, canRemoveNote: true},
-        (self => self.send(DisplayNotes)),
-      )
-    | RemoveNote(note) =>
-      ReasonReact.Update({
-        ...state,
-        notes: state.notes |> List.filter((n: note) => n.id !== note.id),
-      })
-    | DisplayNotes =>
-      ReasonReact.Update({
-        ...state,
-        notes: [newNote(state.value), ...state.notes],
-      })
-    },
-  render: self =>
+  render: _self =>
     <div>
       <BsReactstrap.Modal isOpen className="modal">
         <BsReactstrap.ModalHeader className="modal-header">
           (ReactUtils.sloc(label))
         </BsReactstrap.ModalHeader>
         <BsReactstrap.ModalBody className="modal-content">
-          <NotesInput onFinish=(value => self.send(AddNote(value))) />
+          <NotesInput onFinish=(value => addNote(value)) />
           <div>
             <table>
               <tbody>
                 (
-                  self.state.notes
+                  notes
                   |> List.map((note: note) =>
                        <tr>
                          <td>
                            (
-                             self.state.canRemoveNote ?
+                             canRemoveNote ?
                                <Button
-                                 onClick=(_ => self.send(RemoveNote(note)))
+                                 onClick=(_ => removeNote(note))
                                  label="action.delete"
                                  className="small-card remove-button-card"
                                  local=true
