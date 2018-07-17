@@ -1,7 +1,3 @@
-type note = {
-  id: int,
-  value: string,
-};
 let str = ReasonReact.stringToElement;
 
 let component = ReasonReact.statelessComponent("OrderItemsNotes");
@@ -10,7 +6,7 @@ let make =
     (
       ~onCancel=() => (),
       ~value: string,
-      ~notes: list(note),
+      ~notes: list(OrderItemNote.t),
       ~addNote,
       ~removeNote=_n => (),
       ~canRemoveNote: bool,
@@ -32,7 +28,7 @@ let make =
               <tbody>
                 (
                   notes
-                  |> List.map((note: note) =>
+                  |> List.map((note: OrderItemNote.t) =>
                        <tr>
                          <td>
                            (
@@ -46,11 +42,7 @@ let make =
                                ReasonReact.nullElement
                            )
                          </td>
-                         <td>
-                           <div key=(string_of_int(note.id))>
-                             (str(note.value))
-                           </div>
-                         </td>
+                         <td> <div key=note.id> (str(note.value)) </div> </td>
                        </tr>
                      )
                   |> Array.of_list

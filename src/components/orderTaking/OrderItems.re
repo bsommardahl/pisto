@@ -1,7 +1,7 @@
 type state = {
   orderItems: list(OrderItem.t),
   value: string,
-  notes: list(OrderItemsNotes.note),
+  notes: list(OrderItemNote.t),
   canRemoveNote: bool,
   showDialog: bool,
 };
@@ -9,17 +9,17 @@ type state = {
 type action =
   | RemoveOrderItem(OrderItem.t)
   | ChangeQuantity(OrderItem.t, int)
-  | AddNote(string)
-  | RemoveNote(OrderItemsNotes.note)
-  | DisplayNotes
+  | DisplayNote(OrderItem.t, string)
+  | RemoveNote(OrderItemNote.t)
   | ShowDialog
   | HideDialog;
 
 let lastId = ref(0);
 let newNote = (value: string) => {
   lastId := lastId^ + 1;
-  {OrderItemsNotes.id: lastId^, value};
+  {OrderItemNote.id: lastId^ |> string_of_int, value};
 };
+
 let component = ReasonReact.reducerComponent("OrderItems");
 
 let make =
@@ -38,7 +38,7 @@ let make =
     orderItems,
     showDialog: false,
     value: "",
-    notes: [{id: 0, value: ""}],
+    notes: [],
     canRemoveNote: false,
   },
   reducer: (action, state) =>
@@ -69,39 +69,35 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | AddNote(value) =>
-      ReasonReact.UpdateWithSideEffects(
-        {...state, value, canRemoveNote: true},
-        (self => self.send(DisplayNotes)),
-      )
+    | DisplayNote(orderItem, value) =>
+      Js.log(state.notes);
+      ReasonReact.Update({
+        ...state,
+        value,
+        canRemoveNote: true,
+        notes: List.concat([state.notes, [newNote(value)]]),
+        orderItems:
+          orderItems
+          |> List.map((i: OrderItem.t) =>
+               if (i.id === orderItem.id) {
+                 {...i, notes: state.notes};
+               } else {
+                 i;
+               }
+             ),
+      });
     | RemoveNote(note) =>
       ReasonReact.Update({
         ...state,
         notes:
-          state.notes
-          |> List.filter((n: OrderItemsNotes.note) => n.id !== note.id),
+          state.notes |> List.filter((n: OrderItemNote.t) => n.id !== note.id),
       })
-    | DisplayNotes =>
-      ReasonReact.Update({
-        ...state,
-        notes: [newNote(state.value), ...state.notes],
-      });
     | ShowDialog => ReasonReact.Update({...state, showDialog: true})
     | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
     let totals = OrderItemCalculation.getTotals(discounts, orderItems);
     <div className="order-items">
-      <OrderItemsNotes
-        isOpen=self.state.showDialog
-        removeNote=(note => self.send(RemoveNote(note)))
-        addNote=(value => self.send(AddNote(value)))
-        notes=self.state.notes
-        value=self.state.value
-        canRemoveNote=self.state.canRemoveNote
-        label="action.addNotes"
-        onCancel=(_ => self.send(HideDialog))
-      />
       <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
       <table>
         <tbody>
@@ -110,6 +106,18 @@ let make =
             |> List.map((i: OrderItem.t) => {
                  let totals = OrderItemCalculation.getTotals(discounts, [i]);
                  <tr>
+                   <td>
+                     <OrderItemsNotes
+                       isOpen=self.state.showDialog
+                       removeNote=(note => self.send(RemoveNote(note)))
+                       addNote=(value => self.send(DisplayNote(i, value)))
+                       notes=self.state.notes
+                       value=self.state.value
+                       canRemoveNote=self.state.canRemoveNote
+                       label="action.addNotes"
+                       onCancel=(_ => self.send(HideDialog))
+                     />
+                   </td>
                    <td>
                      (
                        if (! closed && canRemoveItem) {
