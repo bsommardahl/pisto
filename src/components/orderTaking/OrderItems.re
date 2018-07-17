@@ -10,10 +10,11 @@ type action =
   | RemoveOrderItem(OrderItem.t)
   | ChangeQuantity(OrderItem.t, int)
   | DisplayNote(OrderItem.t, string)
+  | AddNoteToItem(OrderItem.t, list(OrderItemNote.t))
   | RemoveNote(OrderItemNote.t)
   | ShowDialog
   | HideDialog;
-
+let str = ReasonReact.stringToElement;
 let lastId = ref(0);
 let newNote = (value: string) => {
   lastId := lastId^ + 1;
@@ -69,23 +70,30 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | DisplayNote(orderItem, value) =>
-      Js.log(state.notes);
+    | AddNoteToItem(orderItem, notes) =>
       ReasonReact.Update({
         ...state,
-        value,
-        canRemoveNote: true,
-        notes: List.concat([state.notes, [newNote(value)]]),
         orderItems:
           orderItems
           |> List.map((i: OrderItem.t) =>
                if (i.id === orderItem.id) {
-                 {...i, notes: state.notes};
+                 {...i, notes};
                } else {
                  i;
                }
              ),
-      });
+      })
+    | DisplayNote(orderItem, value) =>
+      Js.log(state.notes);
+      ReasonReact.UpdateWithSideEffects(
+        {
+          ...state,
+          value,
+          canRemoveNote: true,
+          notes: List.concat([state.notes, [newNote(value)]]),
+        },
+        (self => self.send(AddNoteToItem(orderItem, state.notes))),
+      );
     | RemoveNote(note) =>
       ReasonReact.Update({
         ...state,
@@ -184,6 +192,7 @@ let make =
                    <td>
                      (ReactUtils.s(totals.subTotal |> Money.toDisplay))
                    </td>
+                   <td> <DisplayOrderItemNotes notes=i.notes /> </td>
                  </tr>;
                })
             |> Array.of_list
