@@ -1,8 +1,8 @@
 type state = {
   orderItems: list(OrderItem.t),
+  selectedOrderItem: option(OrderItem.t),
   value: string,
   notes: list(OrderItemNote.t),
-  selectedOrderItem: option(OrderItem.t),
   canRemoveNote: bool,
   showDialog: bool,
 };
@@ -10,8 +10,8 @@ type state = {
 type action =
   | RemoveOrderItem(OrderItem.t)
   | ChangeQuantity(OrderItem.t, int)
-  | DisplayNote(OrderItem.t, string)
-  | AddNotesToOrderItem
+  | DisplayNote(string)
+  | AddNotesToOrderItem(OrderItem.t)
   | RemoveNote(OrderItemNote.t)
   | ShowDialog
   | HideDialog;
@@ -72,14 +72,15 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | AddNotesToOrderItem =>
+    | AddNotesToOrderItem(orderItem) =>
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
+          showDialog: false,
           orderItems:
-            state.selectedOrderItem
+            orderItems
             |> List.map((i: OrderItem.t) =>
-                 if (i.id === state.selectedOrderItem.id) {
+                 if (i.id === orderItem.id) {
                    {...i, notes: state.notes};
                  } else {
                    i;
@@ -88,13 +89,12 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | DisplayNote(orderItem, value) =>
+    | DisplayNote(value) =>
       ReasonReact.Update({
         ...state,
         value,
         canRemoveNote: true,
         notes: List.concat([state.notes, [newNote(value)]]),
-        selectedOrderItem: Some(orderItem),
       })
     | RemoveNote(note) =>
       ReasonReact.Update({
@@ -103,12 +103,7 @@ let make =
           state.notes |> List.filter((n: OrderItemNote.t) => n.id !== note.id),
       })
     | ShowDialog =>
-      ReasonReact.Update({
-        ...state,
-        showDialog: true,
-        notes: [],
-        selectedOrderItem: None,
-      })
+      ReasonReact.Update({...state, showDialog: true, notes: []})
     | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
@@ -126,13 +121,13 @@ let make =
                      <OrderItemsNotes
                        isOpen=self.state.showDialog
                        removeNote=(note => self.send(RemoveNote(note)))
-                       addNote=(value => self.send(DisplayNote(i, value)))
+                       addNote=(value => self.send(DisplayNote(value)))
                        notes=self.state.notes
                        value=self.state.value
                        canRemoveNote=self.state.canRemoveNote
                        label="action.addNotes"
                        onCancel=(_ => self.send(HideDialog))
-                       onAccept=(_ => self.send(HideDialog))
+                       onAccept=(_ => self.send(AddNotesToOrderItem(i)))
                      />
                    </td>
                    <td>
