@@ -10,7 +10,7 @@ type action =
   | RemoveOrderItem(OrderItem.t)
   | ChangeQuantity(OrderItem.t, int)
   | DisplayNote(OrderItem.t, string)
-  | AddNoteToItem(OrderItem.t, list(OrderItemNote.t))
+  | AddNoteToItem(OrderItem.t)
   | RemoveNote(OrderItemNote.t)
   | ShowDialog
   | HideDialog;
@@ -70,21 +70,23 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | AddNoteToItem(orderItem, notes) =>
-      ReasonReact.Update({
-        ...state,
-        orderItems:
-          orderItems
-          |> List.map((i: OrderItem.t) =>
-               if (i.id === orderItem.id) {
-                 {...i, notes};
-               } else {
-                 i;
-               }
-             ),
-      })
+    | AddNoteToItem(orderItem) =>
+      ReasonReact.UpdateWithSideEffects(
+        {
+          ...state,
+          orderItems:
+            orderItems
+            |> List.map((i: OrderItem.t) =>
+                 if (i.id === orderItem.id) {
+                   {...i, notes: state.notes};
+                 } else {
+                   i;
+                 }
+               ),
+        },
+        (self => onChange(self.state.orderItems)),
+      )
     | DisplayNote(orderItem, value) =>
-      Js.log(state.notes);
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
@@ -92,15 +94,16 @@ let make =
           canRemoveNote: true,
           notes: List.concat([state.notes, [newNote(value)]]),
         },
-        (self => self.send(AddNoteToItem(orderItem, state.notes))),
-      );
+        (self => self.send(AddNoteToItem(orderItem))),
+      )
     | RemoveNote(note) =>
       ReasonReact.Update({
         ...state,
         notes:
           state.notes |> List.filter((n: OrderItemNote.t) => n.id !== note.id),
       })
-    | ShowDialog => ReasonReact.Update({...state, showDialog: true})
+    | ShowDialog =>
+      ReasonReact.Update({...state, showDialog: true, notes: []})
     | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
