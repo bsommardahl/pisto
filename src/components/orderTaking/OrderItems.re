@@ -72,14 +72,14 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | AddNoteToItem(orderItem) =>
+    | AddNotesToOrderItem =>
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
           orderItems:
-            orderItems
+            state.selectedOrderItem
             |> List.map((i: OrderItem.t) =>
-                 if (i.id === orderItem.id) {
+                 if (i.id === state.selectedOrderItem.id) {
                    {...i, notes: state.notes};
                  } else {
                    i;
