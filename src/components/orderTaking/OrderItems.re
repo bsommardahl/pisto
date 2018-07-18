@@ -11,9 +11,9 @@ type action =
   | RemoveOrderItem(OrderItem.t)
   | ChangeQuantity(OrderItem.t, int)
   | DisplayNote(string)
-  | AddNotesToOrderItem(OrderItem.t)
+  | AddNotesToOrderItem
   | RemoveNote(OrderItemNote.t)
-  | ShowDialog
+  | ShowDialog(OrderItem.t)
   | HideDialog;
 let str = ReasonReact.stringToElement;
 let lastId = ref(0);
@@ -72,20 +72,23 @@ let make =
         },
         (self => onChange(self.state.orderItems)),
       )
-    | AddNotesToOrderItem(orderItem) =>
+    | AddNotesToOrderItem =>
       ReasonReact.UpdateWithSideEffects(
         {
           ...state,
           showDialog: false,
           orderItems:
-            orderItems
+            switch (state.selectedOrderItem) {
+            | Some(orderItem) => orderItems
             |> List.map((i: OrderItem.t) =>
                  if (i.id === orderItem.id) {
                    {...i, notes: state.notes};
                  } else {
                    i;
                  }
-               ),
+               );
+            | None => orderItems;
+            }
         },
         (self => onChange(self.state.orderItems)),
       )
@@ -102,34 +105,32 @@ let make =
         notes:
           state.notes |> List.filter((n: OrderItemNote.t) => n.id !== note.id),
       })
-    | ShowDialog =>
-      ReasonReact.Update({...state, showDialog: true, notes: []})
+    | ShowDialog(orderItem) =>
+      ReasonReact.Update({...state, showDialog: true, notes: [], selectedOrderItem: Some(orderItem)})
     | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
     let totals = OrderItemCalculation.getTotals(discounts, orderItems);
     <div className="order-items">
       <h2> (ReactUtils.sloc("order.orderItems.header")) </h2>
+      <OrderItemsNotes
+        isOpen=self.state.showDialog
+        removeNote=(note => self.send(RemoveNote(note)))
+        addNote=(value => self.send(DisplayNote(value)))
+        notes=self.state.notes
+        value=self.state.value
+        canRemoveNote=self.state.canRemoveNote
+        label="action.addNotes"
+        onCancel=(_ => self.send(HideDialog))
+        onAccept=(_ => self.send(AddNotesToOrderItem))
+      />
       <table>
         <tbody>
           (
             orderItems
             |> List.map((i: OrderItem.t) => {
                  let totals = OrderItemCalculation.getTotals(discounts, [i]);
-                 <tr>
-                   <td>
-                     <OrderItemsNotes
-                       isOpen=self.state.showDialog
-                       removeNote=(note => self.send(RemoveNote(note)))
-                       addNote=(value => self.send(DisplayNote(value)))
-                       notes=self.state.notes
-                       value=self.state.value
-                       canRemoveNote=self.state.canRemoveNote
-                       label="action.addNotes"
-                       onCancel=(_ => self.send(HideDialog))
-                       onAccept=(_ => self.send(AddNotesToOrderItem(i)))
-                     />
-                   </td>
+                 <tr key=i.id>
                    <td>
                      (
                        if (! closed && canRemoveItem) {
@@ -164,7 +165,7 @@ let make =
                        if (! closed && canRemoveItem) {
                          <Button
                            className="smallItems-card"
-                           onClick=(_ => self.send(ShowDialog))
+                           onClick=(_ => self.send(ShowDialog(i)))
                            label=">"
                          />;
                        } else {
