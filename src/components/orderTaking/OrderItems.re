@@ -2,6 +2,7 @@ type state = {
   orderItems: list(OrderItem.t),
   value: string,
   notes: list(OrderItemNote.t),
+  selectedOrderItem: option(OrderItem.t),
   canRemoveNote: bool,
   showDialog: bool,
 };
@@ -10,7 +11,7 @@ type action =
   | RemoveOrderItem(OrderItem.t)
   | ChangeQuantity(OrderItem.t, int)
   | DisplayNote(OrderItem.t, string)
-  | AddNoteToItem(OrderItem.t)
+  | AddNotesToOrderItem
   | RemoveNote(OrderItemNote.t)
   | ShowDialog
   | HideDialog;
@@ -40,6 +41,7 @@ let make =
     showDialog: false,
     value: "",
     notes: [],
+    selectedOrderItem: None,
     canRemoveNote: false,
   },
   reducer: (action, state) =>
@@ -87,15 +89,13 @@ let make =
         (self => onChange(self.state.orderItems)),
       )
     | DisplayNote(orderItem, value) =>
-      ReasonReact.UpdateWithSideEffects(
-        {
-          ...state,
-          value,
-          canRemoveNote: true,
-          notes: List.concat([state.notes, [newNote(value)]]),
-        },
-        (self => self.send(AddNoteToItem(orderItem))),
-      )
+      ReasonReact.Update({
+        ...state,
+        value,
+        canRemoveNote: true,
+        notes: List.concat([state.notes, [newNote(value)]]),
+        selectedOrderItem: Some(orderItem),
+      })
     | RemoveNote(note) =>
       ReasonReact.Update({
         ...state,
@@ -103,7 +103,12 @@ let make =
           state.notes |> List.filter((n: OrderItemNote.t) => n.id !== note.id),
       })
     | ShowDialog =>
-      ReasonReact.Update({...state, showDialog: true, notes: []})
+      ReasonReact.Update({
+        ...state,
+        showDialog: true,
+        notes: [],
+        selectedOrderItem: None,
+      })
     | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
@@ -127,6 +132,7 @@ let make =
                        canRemoveNote=self.state.canRemoveNote
                        label="action.addNotes"
                        onCancel=(_ => self.send(HideDialog))
+                       onAccept=(_ => self.send(HideDialog))
                      />
                    </td>
                    <td>

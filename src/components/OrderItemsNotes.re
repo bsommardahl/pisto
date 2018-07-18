@@ -5,6 +5,7 @@ let component = ReasonReact.statelessComponent("OrderItemsNotes");
 let make =
     (
       ~onCancel=() => (),
+      ~onAccept=() => (),
       ~value: string,
       ~notes: list(OrderItemNote.t),
       ~addNote,
@@ -59,6 +60,12 @@ let make =
             className="cancel-button-card"
             label="action.cancelModal"
             onClick=(_ => onCancel())
+          />
+          <Button
+            local=true
+            className="pay-button-card"
+            label="action.acceptModal"
+            onClick=(_ => onAccept())
           />
         </BsReactstrap.ModalFooter>
       </BsReactstrap.Modal>

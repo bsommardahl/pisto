@@ -36,6 +36,10 @@
     "content": "Cancel"
   },
   {
+    "key": "action.acceptModal",
+    "content": "Accept"
+  },
+  {
     "key": "action.addNoteModal",
     "content": "Add"
   },
@@ -253,7 +257,8 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content": "Note: Tab separated values (TSV), one product per line, value order should match the table above."
+    "content":
+      "Note: Tab separated values (TSV), one product per line, value order should match the table above."
   },
   {
     "key": "nav.back",
