@@ -27,20 +27,10 @@ let make =
                    <td>
                      (
                        ReactUtils.s(
-                         mod_float(
+                         Js.Float.toFixedWithPrecision(
                            (i.suggestedPrice |> float_of_int) /. 100.,
-                           1.,
-                         )
-                         !== 0. ?
-                           (i.suggestedPrice |> float_of_int)
-                           /. 100.
-                           |> string_of_float :
-                           (
-                             (i.suggestedPrice |> float_of_int)
-                             /. 100.
-                             |> string_of_float
-                           )
-                           ++ "00",
+                           2,
+                         ),
                        )
                      )
                    </td>
