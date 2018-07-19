@@ -95,7 +95,9 @@ let make =
       ReasonReact.Update({
         ...state,
         value,
-        notes: List.concat([state.notes, [newNote(value)]]),
+        notes:
+          value !== "" ?
+            List.concat([state.notes, [newNote(value)]]) : state.notes,
       })
     | RemoveNote(note) =>
       ReasonReact.Update({
@@ -127,85 +129,70 @@ let make =
         onAccept=(_ => self.send(AddNotesToOrderItem))
       />
       <table>
-          (
-            orderItems
-            |> List.map((i: OrderItem.t) => {
-                 let totals = OrderItemCalculation.getTotals(discounts, [i]);
-                 <tbody key=i.id>
-                   <tr>
-                     <td>
-                       (
-                         if (! closed && canRemoveItem) {
-                           <Button
-                             className="smallItems-card danger-card"
-                             onClick=(_ => self.send(RemoveOrderItem(i)))
-                             label="actionSymbol.delete"
-                             local=true
-                           />;
-                         } else {
-                           ReasonReact.nullElement;
-                         }
+        (
+          orderItems
+          |> List.map((i: OrderItem.t) => {
+               let totals = OrderItemCalculation.getTotals(discounts, [i]);
+               <tbody key=i.id>
+                 <tr>
+                   <td>
+                     <Button
+                       className="smallItems-card danger-card"
+                       onClick=(_ => self.send(RemoveOrderItem(i)))
+                       label="actionSymbol.delete"
+                       local=true
+                     />
+                   </td>
+                   <td className="quantity">
+                     <QuantitySelector
+                       onChange=(
+                         quantity => self.send(ChangeQuantity(i, quantity))
                        )
-                     </td>
-                     <td className="quantity">
-                       (
-                         if (! closed && canRemoveItem) {
-                           <QuantitySelector
-                             onChange=(
-                               quantity =>
-                                 self.send(ChangeQuantity(i, quantity))
-                             )
-                             value=i.quantity
-                           />;
-                         } else {
-                           ReactUtils.s(i.quantity |> string_of_int);
-                         }
-                       )
-                     </td>
-                     <td>
-                       (
-                         if (! closed && canRemoveItem) {
-                           <Button
-                             className="smallItems-card"
-                             onClick=(_ => self.send(ShowDialog(i)))
-                             label=">"
-                           />;
-                         } else {
-                           ReasonReact.nullElement;
-                         }
-                       )
-                     </td>
-                     <td> (ReactUtils.s(i.name)) </td>
-                     <td>
-                       (
-                         ReactUtils.s(
-                           mod_float(
-                             (i.suggestedPrice |> float_of_int) /. 100.,
-                             1.,
-                           )
-                           !== 0. ?
+                       value=i.quantity
+                     />
+                   </td>
+                   <td>
+                     <Button
+                       className="smallItems-card"
+                       onClick=(_ => self.send(ShowDialog(i)))
+                       label=">"
+                     />
+                   </td>
+                   <td> (ReactUtils.s(i.name)) </td>
+                   <td>
+                     (
+                       ReactUtils.s(
+                         mod_float(
+                           (i.suggestedPrice |> float_of_int) /. 100.,
+                           1.,
+                         )
+                         !== 0. ?
+                           (i.suggestedPrice |> float_of_int)
+                           /. 100.
+                           |> string_of_float :
+                           (
                              (i.suggestedPrice |> float_of_int)
                              /. 100.
-                             |> string_of_float :
-                             (
-                               (i.suggestedPrice |> float_of_int)
-                               /. 100.
-                               |> string_of_float
-                             )
-                             ++ "00",
-                         )
+                             |> string_of_float
+                           )
+                           ++ "00",
                        )
-                     </td>
-                     <td>
-                       (ReactUtils.s(totals.subTotal |> Money.toDisplay))
-                     </td>
-                   </tr>
-                   (i.notes |> List.length > 0 ? <DisplayOrderItemNotes notes=i.notes /> : ReasonReact.nullElement)
-                 </tbody>;
-               })
-            |> Array.of_list
-            |> ReasonReact.arrayToElement
-          )
+                     )
+                   </td>
+                   <td>
+                     (ReactUtils.s(totals.subTotal |> Money.toDisplay))
+                   </td>
+                 </tr>
+                 (
+                   i.notes |> List.length > 0 ?
+                     <DisplayOrderItemNotes notes=i.notes /> :
+                     ReasonReact.nullElement
+                 )
+               </tbody>;
+             })
+          |> Array.of_list
+          |> ReasonReact.arrayToElement
+        )
         <tfoot>
           <tr className="divider">
             <th colSpan=4> (ReactUtils.sloc("order.subTotal")) </th>
