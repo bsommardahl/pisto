@@ -3,7 +3,6 @@ type state = {
   selectedOrderItem: option(OrderItem.t),
   value: string,
   notes: list(OrderItemNote.t),
-  canRemoveNote: bool,
   showDialog: bool,
 };
 
@@ -42,7 +41,6 @@ let make =
     value: "",
     notes: [],
     selectedOrderItem: None,
-    canRemoveNote: false,
   },
   reducer: (action, state) =>
     switch (action) {
@@ -79,16 +77,17 @@ let make =
           showDialog: false,
           orderItems:
             switch (state.selectedOrderItem) {
-            | Some(orderItem) => orderItems
-            |> List.map((i: OrderItem.t) =>
-                 if (i.id === orderItem.id) {
-                   {...i, notes: state.notes};
-                 } else {
-                   i;
-                 }
-               );
-            | None => orderItems;
-            }
+            | Some(orderItem) =>
+              orderItems
+              |> List.map((i: OrderItem.t) =>
+                   if (i.id === orderItem.id) {
+                     {...i, notes: state.notes};
+                   } else {
+                     i;
+                   }
+                 )
+            | None => orderItems
+            },
         },
         (self => onChange(self.state.orderItems)),
       )
@@ -96,7 +95,6 @@ let make =
       ReasonReact.Update({
         ...state,
         value,
-        canRemoveNote: true,
         notes: List.concat([state.notes, [newNote(value)]]),
       })
     | RemoveNote(note) =>
@@ -106,7 +104,12 @@ let make =
           state.notes |> List.filter((n: OrderItemNote.t) => n.id !== note.id),
       })
     | ShowDialog(orderItem) =>
-      ReasonReact.Update({...state, showDialog: true, notes: [], selectedOrderItem: Some(orderItem)})
+      ReasonReact.Update({
+        ...state,
+        showDialog: true,
+        notes: orderItem.notes,
+        selectedOrderItem: Some(orderItem),
+      })
     | HideDialog => ReasonReact.Update({...state, showDialog: false})
     },
   render: self => {
@@ -119,7 +122,6 @@ let make =
         addNote=(value => self.send(DisplayNote(value)))
         notes=self.state.notes
         value=self.state.value
-        canRemoveNote=self.state.canRemoveNote
         label="action.addNotes"
         onCancel=(_ => self.send(HideDialog))
         onAccept=(_ => self.send(AddNotesToOrderItem))

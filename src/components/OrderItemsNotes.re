@@ -10,7 +10,6 @@ let make =
       ~notes: list(OrderItemNote.t),
       ~addNote,
       ~removeNote=_n => (),
-      ~canRemoveNote: bool,
       ~isOpen=false,
       ~label: string,
       _children,
@@ -32,16 +31,12 @@ let make =
                   |> List.map((note: OrderItemNote.t) =>
                        <tr>
                          <td>
-                           (
-                             canRemoveNote ?
-                               <Button
-                                 onClick=(_ => removeNote(note))
-                                 label="action.delete"
-                                 className="small-card remove-button-card"
-                                 local=true
-                               /> :
-                               ReasonReact.nullElement
-                           )
+                           <Button
+                             onClick=(_ => removeNote(note))
+                             label="action.delete"
+                             className="small-card remove-button-card"
+                             local=true
+                           />
                          </td>
                          <td> <div key=note.id> (str(note.value)) </div> </td>
                        </tr>
