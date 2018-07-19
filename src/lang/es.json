@@ -16,6 +16,22 @@
     "content": "Cancelar"
   },
   {
+    "key": "action.acceptModal",
+    "content": "Aceptar"
+  },
+  {
+    "key": "action.addNote",
+    "content": ">"
+  },
+  {
+    "key": "action.addNotes",
+    "content": "Add Notes"
+  },
+  {
+    "key": "action.addNoteModal",
+    "content": "Add"
+  },
+  {
     "key": "action.plus",
     "content": "+"
   },
@@ -241,7 +257,8 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content": "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
+    "content":
+      "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
   },
   {
     "key": "nav.back",

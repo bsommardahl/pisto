@@ -125,12 +125,9 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
         </div>
       </div>
       <div className="pay-for-order">
-        <OrderItems
-          closed=false
+        <ClosedOrderItems
           orderItems=self.state.order.orderItems
           discounts=self.state.order.discounts
-          canDeselectDiscount=false
-          canRemoveItem=false
         />
         (
           switch (self.state.doing) {

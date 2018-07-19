@@ -18,17 +18,15 @@ let make = (~onChange, ~value, _children) => {
         (self => onChange(self.state.value)),
       )
     | Add =>
-      Js.log(value);
       ReasonReact.UpdateWithSideEffects(
         {value: state.value + 1},
         (self => onChange(self.state.value)),
-      );
+      )
     | Subtract =>
-      Js.log(value);
       ReasonReact.UpdateWithSideEffects(
         {value: state.value > 1 ? state.value - 1 : state.value},
         (self => onChange(self.state.value)),
-      );
+      )
     },
   render: self => {
     let getVal = ev => ReactDOMRe.domElementToObj(
