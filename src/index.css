@@ -3,98 +3,105 @@ body {
   padding: 0;
   font-family: sans-serif;
   font-size: 15px;
-  
 }
 
 .header {
-  background-color:#CCC;
+  background-color: #ccc;
   min-height: 65px;
   margin-bottom: 15px;
   padding: 10px;
 }
 
 .header-options {
-  padding: 15px; 
-  font-size: 30px; 
+  padding: 15px;
+  font-size: 30px;
 }
-.spaceDivider{
-  width:15px;
+.spaceDivider {
+  width: 15px;
   height: auto;
-  display:inline-block;
+  display: inline-block;
 }
-.quantityDivider{
-  width:0px;
+.quantityDivider {
+  width: 0px;
   height: auto;
-  display:inline-block;
+  display: inline-block;
 }
-.heightDivider{
-  height:15px;
+.heightDivider {
+  height: 15px;
 }
-.quantitySelectorDiv{
-display: inline-block;
+.quantitySelectorDiv {
+  display: inline-block;
 }
-.quantityInput{
-  width:15%;
+.quantityInput {
+  width: 15%;
 }
-.quantityMinusButton{
-  position:"top-right";
-
+.quantityMinusButton {
+  position: "top-right";
 }
-.modal{
+.modal {
   position: fixed;
-  z-index:1;
-  left:0;
-  top:0;
-  width:100%;
-  height:100%;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   overflow: auto;
-  background-color:rgb(0,0,0);
-  background-color: rgba(0,0,0,4);
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 4);
 }
-.modal-header{
+.modal-header {
   text-align: center;
   font-size: 40 px;
 }
-.modal-footer{
+.modal-footer {
   text-align: center;
 }
-.modal-content{
+.modal-content {
   background-color: #fefefe;
-  margin:15% auto;
-  padding:20px;
+  margin: 15% auto;
+  padding: 20px;
   border: 1 px solid #888;
-  width:65%;
+  width: 65%;
   font-size: 20px;
   position: relative;
   animation-name: animatetop;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19); 
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   animation-duration: 0.4s;
 }
 @keyframes animatetop {
-  from {top: -300px; opacity:0}
-  to {top:0; opacity:1}
+  from {
+    top: -300px;
+    opacity: 0;
+  }
+  to {
+    top: 0;
+    opacity: 1;
+  }
 }
 .header-menu {
   float: right;
   /* width: 150px;   */
 }
 
-input.big{
+input.big {
   font-size: 30px;
-} 
-input.pin { width: 70px;} 
+}
+input.pin {
+  width: 70px;
+}
 
 input.big-text {
   font-size: 30px;
   width: 100%;
 }
 
-input.customer-name-input {  
+input.customer-name-input {
   font-size: 30px;
   width: 300px;
- }
+}
 .paid-date input {
-  font-size: 20px; width: 400px;
+  font-size: 20px;
+  width: 400px;
 }
 .paid-date button {
   font-size: 20px;
@@ -102,7 +109,7 @@ input.customer-name-input {
 }
 
 .open-orders {
-  margin: 10px;  
+  margin: 10px;
 }
 
 .open-order-card .time {
@@ -110,7 +117,7 @@ input.customer-name-input {
   color: darkblue;
   margin-top: 5px;
 }
-.open-order-card .customer-name {  
+.open-order-card .customer-name {
   color: darkblue;
   font-size: 25px;
   margin-bottom: 5px;
@@ -120,27 +127,29 @@ input.customer-name-input {
   border-radius: 8px;
   margin: 0 10px 0 10px;
   display: inline-block;
-  
+
   text-align: center;
   font-size: 18px;
   padding: 0 10px 0 10px;
 }
-.pin-entry input { font-size: 25px;}
-.search-input{
+.pin-entry input {
+  font-size: 25px;
+}
+.search-input {
   width: 75%;
-  font-size: 20px; 
+  font-size: 20px;
   box-sizing: border-box;
-  background-color:white;
-  height:55%;
+  background-color: white;
+  height: 55%;
 }
 .card {
   border: 0px;
   border-radius: 8px;
-  padding: 10px; 
+  padding: 10px;
   margin: 10px;
   background-color: lightblue;
   display: inline-block;
-  
+
   text-align: center;
   cursor: pointer;
   font-size: 18px;
@@ -159,40 +168,63 @@ input.customer-name-input {
   font-size: 13px;
 }
 .smallItems-card {
- border-radius:35%;
- height: 5;
- width:10;
- margin-right: 10%;
- justify-content: center;
- font-size: 14px;
+  border-radius: 35%;
+  height: 5;
+  width: 10;
+  margin-right: 10%;
+  justify-content: center;
+  font-size: 14px;
 }
-.danger-card { 
+.danger-card {
   background-color: darkred;
-  color: #DDDDDD;
+  color: #dddddd;
 }
 .order .right-side {
   width: 475px;
-  background-color: #BBBBBB;
+  background-color: #bbbbbb;
   float: right;
   padding: 10px;
 }
 
 .back-button-card {
   background-color: blueviolet;
-  color: white; 
+  color: white;
 }
 
-.order-items table { width: 100%; border-collapse: collapse; text-align: left;}
-.order-items table tbody td { height: 30px; padding-left: 5px; padding-right: 5px;}
-.order-items table tfoot th { height: 30px; text-align: right; padding-right: 10px; }
-.order-items table tfoot td { width: 75px; }
-.order-items table tfoot tr.divider td { border-top: 2px solid black; }
-.order-items table tfoot tr.divider th { border-top: 2px solid black; }
-.order-items td.quantity { width: 125px; }
+.order-items table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+.order-items table tbody td {
+  height: 30px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+.order-items table tbody tr.note-row td ul {
+  list-style-type: square;
+  margin: 0;
+}
+.order-items table tfoot th {
+  height: 30px;
+  text-align: right;
+  padding-right: 10px;
+}
+.order-items table tfoot td {
+  width: 75px;
+}
+.order-items table tfoot tr.divider td {
+  border-top: 2px solid black;
+}
+.order-items table tfoot tr.divider th {
+  border-top: 2px solid black;
+}
+.order-items td.quantity {
+  width: 125px;
+}
 
 .product-card {
   background-color: goldenrod;
-  
 }
 .tag-card {
   background-color: cornflowerblue;
@@ -200,7 +232,7 @@ input.customer-name-input {
 }
 
 .order-header {
-  background-color: #CCC;
+  background-color: #ccc;
   padding: 15px;
   height: 40px;
 }
@@ -208,35 +240,37 @@ input.customer-name-input {
   font-size: 30px;
   width: 350px;
 }
-.order-actions{
+.order-actions {
   float: right;
 }
-.order-actions .card { margin-top:0px; margin-bottom: 0px;}
+.order-actions .card {
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
 
-.save-button-card{
+.save-button-card {
   background-color: darkblue;
   color: white;
 
   margin-top: 0px;
   margin-bottom: 0px;
 }
-.pay-button-card{
+.pay-button-card {
   background-color: green;
   color: white;
   margin-top: 0px;
   margin-bottom: 0px;
 }
-.remove-button-card{
+.remove-button-card {
   background-color: darkred;
   color: white;
 
   margin-top: 0px;
   margin-bottom: 0px;
 }
-.cancel-button-card{
+.cancel-button-card {
   background-color: gray;
-  color:black;
-
+  color: black;
 
   margin-top: 0px;
   margin-bottom: 0px;
@@ -245,8 +279,12 @@ table.order-list {
   width: 100%;
 }
 
-.valid { color: darkgreen; }
-.invalid {color: darkred;}
+.valid {
+  color: darkgreen;
+}
+.invalid {
+  color: darkred;
+}
 
 table.admin-table {
   width: 100%;
@@ -255,54 +293,98 @@ table.admin-table {
 }
 
 table.admin-table thead th {
-  background-color: #BBBBBB;
+  background-color: #bbbbbb;
   padding: 5px 0 5px 0;
 }
 
-.discounts { clear: left; margin-left: 5px;}
-.card-discount { background-color: #CCC;}
+.discounts {
+  clear: left;
+  margin-left: 5px;
+}
+.card-discount {
+  background-color: #ccc;
+}
 
-.no-float { clear:both;}
+.no-float {
+  clear: both;
+}
 
-.bulk-import {width: 100%; height: 100px;}
-.invalid { font-size: 10px; padding: 3px; margin: 5px; background-color: darkred; color: white; border-radius: 5px;}
-.expense-management .section { clear: left; margin-bottom: 10px; }
-.expense-management .section .title { font-size: 20px; }
-.expense-description { width: 100%; height: 150px; }
-.no-float { clear: left; }
-.in-line { display: inline-block; }
-.money { width: 100px; font-size: 20px; }
-.percent { width: 100px; font-size: 20px; }
-.card-selected { background-color: orangered; color: white;}
-.table {width: 100%;}
+.bulk-import {
+  width: 100%;
+  height: 100px;
+}
+.invalid {
+  font-size: 10px;
+  padding: 3px;
+  margin: 5px;
+  background-color: darkred;
+  color: white;
+  border-radius: 5px;
+}
+.expense-management .section {
+  clear: left;
+  margin-bottom: 10px;
+}
+.expense-management .section .title {
+  font-size: 20px;
+}
+.expense-description {
+  width: 100%;
+  height: 150px;
+}
+.no-float {
+  clear: left;
+}
+.in-line {
+  display: inline-block;
+}
+.money {
+  width: 100px;
+  font-size: 20px;
+}
+.percent {
+  width: 100px;
+  font-size: 20px;
+}
+.card-selected {
+  background-color: orangered;
+  color: white;
+}
+.table {
+  width: 100%;
+}
 
+.loading {
+  height: 20px;
+  width: 20px;
+  float: right;
+}
 
-.loading { height: 20px; width: 20px; float: right;}
-
-.more-actions { margin-top: 30px;}
+.more-actions {
+  margin-top: 30px;
+}
 .sku-search {
- 
-  font-size: 30px; 
-  color: white;  
-  border: 0px; 
+  font-size: 30px;
+  color: white;
+  border: 0px;
   width: 100%;
   background-color: #000000;
-  opacity: .1;
-  text-transform:lowercase;
+  opacity: 0.1;
+  text-transform: lowercase;
 }
-.product-search{
-  font-size: 30px; 
-  color: white;  
-  border: 0px; 
+.product-search {
+  font-size: 30px;
+  color: white;
+  border: 0px;
   width: 100%;
   background-color: #000000;
-  opacity: .1;
-  text-transform:lowercase;
+  opacity: 0.1;
+  text-transform: lowercase;
 }
-.pay-for-order{
+.pay-for-order {
   width: 400px;
-  background-color: #EEEEEE;
-  border: #BBBBBB solid 1px;
+  background-color: #eeeeee;
+  border: #bbbbbb solid 1px;
   padding: 5px;
   margin: 20px auto;
 }
@@ -316,9 +398,8 @@ table.admin-table thead th {
 }
 
 .h-centered {
-  margin:0 auto;
+  margin: 0 auto;
 }
-
 
 .payment-method-selected {
   background-color: darkorange;

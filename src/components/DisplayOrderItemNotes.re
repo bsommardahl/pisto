@@ -3,14 +3,21 @@ let str = ReasonReact.stringToElement;
 let make = (~notes: list(OrderItemNote.t), _children) => {
   ...component,
   render: _self =>
-    <div>
-      (
-        notes
-        |> List.map((note: OrderItemNote.t) =>
-             <div key=note.id> (str(note.value)) </div>
-           )
-        |> Array.of_list
-        |> ReasonReact.arrayToElement
-      )
-    </div>,
+    <tr className="note-row">
+      <td />
+      <td />
+      <td />
+      <td>
+        <ul>
+          (
+            notes
+            |> List.map((note: OrderItemNote.t) =>
+                 <li key=note.id> (str(note.value)) </li>
+               )
+            |> Array.of_list
+            |> ReasonReact.arrayToElement
+          )
+        </ul>
+      </td>
+    </tr>,
 };
