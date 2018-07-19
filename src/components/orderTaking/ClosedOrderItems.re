@@ -22,6 +22,7 @@ let make =
                    <td className="quantity">
                      (ReactUtils.s(i.quantity |> string_of_int))
                    </td>
+                   <td />
                    <td> (ReactUtils.s(i.name)) </td>
                    <td>
                      (
