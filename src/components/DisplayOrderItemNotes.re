@@ -6,8 +6,7 @@ let make = (~notes: list(OrderItemNote.t), _children) => {
     <tr className="note-row">
       <td />
       <td />
-      <td />
-      <td>
+      <td colSpan=2>
         <ul>
           (
             notes
