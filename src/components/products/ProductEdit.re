@@ -33,7 +33,6 @@ let component = ReasonReact.statelessComponent("ProductEdit");
 let make =
     (
       ~product: option(Product.t)=None,
-      ~onClick=() => (),
       ~onCancel=() => (),
       ~onSubmit,
       ~products,
@@ -118,7 +117,6 @@ let make =
                  />
                  <Button
                    _type="submit"
-                   onClick=(_ => onClick())
                    className="pay-button-card"
                    label="action.done"
                    local=true

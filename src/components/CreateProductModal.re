@@ -7,7 +7,7 @@ let make =
       ~onCancel=() => (),
       ~onCreate=() => (),
       ~onSubmit,
-      ~onClick=() => (),
+      /* ~onClick=() => (), */
       ~products: list(Product.t),
       ~isOpen=false,
       ~label: string,
@@ -22,12 +22,7 @@ let make =
         </BsReactstrap.ModalHeader>
         <BsReactstrap.ModalBody className="modal-content">
           <div>
-            <ProductEdit
-              onCancel=(_ => onCancel())
-              onClick=(_ => onClick())
-              products
-              onSubmit
-            />
+            <ProductEdit onCancel=(_ => onCancel()) products onSubmit />
           </div>
         </BsReactstrap.ModalBody>
         <BsReactstrap.ModalFooter className="modal-footer" />

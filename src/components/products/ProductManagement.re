@@ -97,7 +97,8 @@ let make = _children => {
         intent: Viewing,
       })
     | CreateProduct(prod) =>
-      ReasonReact.SideEffects(
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showProductDialog: false},
         (
           self =>
             ProductStore.add(prod)
@@ -213,7 +214,6 @@ let make = _children => {
               label="action.create"
               products=self.state.products
               onCancel=(_ => self.send(HideProductDialog))
-              onClick=(_ => self.send(HideProductDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(
