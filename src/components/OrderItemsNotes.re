@@ -6,7 +6,6 @@ let make =
     (
       ~onCancel=() => (),
       ~onAccept=() => (),
-      ~value: string,
       ~notes: list(OrderItemNote.t),
       ~addNote,
       ~removeNote=_n => (),

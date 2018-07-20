@@ -1,7 +1,6 @@
 type state = {
   orderItems: list(OrderItem.t),
   selectedOrderItem: option(OrderItem.t),
-  value: string,
   notes: list(OrderItemNote.t),
   showDialog: bool,
 };
@@ -38,7 +37,6 @@ let make =
   initialState: () => {
     orderItems,
     showDialog: false,
-    value: "",
     notes: [],
     selectedOrderItem: None,
   },
@@ -94,7 +92,6 @@ let make =
     | DisplayNote(value) =>
       ReasonReact.Update({
         ...state,
-        value,
         notes:
           value !== "" ?
             List.concat([state.notes, [newNote(value)]]) : state.notes,
@@ -123,7 +120,6 @@ let make =
         removeNote=(note => self.send(RemoveNote(note)))
         addNote=(value => self.send(DisplayNote(value)))
         notes=self.state.notes
-        value=self.state.value
         label="action.addNotes"
         onCancel=(_ => self.send(HideDialog))
         onAccept=(_ => self.send(AddNotesToOrderItem))

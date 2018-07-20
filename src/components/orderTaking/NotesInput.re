@@ -1,4 +1,6 @@
-type state = {value: string};
+type state = {
+  value: string
+};
 
 type action =
   | Reset
@@ -6,24 +8,21 @@ type action =
 
 let component = ReasonReact.reducerComponent("NotesInput");
 
-let stringOrDefault = (opt: option(string)) =>
-  switch (opt) {
-  | None => ""
-  | Some(s) => s
-  };
+let getVal = ev => ReactDOMRe.domElementToObj(
+  ReactEventRe.Form.target(ev),
+)##value;
 
-let make = (~value="", ~onFinish, ~className="", _children) => {
+let make = (~onFinish, ~className="", _children) => {
   ...component,
-  initialState: () => {value: value},
+  initialState: () => {
+    value: ""
+  },
   reducer: (action, _state) =>
     switch (action) {
     | Change(text) => ReasonReact.Update({value: text})
     | Reset => ReasonReact.Update({value: ""})
     },
   render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
     <div>
       <input
         onChange=(ev => self.send(Change(getVal(ev))))
@@ -32,7 +31,10 @@ let make = (~value="", ~onFinish, ~className="", _children) => {
         placeholder="Notes..."
       />
       <Button
-        onClick=(_ => onFinish(self.state.value))
+        onClick=(_ => {
+          onFinish(self.state.value);
+          self.send(Reset);
+        })
         local=true
         label="action.addNoteModal"
       />
