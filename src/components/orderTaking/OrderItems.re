@@ -139,7 +139,7 @@ let make =
                      <Button
                        className="smallItems-card danger-card"
                        onClick=(_ => self.send(RemoveOrderItem(i)))
-                       label="actionSymbol.delete"
+                       icon="trash-alt"
                        local=true
                      />
                    </td>

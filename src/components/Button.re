@@ -2,8 +2,9 @@ let component = ReasonReact.statelessComponent("Button");
 
 let make =
     (
-      ~label: string,
-      ~onClick=(_) => (),
+      ~icon=?,
+      ~label=?,
+      ~onClick=_ => (),
       ~_type="button",
       ~disabled=false,
       ~local=false,
@@ -14,9 +15,21 @@ let make =
   render: _self =>
     <button
       _type
-      onClick=((_) => onClick(label))
+      onClick=(_ => onClick(label))
       disabled
       className=("card " ++ className)>
-      (ReactUtils.s(local ? label |> Lang.translate : label))
+      (
+        switch (icon) {
+        | Some(icon) => <i className=("fa fa-" ++ icon) />
+        | None => ReasonReact.nullElement
+        }
+      )
+      (
+        switch (label) {
+        | Some(label) =>
+          ReactUtils.s(local ? label |> Lang.translate : label)
+        | None => ReasonReact.nullElement
+        }
+      )
     </button>,
 };

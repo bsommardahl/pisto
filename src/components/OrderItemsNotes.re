@@ -33,7 +33,7 @@ let make =
                          <td>
                            <Button
                              onClick=(_ => removeNote(note))
-                             label="action.delete"
+                             icon="trash-alt"
                              className="small-card remove-button-card"
                              local=true
                            />

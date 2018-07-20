@@ -28,10 +28,6 @@
     "content": "-"
   },
   {
-    "key": "actionSymbol.delete",
-    "content": "x"
-  },
-  {
     "key": "action.cancelModal",
     "content": "Cancel"
   },

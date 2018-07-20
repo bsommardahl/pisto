@@ -40,10 +40,6 @@
     "content": "-"
   },
   {
-    "key": "actionSymbol.delete",
-    "content": "x"
-  },
-  {
     "key": "action.edit",
     "content": "Editar"
   },
