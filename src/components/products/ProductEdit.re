@@ -3,19 +3,28 @@ module ProductFormParams = {
     name: string,
     sku: string,
     price: string,
-    taxCalculation: string,
+    taxCalculationMethod: string,
+    taxRate: string,
     tags: string,
   };
-  type fields = [ | `name | `sku | `price | `taxCalculation | `tags];
+  type fields = [
+    | `name
+    | `sku
+    | `price
+    | `taxCalculationMethod
+    | `taxRate
+    | `tags
+  ];
   let lens = [
     (`name, s => s.name, (s, name) => {...s, name}),
     (`sku, s => s.sku, (s, sku) => {...s, sku}),
     (`price, s => s.price, (s, price) => {...s, price}),
     (
-      `taxCalculation,
-      s => s.taxCalculation,
-      (s, taxCalculation) => {...s, taxCalculation},
+      `taxCalculationMethod,
+      s => s.taxCalculationMethod,
+      (s, taxCalculationMethod) => {...s, taxCalculationMethod},
     ),
+    (`taxRate, s => s.taxRate, (s, taxRate) => {...s, taxRate}),
     (`tags, s => s.tags, (s, tags) => {...s, tags}),
   ];
 };
@@ -39,7 +48,7 @@ let make =
       _children,
     ) => {
   ...component,
-  render: _self => {
+  render: self => {
     let hasDuplicateSku = sku => {
       let duplicates =
         products |> List.filter((c: Product.t) => c.sku === sku);
@@ -60,22 +69,37 @@ let make =
       onSubmit
       initialState=(
         switch (product) {
-        | None => {name: "", sku: "", price: "", taxCalculation: "", tags: ""}
-        | Some(prod) => {
+        | None => {
+            name: "",
+            sku: "",
+            price: "",
+            taxCalculationMethod: "",
+            taxRate: "",
+            tags: "",
+          }
+        | Some(prod) =>
+          let [|taxCalculationMethod, taxRate|] =
+            Js.String.splitAtMost(
+              "|",
+              2,
+              prod.taxCalculation |> Tax.Calculation.toDelimitedString,
+            );
+          {
             name: prod.name,
             sku: prod.sku,
             price: prod.suggestedPrice |> Money.toDisplay,
-            taxCalculation:
-              prod.taxCalculation |> Tax.Calculation.toDelimitedString,
+            taxCalculationMethod,
+            taxRate,
             tags: prod.tags |> Tags.toCSV,
-          }
+          };
         }
       )
       schema=[
         (`name, Required),
         (`sku, Custom(v => v.sku |> isUnique(product))),
         (`price, Required),
-        (`taxCalculation, Required),
+        (`taxCalculationMethod, Required),
+        (`taxRate, Required),
         (`tags, Required),
       ]>
       ...(
@@ -100,13 +124,42 @@ let make =
                (field("product.name", form.values.name, `name))
                (field("product.sku", form.values.sku, `sku))
                (field("product.price", form.values.price, `price))
-               (
-                 field(
-                   "product.taxCalculation",
-                   form.values.taxCalculation,
-                   `taxCalculation,
-                 )
-               )
+               <div className="field-input">
+                 <label>
+                   (ReactUtils.sloc("product.taxCalculationMethod"))
+                   <select
+                     onChange=(
+                       ReForm.Helpers.handleDomFormChange(
+                         handleChange(`taxCalculationMethod),
+                       )
+                     )>
+                     <option value="totalFirst">
+                       (ReactUtils.s("Total First"))
+                     </option>
+                     <option value="subTotalFirst">
+                       (ReactUtils.s("Subtotal First"))
+                     </option>
+                     <option value="exempt">
+                       (ReactUtils.s("Exempt"))
+                     </option>
+                   </select>
+                 </label>
+                 (validationMessage(getErrorForField(`taxCalculationMethod)))
+               </div>
+               <div className="field-input">
+                 <label>
+                   (ReactUtils.sloc("product.taxRate"))
+                   <input
+                     onChange=(
+                       ReForm.Helpers.handleDomFormChange(
+                         handleChange(`taxRate),
+                       )
+                     )
+                     _type="number"
+                   />
+                 </label>
+                 (validationMessage(getErrorForField(`taxRate)))
+               </div>
                (field("product.tags", form.values.tags, `tags))
                <div className="modal-footer">
                  <div className="spaceDivider" />

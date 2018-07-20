@@ -192,8 +192,12 @@
     "content": "Precio:"
   },
   {
-    "key": "product.taxCalcMethod",
-    "content": "Metodo de Impuesto:"
+    "key": "product.taxCalculationMethod",
+    "content": "Método de impuesto"
+  },
+  {
+    "key": "product.taxRate",
+    "content": "Tasa de impuesto"
   },
   {
     "key": "product.tags",
@@ -245,7 +249,8 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content": "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
+    "content":
+      "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
   },
   {
     "key": "nav.back",

@@ -222,7 +222,10 @@ let make = _children => {
                       name: values.name,
                       suggestedPrice: values.price |> Money.toT,
                       taxCalculation:
-                        values.taxCalculation |> Tax.Calculation.toMethod,
+                        values.taxCalculationMethod
+                        ++ "|"
+                        ++ values.taxRate
+                        |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
                       onHand: 0,
                       startDate: None,
@@ -253,7 +256,10 @@ let make = _children => {
                       sku: values.sku,
                       suggestedPrice: values.price |> Money.toT,
                       taxCalculation:
-                        values.taxCalculation |> Tax.Calculation.toMethod,
+                        values.taxCalculationMethod
+                        ++ "|"
+                        ++ values.taxRate
+                        |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
                       onHand: product.onHand,
                       startDate: product.startDate,

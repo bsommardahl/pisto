@@ -180,8 +180,12 @@
     "content": "Price:"
   },
   {
-    "key": "product.taxCalculation",
-    "content": "Tax Calc Method:"
+    "key": "product.taxCalculationMethod",
+    "content": "Tax Calculation Method"
+  },
+  {
+    "key": "product.taxRate",
+    "content": "Tax Rate"
   },
   {
     "key": "product.tags",
@@ -245,7 +249,8 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content": "Note: Tab separated values (TSV), one product per line, value order should match the table above."
+    "content":
+      "Note: Tab separated values (TSV), one product per line, value order should match the table above."
   },
   {
     "key": "nav.back",
