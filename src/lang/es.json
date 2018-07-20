@@ -32,6 +32,10 @@
     "content": "Editar"
   },
   {
+    "key": "action.createProduct",
+    "content": "Crear Producto"
+  },
+  {
     "key": "action.create",
     "content": "Crear"
   },
@@ -177,23 +181,23 @@
   },
   {
     "key": "product.sku",
-    "content": "Codigo"
+    "content": "Codigo:"
   },
   {
     "key": "product.name",
-    "content": "Nombre"
+    "content": "Nombre:"
   },
   {
     "key": "product.price",
-    "content": "Precio"
+    "content": "Precio:"
   },
   {
     "key": "product.taxCalcMethod",
-    "content": "Method de Impuesto"
+    "content": "Metodo de Impuesto:"
   },
   {
     "key": "product.tags",
-    "content": "Categorias"
+    "content": "Categorias:"
   },
   {
     "key": "admin.expenseTypes",
@@ -241,8 +245,7 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content":
-      "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
+    "content": "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
   },
   {
     "key": "nav.back",

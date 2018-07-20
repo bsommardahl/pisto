@@ -7,7 +7,6 @@ let make =
       ~onCancel=() => (),
       ~onCreate=() => (),
       ~onSubmit,
-      /* ~onClick=() => (), */
       ~products: list(Product.t),
       ~isOpen=false,
       ~label: string,

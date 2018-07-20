@@ -211,7 +211,7 @@ let make = _children => {
             </table>
             <CreateProductModal
               isOpen=self.state.showProductDialog
-              label="action.create"
+              label="action.createProduct"
               products=self.state.products
               onCancel=(_ => self.send(HideProductDialog))
               onSubmit=(

@@ -36,6 +36,10 @@
     "content": "Create"
   },
   {
+    "key": "action.createProduct",
+    "content": "Create Product"
+  },
+  {
     "key": "action.delete",
     "content": "Delete"
   },
@@ -165,23 +169,23 @@
   },
   {
     "key": "product.sku",
-    "content": "Sku"
+    "content": "Sku:"
   },
   {
     "key": "product.name",
-    "content": "Name"
+    "content": "Name:"
   },
   {
     "key": "product.price",
-    "content": "Price"
+    "content": "Price:"
   },
   {
     "key": "product.taxCalculation",
-    "content": "Tax Calc Method"
+    "content": "Tax Calc Method:"
   },
   {
     "key": "product.tags",
-    "content": "Tags"
+    "content": "Tags:"
   },
   {
     "key": "admin.expenseTypes",
@@ -241,8 +245,7 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content":
-      "Note: Tab separated values (TSV), one product per line, value order should match the table above."
+    "content": "Note: Tab separated values (TSV), one product per line, value order should match the table above."
   },
   {
     "key": "nav.back",

@@ -81,7 +81,7 @@ let make =
       ...(
            ({handleSubmit, handleChange, form, getErrorForField}) => {
              let field = (label, value, fieldType: ProductFormParams.fields) =>
-               <div className="field-input">
+               <div className="field-input productFields">
                  <label>
                    (ReactUtils.sloc(label))
                    <input
@@ -108,7 +108,8 @@ let make =
                  )
                )
                (field("product.tags", form.values.tags, `tags))
-               <div>
+               <div className="modal-footer">
+                 <div className="spaceDivider" />
                  <Button
                    onClick=(_ => onCancel())
                    className="cancel-button-card"
