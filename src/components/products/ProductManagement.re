@@ -7,6 +7,7 @@ type intent =
 
 type state = {
   products: list(Product.t),
+  showProductDialog: bool,
   intent,
 };
 
@@ -14,6 +15,7 @@ type action =
   | LoadProducts
   | ProductsLoaded(list(Product.t))
   | RemoveProduct(Product.t)
+  | ShowProductDialog
   | ShowDialog(Product.t)
   | HideDialog
   | ModifyProduct(Product.t)
@@ -25,7 +27,11 @@ let component = ReasonReact.reducerComponent("ProductManagement");
 
 let make = _children => {
   ...component,
-  initialState: () => {products: [], intent: Viewing},
+  initialState: () => {
+    products: [],
+    intent: Viewing,
+    showProductDialog: false,
+  },
   didMount: self => {
     self.send(LoadProducts);
     ReasonReact.NoUpdate;
@@ -52,6 +58,7 @@ let make = _children => {
     | RemoveProduct(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           intent: Viewing,
           products:
             state.products |> List.filter((d: Product.t) => d.id !== prod.id),
@@ -64,6 +71,7 @@ let make = _children => {
     | ModifyProduct(product) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           intent: Viewing,
           products:
             state.products
@@ -79,6 +87,8 @@ let make = _children => {
             |> ignore
         ),
       )
+    | ShowProductDialog =>
+      ReasonReact.Update({...state, showProductDialog: true})
     | CreateProduct(prod) =>
       ReasonReact.SideEffects(
         (
@@ -102,6 +112,11 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
+          <div
+            className="card wide-card pay-button-card"
+            onClick=(_ => self.send(ShowProductDialog))>
+            (ReactUtils.s("Create"))
+          </div>
           <div className="card wide-card quiet-card" onClick=goBack>
             (ReactUtils.s("Atras"))
           </div>
@@ -182,8 +197,9 @@ let make = _children => {
                 )
               </tbody>
             </table>
-            <h3> (ReactUtils.sloc("action.create")) </h3>
-            <ProductEdit
+            <CreateProductModal
+              isOpen=self.state.showProductDialog
+              label="action.create"
               products=self.state.products
               onSubmit=(
                 ({values}) =>
@@ -208,6 +224,31 @@ let make = _children => {
               )
             />
           </div>
+        /* <h3> (ReactUtils.sloc("action.create")) </h3>
+           <ProductEdit
+             products=self.state.products
+             onSubmit=(
+               ({values}) =>
+                 self.send(
+                   CreateProduct({
+                     sku: values.sku,
+                     name: values.name,
+                     suggestedPrice: values.price |> Money.toT,
+                     taxCalculation:
+                       values.taxCalculation |> Tax.Calculation.toMethod,
+                     tags: values.tags |> Tags.toList,
+                     onHand: 0,
+                     startDate: None,
+                     endDate: None,
+                     department: "",
+                     unit: "",
+                     products: [],
+                     weight: 0,
+                     location: "",
+                   }),
+                 )
+             )
+           /> */
         | Modifying(product) =>
           <div>
             <h3> (ReactUtils.sloc("action.edit")) </h3>
