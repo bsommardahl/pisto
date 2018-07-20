@@ -130,45 +130,15 @@ let make =
           |> List.map((i: OrderItem.t) => {
                let totals = OrderItemCalculation.getTotals(discounts, [i]);
                <tbody key=i.id>
-                 <tr>
-                   <td>
-                     <Button
-                       className="smallItems-card danger-card"
-                       onClick=(_ => self.send(RemoveOrderItem(i)))
-                       iconClass="far fa-trash-alt"
-                       local=true
-                     />
-                   </td>
-                   <td className="quantity">
-                     <QuantitySelector
-                       onChange=(
-                         quantity => self.send(ChangeQuantity(i, quantity))
-                       )
-                       value=i.quantity
-                     />
-                   </td>
-                   <td>
-                     <Button
-                       className="smallItems-card"
-                       onClick=(_ => self.send(ShowDialog(i)))
-                       iconClass="fas fa-edit"
-                     />
-                   </td>
-                   <td> (ReactUtils.s(i.name)) </td>
-                   <td>
-                     (
-                       ReactUtils.s(
-                         Js.Float.toFixedWithPrecision(
-                           (i.suggestedPrice |> float_of_int) /. 100.,
-                           2,
-                         ),
-                       )
-                     )
-                   </td>
-                   <td>
-                     (ReactUtils.s(totals.subTotal |> Money.toDisplay))
-                   </td>
-                 </tr>
+                 <OrderItemRow
+                   orderItem=i
+                   discounts
+                   removeOrderItem=(() => self.send(RemoveOrderItem(i)))
+                   showDialog=(() => self.send(ShowDialog(i)))
+                   changeQuantity=(
+                     quantity => self.send(ChangeQuantity(i, quantity))
+                   )
+                 />
                  (
                    i.notes |> List.length > 0 ?
                      <DisplayOrderItemNotes notes=i.notes /> :
