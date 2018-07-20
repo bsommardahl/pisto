@@ -37,6 +37,8 @@ let validationMessage = message =>
 
 module EditProductForm = ReForm.Create(ProductFormParams);
 
+let defaultTaxCalculationMethod = "totalFirst";
+
 let component = ReasonReact.statelessComponent("ProductEdit");
 
 let make =
@@ -48,7 +50,7 @@ let make =
       _children,
     ) => {
   ...component,
-  render: self => {
+  render: _self => {
     let hasDuplicateSku = sku => {
       let duplicates =
         products |> List.filter((c: Product.t) => c.sku === sku);
@@ -73,7 +75,7 @@ let make =
             name: "",
             sku: "",
             price: "",
-            taxCalculationMethod: "",
+            taxCalculationMethod: defaultTaxCalculationMethod,
             taxRate: "",
             tags: "",
           }
@@ -128,6 +130,7 @@ let make =
                  <label>
                    (ReactUtils.sloc("product.taxCalculationMethod"))
                    <select
+                     value=form.values.taxCalculationMethod
                      onChange=(
                        ReForm.Helpers.handleDomFormChange(
                          handleChange(`taxCalculationMethod),
@@ -146,20 +149,26 @@ let make =
                  </label>
                  (validationMessage(getErrorForField(`taxCalculationMethod)))
                </div>
-               <div className="field-input">
-                 <label>
-                   (ReactUtils.sloc("product.taxRate"))
-                   <input
-                     onChange=(
-                       ReForm.Helpers.handleDomFormChange(
-                         handleChange(`taxRate),
-                       )
-                     )
-                     _type="number"
-                   />
-                 </label>
-                 (validationMessage(getErrorForField(`taxRate)))
-               </div>
+               (
+                 if (form.values.taxCalculationMethod !== "exempt") {
+                   <div className="field-input">
+                     <label>
+                       (ReactUtils.sloc("product.taxRate"))
+                       <input
+                         value=form.values.taxRate
+                         onChange=(
+                           ReForm.Helpers.handleDomFormChange(
+                             handleChange(`taxRate),
+                           )
+                         )
+                       />
+                     </label>
+                     (validationMessage(getErrorForField(`taxRate)))
+                   </div>;
+                 } else {
+                   ReasonReact.nullElement;
+                 }
+               )
                (field("product.tags", form.values.tags, `tags))
                <div className="modal-footer">
                  <div className="spaceDivider" />
