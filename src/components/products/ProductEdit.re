@@ -31,7 +31,14 @@ module EditProductForm = ReForm.Create(ProductFormParams);
 let component = ReasonReact.statelessComponent("ProductEdit");
 
 let make =
-    (~product: option(Product.t)=None, ~onSubmit, ~products, _children) => {
+    (
+      ~product: option(Product.t)=None,
+      ~onClick=() => (),
+      ~onCancel=() => (),
+      ~onSubmit,
+      ~products,
+      _children,
+    ) => {
   ...component,
   render: _self => {
     let hasDuplicateSku = sku => {
@@ -102,7 +109,21 @@ let make =
                  )
                )
                (field("product.tags", form.values.tags, `tags))
-               <Button _type="submit" label="action.done" local=true />
+               <div>
+                 <Button
+                   onClick=(_ => onCancel())
+                   className="cancel-button-card"
+                   label="action.cancelModal"
+                   local=true
+                 />
+                 <Button
+                   _type="submit"
+                   onClick=(_ => onClick())
+                   className="pay-button-card"
+                   label="action.done"
+                   local=true
+                 />
+               </div>
              </form>;
            }
          )

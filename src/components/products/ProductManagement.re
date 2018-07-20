@@ -16,6 +16,7 @@ type action =
   | ProductsLoaded(list(Product.t))
   | RemoveProduct(Product.t)
   | ShowProductDialog
+  | HideProductDialog
   | ShowDialog(Product.t)
   | HideDialog
   | ModifyProduct(Product.t)
@@ -89,6 +90,8 @@ let make = _children => {
       )
     | ShowProductDialog =>
       ReasonReact.Update({...state, showProductDialog: true})
+    | HideProductDialog =>
+      ReasonReact.Update({...state, showProductDialog: false})
     | CreateProduct(prod) =>
       ReasonReact.SideEffects(
         (
@@ -201,6 +204,8 @@ let make = _children => {
               isOpen=self.state.showProductDialog
               label="action.create"
               products=self.state.products
+              onCancel=(_ => self.send(HideProductDialog))
+              onClick=(_ => self.send(HideProductDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(
@@ -224,31 +229,6 @@ let make = _children => {
               )
             />
           </div>
-        /* <h3> (ReactUtils.sloc("action.create")) </h3>
-           <ProductEdit
-             products=self.state.products
-             onSubmit=(
-               ({values}) =>
-                 self.send(
-                   CreateProduct({
-                     sku: values.sku,
-                     name: values.name,
-                     suggestedPrice: values.price |> Money.toT,
-                     taxCalculation:
-                       values.taxCalculation |> Tax.Calculation.toMethod,
-                     tags: values.tags |> Tags.toList,
-                     onHand: 0,
-                     startDate: None,
-                     endDate: None,
-                     department: "",
-                     unit: "",
-                     products: [],
-                     weight: 0,
-                     location: "",
-                   }),
-                 )
-             )
-           /> */
         | Modifying(product) =>
           <div>
             <h3> (ReactUtils.sloc("action.edit")) </h3>
