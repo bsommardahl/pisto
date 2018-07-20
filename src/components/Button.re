@@ -2,7 +2,7 @@ let component = ReasonReact.statelessComponent("Button");
 
 let make =
     (
-      ~icon=?,
+      ~iconClass=?,
       ~label=?,
       ~onClick=_ => (),
       ~_type="button",
@@ -19,8 +19,8 @@ let make =
       disabled
       className=("card " ++ className)>
       (
-        switch (icon) {
-        | Some(icon) => <i className=("fa fa-" ++ icon) />
+        switch (iconClass) {
+        | Some(iconClass) => <i className=iconClass />
         | None => ReasonReact.nullElement
         }
       )

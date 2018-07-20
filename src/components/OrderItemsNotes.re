@@ -33,9 +33,8 @@ let make =
                          <td>
                            <Button
                              onClick=(_ => removeNote(note))
-                             icon="trash-alt"
+                             iconClass="fas fa-times"
                              className="small-card remove-button-card"
-                             local=true
                            />
                          </td>
                          <td> <div key=note.id> (str(note.value)) </div> </td>

@@ -36,8 +36,7 @@ let make = (~onChange, ~value, _children) => {
       <div className="quantityDivider" />
       <Button
         className="smallItems-card"
-        local=true
-        label="action.minus"
+        iconClass="fas fa-angle-down"
         onClick=(_ => self.send(Subtract))
       />
       <input
@@ -49,8 +48,7 @@ let make = (~onChange, ~value, _children) => {
       <div className="quantityDivider" />
       <Button
         className="smallItems-card pay-button-card"
-        local=true
-        label="action.plus"
+        iconClass="fas fa-angle-up"
         onClick=(_ => self.send(Add))
       />
     </div>;

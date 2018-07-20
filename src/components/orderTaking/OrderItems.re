@@ -139,7 +139,7 @@ let make =
                      <Button
                        className="smallItems-card danger-card"
                        onClick=(_ => self.send(RemoveOrderItem(i)))
-                       icon="trash-alt"
+                       iconClass="far fa-trash-alt"
                        local=true
                      />
                    </td>
@@ -155,19 +155,19 @@ let make =
                      <Button
                        className="smallItems-card"
                        onClick=(_ => self.send(ShowDialog(i)))
-                       label=">"
+                       iconClass="fas fa-edit"
                      />
                    </td>
                    <td> (ReactUtils.s(i.name)) </td>
                    <td>
-                    (
-                      ReactUtils.s(
-                        Js.Float.toFixedWithPrecision(
-                          (i.suggestedPrice |> float_of_int) /. 100.,
-                          2,
-                        ),
-                      )
-                    )
+                     (
+                       ReactUtils.s(
+                         Js.Float.toFixedWithPrecision(
+                           (i.suggestedPrice |> float_of_int) /. 100.,
+                           2,
+                         ),
+                       )
+                     )
                    </td>
                    <td>
                      (ReactUtils.s(totals.subTotal |> Money.toDisplay))
@@ -185,7 +185,7 @@ let make =
         )
         <tfoot>
           <tr className="divider">
-            <th colSpan=4> (ReactUtils.sloc("order.subTotal")) </th>
+            <th colSpan=5> (ReactUtils.sloc("order.subTotal")) </th>
             <td className="footTable">
               (ReactUtils.s(totals.subTotal |> Money.toDisplay))
             </td>
@@ -193,7 +193,7 @@ let make =
           (
             if (discounts |> List.length > 0) {
               <tr>
-                <th colSpan=4> (ReactUtils.sloc("order.discounts")) </th>
+                <th colSpan=5> (ReactUtils.sloc("order.discounts")) </th>
                 <td> (ReactUtils.s(totals.discounts |> Money.toDisplay)) </td>
               </tr>;
             } else {
@@ -201,11 +201,11 @@ let make =
             }
           )
           <tr>
-            <th colSpan=4> (ReactUtils.sloc("order.tax")) </th>
+            <th colSpan=5> (ReactUtils.sloc("order.tax")) </th>
             <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
           </tr>
           <tr>
-            <th colSpan=4> (ReactUtils.sloc("order.total")) </th>
+            <th colSpan=5> (ReactUtils.sloc("order.total")) </th>
             <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
           </tr>
         </tfoot>

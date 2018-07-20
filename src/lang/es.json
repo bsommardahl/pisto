@@ -20,24 +20,12 @@
     "content": "Aceptar"
   },
   {
-    "key": "action.addNote",
-    "content": ">"
-  },
-  {
     "key": "action.addNotes",
     "content": "Add Notes"
   },
   {
     "key": "action.addNoteModal",
     "content": "Add"
-  },
-  {
-    "key": "action.plus",
-    "content": "+"
-  },
-  {
-    "key": "action.minus",
-    "content": "-"
   },
   {
     "key": "action.edit",
