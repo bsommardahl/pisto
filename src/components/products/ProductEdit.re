@@ -151,10 +151,11 @@ let make =
                </div>
                (
                  if (form.values.taxCalculationMethod !== "exempt") {
-                   <div className="field-input">
+                   <div className="field-input productFields">
                      <label>
                        (ReactUtils.sloc("product.taxRate"))
                        <input
+                         _type="number"
                          value=form.values.taxRate
                          onChange=(
                            ReForm.Helpers.handleDomFormChange(

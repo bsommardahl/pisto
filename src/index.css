@@ -252,7 +252,7 @@ input.customer-name-input {
   margin-bottom: 0px;
 }
 .productFields{
-  margin-right: 5px;
+  padding-right: 10px;
 }
 .save-button-card {
   background-color: darkblue;

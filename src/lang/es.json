@@ -181,15 +181,15 @@
   },
   {
     "key": "product.sku",
-    "content": "Codigo:"
+    "content": "Codigo"
   },
   {
     "key": "product.name",
-    "content": "Nombre:"
+    "content": "Nombre"
   },
   {
     "key": "product.price",
-    "content": "Precio:"
+    "content": "Precio"
   },
   {
     "key": "product.taxCalculationMethod",
@@ -249,8 +249,7 @@
   },
   {
     "key": "admin.products.bulkImport.instructions",
-    "content":
-      "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
+    "content": "Nota: Datos deben ser de formato TSV, un producto por linea, orden de valores deben concordar con la tabla arriba."
   },
   {
     "key": "nav.back",
