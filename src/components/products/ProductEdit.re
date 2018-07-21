@@ -67,6 +67,12 @@ let make =
           hasDuplicateSku(new_);
         }
       };
+    let canAddRate = (taxCalculationMethod, taxRate) =>
+    if (taxCalculationMethod !== "exempt" && taxRate === "") {
+      Some("validation.required")
+    } else {
+      None;
+    };
     <EditProductForm
       onSubmit
       initialState=(
@@ -101,7 +107,7 @@ let make =
         (`sku, Custom(v => v.sku |> isUnique(product))),
         (`price, Required),
         (`taxCalculationMethod, Required),
-        (`taxRate, Required),
+        (`taxRate, Custom(v => canAddRate(v.taxCalculationMethod, v.taxRate))),
         (`tags, Required),
       ]>
       ...(
@@ -156,6 +162,8 @@ let make =
                        (ReactUtils.sloc("product.taxRate"))
                        <input
                          _type="number"
+                         min=1
+                         max="100"
                          value=form.values.taxRate
                          onChange=(
                            ReForm.Helpers.handleDomFormChange(
