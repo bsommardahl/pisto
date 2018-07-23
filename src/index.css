@@ -254,6 +254,11 @@ input.customer-name-input {
 .productFields{
   padding-right: 10px;
 }
+.exit-modal-button-card{
+position: absolute;
+top:0;
+right:0;
+}
 .save-button-card {
   background-color: darkblue;
   color: white;

@@ -8,6 +8,7 @@ type intent =
 type state = {
   products: list(Product.t),
   showProductDialog: bool,
+  showEditProductDialog: bool,
   intent,
 };
 
@@ -32,6 +33,7 @@ let make = _children => {
     products: [],
     intent: Viewing,
     showProductDialog: false,
+    showEditProductDialog: false,
   },
   didMount: self => {
     self.send(LoadProducts);
@@ -55,7 +57,8 @@ let make = _children => {
     | ShowDialog(prod) =>
       ReasonReact.Update({...state, intent: Deleting(prod)})
     | HideDialog => ReasonReact.Update({...state, intent: Viewing})
-    | Change(intent) => ReasonReact.Update({...state, intent})
+    | Change(intent) =>
+      ReasonReact.Update({...state, intent, showEditProductDialog: true})
     | RemoveProduct(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
@@ -243,7 +246,9 @@ let make = _children => {
         | Modifying(product) =>
           <div>
             <h3> (ReactUtils.sloc("action.edit")) </h3>
-            <ProductEdit
+            <EditProductModal
+              label="action.editProduct"
+              isOpen=self.state.showEditProductDialog
               products=self.state.products
               product=(Some(product))
               onCancel=(_ => self.send(HideProductDialog))

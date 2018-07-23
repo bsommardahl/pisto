@@ -1,6 +1,6 @@
 let str = ReasonReact.stringToElement;
 
-let component = ReasonReact.statelessComponent("CreateProductModal");
+let component = ReasonReact.statelessComponent("EditProductModal");
 
 let make =
     (
@@ -8,6 +8,7 @@ let make =
       ~onCreate=() => (),
       ~onSubmit,
       ~products: list(Product.t),
+      ~product: option(Product.t)=None,
       ~isOpen=false,
       ~label: string,
       _children,
@@ -27,7 +28,12 @@ let make =
         </BsReactstrap.ModalHeader>
         <BsReactstrap.ModalBody className="modal-content">
           <div>
-            <ProductEdit onCancel=(_ => onCancel()) products onSubmit />
+            <ProductEdit
+              product
+              onCancel=(_ => onCancel())
+              products
+              onSubmit
+            />
           </div>
         </BsReactstrap.ModalBody>
         <BsReactstrap.ModalFooter className="modal-footer" />

@@ -40,6 +40,10 @@
     "content": "Create Product"
   },
   {
+    "key": "action.editProduct",
+    "content": "Edit Product"
+  },
+  {
     "key": "action.delete",
     "content": "Delete"
   },
