@@ -32,12 +32,36 @@
     "content": "Editar"
   },
   {
+    "key": "action.createCashier",
+    "content": "Crear Cashier"
+  },
+  {
+    "key": "cashier.name",
+    "content": "Nombre"
+  },
+  {
+    "key": "cashier.pin",
+    "content": "Pin"
+  },
+  {
     "key": "action.createProduct",
     "content": "Crear Producto"
   },
   {
     "key": "action.editProduct",
     "content": "Editar Producto"
+  },
+  {
+    "key": "action.editDiscount",
+    "content": "Editar Descuento"
+  },
+  {
+    "key": "action.createDiscount",
+    "content": "Crear Descuento"
+  },
+  {
+    "key": "action.editCashier",
+    "content": "Editar Cashier"
   },
   {
     "key": "action.create",

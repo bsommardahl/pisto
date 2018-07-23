@@ -18,6 +18,7 @@ type action =
   | RemoveProduct(Product.t)
   | ShowProductDialog
   | HideProductDialog
+  | HideEditProductDialog
   | ShowDialog(Product.t)
   | HideDialog
   | ModifyProduct(Product.t)
@@ -99,6 +100,12 @@ let make = _children => {
         showProductDialog: false,
         intent: Viewing,
       })
+    | HideEditProductDialog =>
+      ReasonReact.Update({
+        ...state,
+        showProductDialog: false,
+        intent: Viewing,
+      })
     | CreateProduct(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {...state, showProductDialog: false},
@@ -123,15 +130,11 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
-          (
-            self.state.intent === Viewing ?
-              <div
-                className="card wide-card pay-button-card"
-                onClick=(_ => self.send(ShowProductDialog))>
-                (ReactUtils.s("Create"))
-              </div> :
-              ReasonReact.nullElement
-          )
+          <div
+            className="card wide-card pay-button-card"
+            onClick=(_ => self.send(ShowProductDialog))>
+            (ReactUtils.s("Create"))
+          </div>
           <div className="card wide-card quiet-card" onClick=goBack>
             (ReactUtils.s("Atras"))
           </div>
@@ -251,7 +254,7 @@ let make = _children => {
               isOpen=self.state.showEditProductDialog
               products=self.state.products
               product=(Some(product))
-              onCancel=(_ => self.send(HideProductDialog))
+              onCancel=(_ => self.send(HideEditProductDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(

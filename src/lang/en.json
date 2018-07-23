@@ -40,8 +40,32 @@
     "content": "Create Product"
   },
   {
+    "key": "action.createDiscount",
+    "content": "Create Discount"
+  },
+  {
+    "key": "action.editDiscount",
+    "content": "Edit Discount"
+  },
+  {
     "key": "action.editProduct",
     "content": "Edit Product"
+  },
+  {
+    "key": "action.editCashier",
+    "content": "Edit Cashier"
+  },
+  {
+    "key": "action.createCashier",
+    "content": "Create Cashier"
+  },
+  {
+    "key": "cashier.name",
+    "content": "Name"
+  },
+  {
+    "key": "cashier.pin",
+    "content": "Pin"
   },
   {
     "key": "action.delete",
