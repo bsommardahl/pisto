@@ -198,7 +198,6 @@ let make = _children => {
           </div>
         | Modifying(cashier) =>
           <div>
-            <h3> (ReactUtils.sloc("action.edit")) </h3>
             <EditCashierDialog
               isUnique
               isOpen=self.state.showEditCashierDialog

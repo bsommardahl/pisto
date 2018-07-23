@@ -55,13 +55,20 @@ let make =
                  />
                  (validationMessage(getErrorForField(`pin)))
                </div>
-               <Button
-                 onClick=(_ => onCancel())
-                 className="cancel-button-card"
-                 label="action.cancelModal"
-                 local=true
-               />
-               <Button _type="submit" label="action.done" local=true />
+               <div className="modal-footer">
+                 <Button
+                   onClick=(_ => onCancel())
+                   className="cancel-button-card"
+                   label="action.cancelModal"
+                   local=true
+                 />
+                 <Button
+                   _type="submit"
+                   className="pay-button-card"
+                   label="action.done"
+                   local=true
+                 />
+               </div>
              </form>
          )
     </EditCashierForm>,

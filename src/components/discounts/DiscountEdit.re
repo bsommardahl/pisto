@@ -82,13 +82,20 @@ let make =
                onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
                (field("discount.name", form.values.name, `name))
                (field("discount.percent", form.values.percent, `percent))
-               <Button
-                 onClick=(_ => onCancel())
-                 className="cancel-button-card"
-                 label="action.cancelModal"
-                 local=true
-               />
-               <Button _type="submit" label="action.done" local=true />
+               <div className="modal-footer">
+                 <Button
+                   onClick=(_ => onCancel())
+                   className="cancel-button-card"
+                   label="action.cancelModal"
+                   local=true
+                 />
+                 <Button
+                   _type="submit"
+                   className="pay-button-card"
+                   label="action.done"
+                   local=true
+                 />
+               </div>
              </form>;
            }
          )

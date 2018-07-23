@@ -214,7 +214,6 @@ let make = _children => {
           </div>
         | Modifying(discount) =>
           <div>
-            <h3> (ReactUtils.sloc("action.edit")) </h3>
             <EditDiscountModal
               discounts=self.state.discounts
               isOpen=self.state.showEditDiscountDialog
