@@ -15,7 +15,7 @@ let make =
       <BsReactstrap.ModalHeader className="modal-header">
         (ReactUtils.sloc(label))
         <Button
-          className="exit-modal-button-card"
+          className="exit-modal-button-card exit-card"
           onClick=(_ => onCancel())
           iconClass="fas fa-times"
           local=true

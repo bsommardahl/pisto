@@ -183,6 +183,9 @@ input.customer-name-input {
   background-color: darkred;
   color: #dddddd;
 }
+.exit-card{
+  background-color:white;
+}
 .order .right-side {
   width: 475px;
   background-color: #bbbbbb;
