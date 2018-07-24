@@ -79,7 +79,7 @@ let make =
               orderItems
               |> List.map((i: OrderItem.t) =>
                    if (i.id === orderItem.id) {
-                     {...i, notes: state.notes};
+                     OrderItem.assignNotes(i, state.notes);
                    } else {
                      i;
                    }
@@ -92,9 +92,7 @@ let make =
     | DisplayNote(value) =>
       ReasonReact.Update({
         ...state,
-        notes:
-          value !== "" ?
-            List.concat([state.notes, [newNote(value)]]) : state.notes,
+        notes: value !== "" ? state.notes @ [newNote(value)] : state.notes,
       })
     | RemoveNote(note) =>
       ReasonReact.Update({
