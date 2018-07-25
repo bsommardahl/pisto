@@ -23,17 +23,22 @@ describe("OrderItemNote", () => {
       expect(Enzyme.length(notesNodes)) |> toBe(notes |> List.length);
     })
   );
-  describe("when there are three td elements", ()
-    =>
-      test("it renders the correct amount of td elements", () => {
-        let wrapper = Enzyme.shallow(<DisplayOrderItemNotes notes=[] />);
-        let tdNodes = wrapper |> Enzyme.find("td");
-        expect(Enzyme.length(tdNodes)) |> toBe(3);
-      })
-    );
-    /* test("it renders the last td element with a colSpan equal to two", () => {
-         let wrapper = Enzyme.shallow(<DisplayOrderItemNotes notes=[] />);
-         let tdNode = wrapper |> Enzyme.find("td") |> Enzyme.last;
-         expect(true) |> toBe(true);
-       }); */
+  describe("when there are three td elements", () =>
+    test("it renders the correct amount of td elements", () => {
+      let wrapper = Enzyme.shallow(<DisplayOrderItemNotes notes=[] />);
+      let tdNodes = wrapper |> Enzyme.find("td");
+      expect(Enzyme.length(tdNodes)) |> toBe(3);
+    })
+  );
+  test("it renders the last td element with a colSpan equal to two", () => {
+    open Js.Types;
+    let wrapper = Enzyme.shallow(<DisplayOrderItemNotes notes=[] />);
+    let tdNode = wrapper |> Enzyme.find("td") |> Enzyme.last;
+    let result =
+      switch (Enzyme.jsPropFor("colSpan", tdNode) |> classify) {
+      | JSNumber(number) => number |> int_of_float
+      | _ => 0
+      };
+    expect(result) |> toBe(2);
+  });
 });
