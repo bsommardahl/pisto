@@ -1,6 +1,7 @@
 open Jest;
-
 open Expect;
+
+Enzyme.configureEnzyme(Enzyme.react_16_adapter());
 
 describe("OrderItemsNotes", () =>
   test("it renders the correct amount of notes", () => {
