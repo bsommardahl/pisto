@@ -1,6 +1,4 @@
-type state = {
-  value: string
-};
+type state = {value: string};
 
 type action =
   | Reset
@@ -8,21 +6,17 @@ type action =
 
 let component = ReasonReact.reducerComponent("NotesInput");
 
-let getVal = ev => ReactDOMRe.domElementToObj(
-  ReactEventRe.Form.target(ev),
-)##value;
+let getVal = ev => ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
 
 let make = (~onFinish, ~className="", _children) => {
   ...component,
-  initialState: () => {
-    value: ""
-  },
+  initialState: () => {value: ""},
   reducer: (action, _state) =>
     switch (action) {
     | Change(text) => ReasonReact.Update({value: text})
     | Reset => ReasonReact.Update({value: ""})
     },
-  render: self => {
+  render: self =>
     <div>
       <input
         onChange=(ev => self.send(Change(getVal(ev))))
@@ -31,13 +25,15 @@ let make = (~onFinish, ~className="", _children) => {
         placeholder="Notes..."
       />
       <Button
-        onClick=(_ => {
-          onFinish(self.state.value);
-          self.send(Reset);
-        })
+        onClick=(
+          _ => {
+            onFinish(self.state.value);
+            self.send(Reset);
+          }
+        )
+        disabled=(self.state.value === "")
         local=true
         label="action.addNoteModal"
       />
-    </div>;
-  },
+    </div>,
 };

@@ -90,10 +90,7 @@ let make =
         (self => onChange(self.state.orderItems)),
       )
     | DisplayNote(value) =>
-      ReasonReact.Update({
-        ...state,
-        notes: value !== "" ? state.notes @ [newNote(value)] : state.notes,
-      })
+      ReasonReact.Update({...state, notes: state.notes @ [newNote(value)]})
     | RemoveNote(note) =>
       ReasonReact.Update({
         ...state,
