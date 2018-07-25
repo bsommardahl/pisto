@@ -3,12 +3,16 @@
   "sources": [
     {
       "dir": "src",
-      "subdirs": true
+      "subdirs": [{ "dir": "components", "subdirs": true }]
+    },
+    {
+      "dir": "src/__tests__",
+      "subdirs": true,
+      "type": "dev"
     }
   ],
   "bs-dependencies": [
     "reason-react",
-    "bs-jest",
     "bs-most",
     "bs-reform",
     "bs-fetch",
@@ -18,11 +22,10 @@
     "bs-reactstrap",
     "bs-css"
   ],
+  "bs-dev-dependencies": ["bs-enzyme", "bs-jest"],
   "reason": {
     "react-jsx": 2
   },
-  "bsc-flags": [
-    "-bs-super-errors"
-  ],
+  "bsc-flags": ["-bs-super-errors"],
   "refmt": 3
 }
