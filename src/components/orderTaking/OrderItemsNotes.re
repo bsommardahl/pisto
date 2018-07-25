@@ -34,7 +34,7 @@ let make =
                 (
                   notes
                   |> List.map((note: OrderItemNote.t) =>
-                       <tr>
+                       <tr key=note.id>
                          <td>
                            <Button
                              onClick=(_ => removeNote(note))
