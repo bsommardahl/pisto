@@ -5,7 +5,6 @@ let component = ReasonReact.statelessComponent("CreateProductModal");
 let make =
     (
       ~onCancel=() => (),
-      ~onCreate=() => (),
       ~onSubmit,
       ~products: list(Product.t),
       ~isOpen=false,

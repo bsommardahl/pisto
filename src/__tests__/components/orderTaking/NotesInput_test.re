@@ -39,20 +39,4 @@ describe("NotesInput", () => {
       expect(result) |> toBe(true);
     })
   );
-  describe("when value changes", () =>
-    test("it should render input's value", () => {
-      open Js.Types;
-      let wrapper =
-        Enzyme.shallow(<NotesInput onFinish=(_ => ()) />)
-        |> Enzyme.setJsState({"value": "Test 2"});
-      let input = wrapper |> Enzyme.find("input") |> Enzyme.first;
-
-      let result =
-        switch (Enzyme.jsPropFor("value", input) |> classify) {
-        | JSString(value) => value
-        | _ => ""
-        };
-      expect(result) |> toBe("Test 2");
-    })
-  );
 });
