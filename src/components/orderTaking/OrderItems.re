@@ -24,11 +24,8 @@ let component = ReasonReact.reducerComponent("OrderItems");
 
 let make =
     (
-      ~closed: bool,
       ~orderItems: list(OrderItem.t),
       ~discounts: list(Discount.t),
-      ~canDeselectDiscount=true,
-      ~canRemoveItem=true,
       ~onChange=_ => (),
       ~deselectDiscount=_d => (),
       _children,

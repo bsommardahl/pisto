@@ -264,7 +264,6 @@ let make = (~goBack, _children) => {
           productFound=(p => self.send(SelectProduct(p)))
         />
         <OrderItems
-          closed=self.state.closedOrder
           orderItems=self.state.orderItems
           discounts=self.state.discounts
           deselectDiscount=discountDeselected
