@@ -100,7 +100,7 @@ let make = (~goBack, _children) => {
         createdOn: order.createdOn,
         meta: order.meta,
         closedOrder:
-          switch (state.paid) {
+          switch (order.paid) {
           | Some(_) => true
           | None => false
           },
@@ -251,17 +251,31 @@ let make = (~goBack, _children) => {
         </div>
       </div>
       <div className="right-side">
-        <SkuSearch
-          acceptInput=self.state.skuEnabled
-          allProducts=self.state.allProducts
-          productFound=(p => self.send(SelectProduct(p)))
-        />
-        <OrderItems
-          orderItems=self.state.orderItems
-          discounts=self.state.discounts
-          deselectDiscount=discountDeselected
-          onChange=(orderItems => self.send(ChangeOrderItems(orderItems)))
-        />
+        (
+          if (self.state.closedOrder) {
+            <ClosedOrderItems
+              orderItems=self.state.orderItems
+              discounts=self.state.discounts
+              deselectDiscount=discountDeselected
+            />;
+          } else {
+            <div>
+              <SkuSearch
+                acceptInput=self.state.skuEnabled
+                allProducts=self.state.allProducts
+                productFound=(p => self.send(SelectProduct(p)))
+              />
+              <OrderItems
+                orderItems=self.state.orderItems
+                discounts=self.state.discounts
+                deselectDiscount=discountDeselected
+                onChange=(
+                  orderItems => self.send(ChangeOrderItems(orderItems))
+                )
+              />
+            </div>;
+          }
+        )
       </div>
       <div className="left-side">
         (
