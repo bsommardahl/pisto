@@ -26,7 +26,13 @@ let stringOrDefault = (opt: option(string)) =>
   | Some(s) => s
   };
 
-let make = (~order: Order.orderVm, ~onFinish, _children) => {
+let make =
+    (
+      ~order: Order.orderVm,
+      ~onShowProductModal=() => (),
+      ~onFinish,
+      _children,
+    ) => {
   ...component,
   initialState: () => {userIntent: Building, showModal: false},
   reducer: (action, state) =>
@@ -62,49 +68,65 @@ let make = (~order: Order.orderVm, ~onFinish, _children) => {
       <Button
         local=true
         className="save-button-card"
-        onClick=((_) => self.send(SaveAndExit))
+        onClick=(_ => self.send(SaveAndExit))
         label="action.save"
+      />;
+    let doneButton =
+      <Button
+        local=true
+        className="save-button-card"
+        onClick=(_ => self.send(SaveAndExit))
+        label="action.done"
+      />;
+    let searchButton =
+      <Button
+        local=true
+        className="pay-button-card"
+        label="order.searchProduct"
+        onClick=(_ => onShowProductModal())
       />;
     let payButton =
       <Button
         local=true
         className="pay-button-card"
         disabled=disablePayButton
-        onClick=((_) => self.send(SaveAndGoToPayScreen))
+        onClick=(_ => self.send(SaveAndGoToPayScreen))
         label="action.pay"
       />;
     let deleteButton =
       <Button
         local=true
         className="remove-button-card"
-        onClick=((_) => self.send(ShowDialog))
+        onClick=(_ => self.send(ShowDialog))
         label="action.delete"
       />;
     let returnButton =
       <Button
         local=true
         className="quiet-card"
-        onClick=((_) => self.send(ChangeIntent(Returning)))
+        onClick=(_ => self.send(ChangeIntent(Returning)))
         label="action.return"
       />;
     let cancelButton =
       <Button
-        onClick=((_) => onFinish(order))
+        onClick=(_ => onFinish(order))
         local=true
         label="action.cancel"
+      />;
+    let pinInput =
+      <PinInput
+        onFailure=(() => self.send(ChangeIntent(Building)))
+        onSuccess=(cashier => self.send(ReturnAndExit(cashier)))
       />;
     <div className="order-actions">
       (
         switch (self.state.userIntent, order.paid, order.returned, order.id) {
-        | (Returning, _, _, Some(_id)) =>
-          <PinInput
-            onFailure=(() => self.send(ChangeIntent(Building)))
-            onSuccess=(cashier => self.send(ReturnAndExit(cashier)))
-          />
+        | (Returning, _, _, Some(_id)) => pinInput
         | (Building, None, None, Some(_id)) =>
-          <span> saveButton payButton deleteButton </span>
+          <span> searchButton saveButton payButton deleteButton </span>
         | (Building, None, None, None) => <span> saveButton payButton </span>
-        | (Building, Some(_paid), None, Some(_id)) => returnButton
+        | (Building, Some(_paid), None, Some(_id)) =>
+          <span> doneButton returnButton </span>
         | (_, _, _, _) => ReasonReact.nullElement
         }
       )

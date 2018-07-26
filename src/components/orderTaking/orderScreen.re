@@ -240,15 +240,8 @@ let make = (~goBack, _children) => {
         <OrderActions
           order=(buildOrder(self.state))
           onFinish=(_ => self.send(CloseOrderScreen))
+          onShowProductModal=(_ => self.send(ShowDialog))
         />
-        <div className="order-actions">
-          <Button
-            local=true
-            className="pay-button-card"
-            label="order.searchProduct"
-            onClick=(_ => self.send(ShowDialog))
-          />
-        </div>
         <div className="customer-name">
           <EditableText
             mode=TouchToEdit
