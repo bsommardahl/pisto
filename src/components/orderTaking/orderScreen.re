@@ -71,7 +71,7 @@ let buildOrder = state : Order.orderVm => {
   order;
 };
 
-let make = (~goBack, _children) => {
+let make = (~goHome, ~goToOrders, _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
@@ -134,7 +134,15 @@ let make = (~goBack, _children) => {
     | SelectTag(tag) =>
       ReasonReact.Update({...state, viewing: Products(tag)})
     | DeselectTag => ReasonReact.Update({...state, viewing: Tags})
-    | CloseOrderScreen => ReasonReact.SideEffects((_self => goBack()))
+    | CloseOrderScreen =>
+      ReasonReact.SideEffects(
+        (
+          _self => {
+            let go = state.closedOrder ? goToOrders : goHome;
+            go();
+          }
+        ),
+      )
     | SelectProduct(product) =>
       ReasonReact.UpdateWithSideEffects(
         {
