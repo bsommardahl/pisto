@@ -27,7 +27,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
               <tr>
                 <th> (sloc("order.paid.date")) </th>
                 <td>
-                  <EditableDate date=paid.on onChange=paidDateChanged />
+                  <DateTimeInput value=paid.on onChange=paidDateChanged />
                 </td>
               </tr>
               <tr>
