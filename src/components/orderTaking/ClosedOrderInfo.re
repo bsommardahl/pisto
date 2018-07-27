@@ -33,14 +33,20 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
               <tr>
                 <th> (sloc("order.paid.date")) </th>
                 <td>
-                  <Datetime
-                    locale="en"
-                    value=(paid.on |> Js.Date.fromFloat)
-                    onChange=(
-                      moment =>
-                        paidDateChanged(moment |> MomentRe.Moment.valueOf)
-                    )
-                  />
+                  (
+                    switch (order.returned) {
+                    | None =>
+                      <Datetime
+                        locale="en"
+                        value=(paid.on |> Js.Date.fromFloat)
+                        onChange=(
+                          moment =>
+                            paidDateChanged(moment |> MomentRe.Moment.valueOf)
+                        )
+                      />
+                    | Some(_) => s(paid.on |> Date.toDisplay)
+                    }
+                  )
                 </td>
               </tr>
               <tr>
