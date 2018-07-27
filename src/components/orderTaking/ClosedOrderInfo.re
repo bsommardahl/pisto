@@ -2,6 +2,12 @@ open ReactUtils;
 
 let component = ReasonReact.statelessComponent("ClosedOrderInfo");
 
+let valueFromEvent = evt : string => (
+                                       evt
+                                       |> ReactEventRe.Form.target
+                                       |> ReactDOMRe.domElementToObj
+                                     )##value;
+
 let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
   ...component,
   render: _self =>
@@ -27,7 +33,13 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
               <tr>
                 <th> (sloc("order.paid.date")) </th>
                 <td>
-                  <DateTimeInput value=paid.on onChange=paidDateChanged />
+                  <Datetime
+                    value=(paid.on |> Js.Date.fromFloat)
+                    onChange=(
+                      moment =>
+                        paidDateChanged(moment |> MomentRe.Moment.valueOf)
+                    )
+                  />
                 </td>
               </tr>
               <tr>

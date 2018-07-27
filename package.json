@@ -6,6 +6,7 @@
     "bs-css": "^6.7.0",
     "bs-fetch": "^0.2.1",
     "bs-json": "^1.0.1",
+    "bs-moment": "^0.3.0",
     "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^3.1.5",
     "bs-reactstrap": "^0.1.2",

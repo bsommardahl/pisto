@@ -1,4 +1,6 @@
 [%bs.raw {|require('./app.css')|}];
+[%bs.raw {|require('moment')|}];
+[%bs.raw {|require('moment/locale/es')|}];
 
 let component = ReasonReact.statelessComponent("App");
 
