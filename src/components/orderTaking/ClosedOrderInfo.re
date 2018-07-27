@@ -66,7 +66,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
                 <td> (s(returned.on |> Date.toDisplay)) </td>
               </tr>
               <tr>
-                <th> (s("order.returned.by")) </th>
+                <th> (sloc("order.returned.by")) </th>
                 <td> (s(returned.by)) </td>
               </tr>
             </tbody>
@@ -76,7 +76,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
       <Button
         local=true
         onClick=(
-          (_) =>
+          _ =>
             WebhookEngine.getWebhooks(ReprintReceipt, Order)
             |> WebhookEngine.fire(order |> Order.fromVm |> Order.toJs)
             |> ignore
