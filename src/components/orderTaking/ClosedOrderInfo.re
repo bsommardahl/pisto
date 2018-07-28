@@ -1,6 +1,9 @@
 open ReactUtils;
-
-let component = ReasonReact.statelessComponent("ClosedOrderInfo");
+type state = {language: string};
+type action =
+  | LoadConfig
+  | ConfigLoaded(Config.App.t);
+let component = ReasonReact.reducerComponent("ClosedOrderInfo");
 
 let valueFromEvent = evt : string => (
                                        evt
@@ -10,7 +13,27 @@ let valueFromEvent = evt : string => (
 
 let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
   ...component,
-  render: _self =>
+  initialState: () => {language: "EN"},
+  didMount: self => {
+    self.send(LoadConfig);
+    ReasonReact.NoUpdate;
+  },
+  reducer: (action, _state) =>
+    switch (action) {
+    | LoadConfig =>
+      ReasonReact.SideEffects(
+        (
+          self => {
+            let cfg = Config.App.get();
+            Js.log(cfg);
+            self.send(ConfigLoaded(cfg));
+          }
+        ),
+      )
+    | ConfigLoaded(config) =>
+      ReasonReact.Update({language: config.language |> Js.String.toLowerCase})
+    },
+  render: self =>
     <div className="paid-date">
       <table>
         <tbody>
@@ -37,7 +60,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
                     switch (order.returned) {
                     | None =>
                       <Datetime
-                        locale="en"
+                        locale=self.state.language
                         value=(paid.on |> Js.Date.fromFloat)
                         onChange=(
                           moment =>
