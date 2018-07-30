@@ -23,11 +23,17 @@ let make =
           <td> <h1> (sloc("daily.header")) </h1> </td>
           <td className="right-side-cell">
             (
-              s(
-                (startDate |> Date.toDisplayDate)
-                ++ " - "
-                ++ (endDate |> Date.toDisplayDate),
-              )
+              Config.App.get().language === "EN" ?
+                s(
+                  (startDate |> Date.toDisplayDateEN)
+                  ++ " - "
+                  ++ (endDate |> Date.toDisplayDateEN),
+                ) :
+                s(
+                  (startDate |> Date.toDisplayDate)
+                  ++ " - "
+                  ++ (endDate |> Date.toDisplayDate),
+                )
             )
           </td>
         </tr>
