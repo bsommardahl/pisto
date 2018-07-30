@@ -1,5 +1,10 @@
-let component = ReasonReact.statelessComponent("OrderList");
+type state = {language: string};
+type action =
+  | LoadConfig
+  | ConfigLoaded(Config.App.t);
+let component = ReasonReact.reducerComponent("OrderList");
 
+let language=Config.App.get().language;
 let headerRow =
   <tr>
     <th />
@@ -31,13 +36,32 @@ let row = (o: Order.orderVm, onSelect) => {
     <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
     <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
     <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
-    <td> (ReactUtils.s(paidOn |> Date.toDisplayDate)) </td>
+    <td> (language==="EN"?ReactUtils.s(paidOn |> Date.toDisplayDateEN):ReactUtils.s(paidOn |> Date.toDisplayDate)) </td>
     <td> (ReactUtils.s(paidOn |> Date.toDisplayTime)) </td>
   </tr>;
 };
 
 let make = (~orders: list(Order.orderVm), ~onSelect, _children) => {
   ...component,
+  initialState: () => {language: "EN"},
+  didMount: self => {
+    self.send(LoadConfig);
+    ReasonReact.NoUpdate;
+  },
+  reducer: (action, _state) =>
+    switch (action) {
+    | LoadConfig =>
+      ReasonReact.SideEffects(
+        (
+          self => {
+            let cfg = Config.App.get();
+            Js.log(cfg);
+            self.send(ConfigLoaded(cfg));
+          }
+        ),
+      )
+    | ConfigLoaded(config) => ReasonReact.Update({language: config.language})
+    },
   render: _self =>
     <table className="order-list">
       <thead> headerRow </thead>
