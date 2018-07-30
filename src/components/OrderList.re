@@ -4,7 +4,7 @@ type action =
   | ConfigLoaded(Config.App.t);
 let component = ReasonReact.reducerComponent("OrderList");
 
-let language=Config.App.get().language;
+let language = Config.App.get().language;
 let headerRow =
   <tr>
     <th />
@@ -28,7 +28,7 @@ let row = (o: Order.orderVm, onSelect) => {
       <Button
         local=true
         className="card"
-        onClick=((_) => onSelect(o))
+        onClick=(_ => onSelect(o))
         label="allOrders.viewOrder"
       />
     </td>
@@ -36,7 +36,13 @@ let row = (o: Order.orderVm, onSelect) => {
     <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
     <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
     <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
-    <td> (language==="EN"?ReactUtils.s(paidOn |> Date.toDisplayDateEN):ReactUtils.s(paidOn |> Date.toDisplayDate)) </td>
+    <td>
+      (
+        language === "EN" ?
+          ReactUtils.s(paidOn |> Date.toDisplayDateEN) :
+          ReactUtils.s(paidOn |> Date.toDisplayDate)
+      )
+    </td>
     <td> (ReactUtils.s(paidOn |> Date.toDisplayTime)) </td>
   </tr>;
 };
@@ -46,7 +52,7 @@ let make = (~orders: list(Order.orderVm), ~onSelect, _children) => {
   initialState: () => {language: "EN"},
   didMount: self => {
     self.send(LoadConfig);
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, _state) =>
     switch (action) {
