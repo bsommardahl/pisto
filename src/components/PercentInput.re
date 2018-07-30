@@ -1,5 +1,3 @@
-open ReactUtils;
-
 type state = {currentValue: string};
 
 type action =
@@ -9,8 +7,7 @@ type action =
 
 let component = ReasonReact.reducerComponent("PercentInput");
 
-let make =
-    (~percent: int, ~onChange, ~key="", ~onValidate=(_) => (), _children) => {
+let make = (~percent: int, ~onChange, ~key="", ~onValidate=_ => (), _children) => {
   ...component,
   reducer: (action, state) =>
     switch (action) {
@@ -43,7 +40,7 @@ let make =
         value=self.state.currentValue
         onChange=(ev => self.send(UpdateCurrentValue(getVal(ev))))
         onBlur=(_ev => self.send(FinishedEditing))
-        onFocus=((_) => self.send(StartEditing))
+        onFocus=(_ => self.send(StartEditing))
       />
     </div>;
   },

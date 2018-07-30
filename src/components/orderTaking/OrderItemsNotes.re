@@ -1,4 +1,4 @@
-let str = ReasonReact.stringToElement;
+let str = ReasonReact.string;
 
 let component = ReasonReact.statelessComponent("OrderItemsNotes");
 
@@ -46,7 +46,7 @@ let make =
                        </tr>
                      )
                   |> Array.of_list
-                  |> ReasonReact.arrayToElement
+                  |> ReasonReact.array
                 )
               </tbody>
             </table>

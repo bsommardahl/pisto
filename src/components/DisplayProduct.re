@@ -24,12 +24,12 @@ let make =
                        if (! closed && canRemoveItem) {
                          <Button
                            className="small-card danger-card"
-                           onClick=((_) => onRemoveItem(i))
+                           onClick=(_ => onRemoveItem(i))
                            label="action.delete"
                            local=true
                          />;
                        } else {
-                         ReasonReact.nullElement;
+                         ReasonReact.null;
                        }
                      )
                    </td>
@@ -38,12 +38,12 @@ let make =
                        if (! closed && canRemoveItem) {
                          <Button
                            className="small-card save-button-card"
-                           onClick=((_) => onRemoveItem(i))
+                           onClick=(_ => onRemoveItem(i))
                            label="action.select"
                            local=true
                          />;
                        } else {
-                         ReasonReact.nullElement;
+                         ReasonReact.null;
                        }
                      )
                    </td>
@@ -54,7 +54,7 @@ let make =
                  </tr>;
                })
             |> Array.of_list
-            |> ReasonReact.arrayToElement
+            |> ReasonReact.array
           )
         </tbody>
       </table>

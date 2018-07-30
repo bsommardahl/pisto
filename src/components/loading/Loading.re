@@ -29,7 +29,7 @@ let make = _children => {
     ExpenseStore.connection.remote.paused
     |> Most.observe(() => self.send(Expenses(false)))
     |> ignore;
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {

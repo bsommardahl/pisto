@@ -40,7 +40,7 @@ let make =
           ReactUtils.s(
             Js.Float.toFixedWithPrecision(
               (orderItem.suggestedPrice |> float_of_int) /. 100.,
-              2,
+              ~digits=2,
             ),
           )
         )

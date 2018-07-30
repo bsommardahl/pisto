@@ -27,7 +27,7 @@ let make = _children => {
          Js.Promise.resolve();
        })
     |> ignore;
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {webhooks: [], intent: Viewing},
   reducer: (action, state) =>
@@ -114,7 +114,7 @@ let make = _children => {
                          />
                        )
                     |> Array.of_list
-                    |> ReasonReact.arrayToElement
+                    |> ReasonReact.array
                   )
                 </tbody>
                 <tfoot> <WebhookManagementNew create=createWebhook /> </tfoot>

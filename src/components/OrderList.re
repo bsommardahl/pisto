@@ -54,7 +54,7 @@ let make = (~orders: list(Order.orderVm), ~onSelect, _children) => {
              })
           |> List.map(o => row(o, onSelect))
           |> Array.of_list
-          |> ReasonReact.arrayToElement
+          |> ReasonReact.array
         )
       </tbody>
     </table>,

@@ -28,7 +28,7 @@ let make = _children => {
   initialState: () => {expenseTypes: [], intent: Viewing},
   didMount: self => {
     self.send(LoadExpenseTypes);
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {
@@ -159,7 +159,7 @@ let make = _children => {
                          </tr>
                        )
                     |> Array.of_list
-                    |> ReasonReact.arrayToElement
+                    |> ReasonReact.array
                   )
                 </tbody>
               </table>

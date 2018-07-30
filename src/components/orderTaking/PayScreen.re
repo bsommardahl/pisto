@@ -1,5 +1,3 @@
-open Js.Promise;
-
 open OrderHelper;
 
 type doing =
@@ -31,7 +29,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
   ...component,
   didMount: self => {
     self.send(LoadOrder(orderId));
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {

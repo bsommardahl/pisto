@@ -39,7 +39,7 @@ let make = (~startDate, ~endDate, _children) => {
   initialState: () => {startDate, endDate, orders: [], interval: (-1)},
   didMount: self => {
     loadClosedOrders(self.state, self.send);
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {

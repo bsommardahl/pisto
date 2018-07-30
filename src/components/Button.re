@@ -21,14 +21,14 @@ let make =
       (
         switch (iconClass) {
         | Some(iconClass) => <i className=iconClass />
-        | None => ReasonReact.nullElement
+        | None => ReasonReact.null
         }
       )
       (
         switch (label) {
         | Some(label) =>
           ReactUtils.s(local ? label |> Lang.translate : label)
-        | None => ReasonReact.nullElement
+        | None => ReasonReact.null
         }
       )
     </button>,

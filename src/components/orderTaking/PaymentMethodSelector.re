@@ -35,7 +35,7 @@ let make =
   ...component,
   didMount: self => {
     self.send(PaymentMethodsLoaded(PaymentMethod.tempAllPaymentMethods));
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {externalId: "", methods: [], selected: None},
   reducer: (action, state) =>
@@ -70,7 +70,7 @@ let make =
                    "payment-method"
                    ++ (selected ? " payment-method-selected" : "")
                  )
-                 onClick=((_) => self.send(Select(m)))
+                 onClick=(_ => self.send(Select(m)))
                  label=m.name
                />
                (
@@ -80,7 +80,6 @@ let make =
                      text=self.state.externalId
                      mode=EditOnly
                      big=true
-                     submitBehavior=SubmitOnEnter
                      onChange=(text => self.send(ExternalIdChanged(text)))
                    /> :
                    <span />
@@ -88,7 +87,7 @@ let make =
              </span>;
            })
         |> Array.of_list
-        |> ReasonReact.arrayToElement
+        |> ReasonReact.array
       )
     </div>,
 };

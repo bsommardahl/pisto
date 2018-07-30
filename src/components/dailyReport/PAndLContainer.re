@@ -18,7 +18,7 @@ let make = (~startDate: Date.t, ~endDate: Date.t, _children) => {
   didMount: self => {
     self.send(LoadOrders);
     self.send(LoadExpenses);
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {

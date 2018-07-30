@@ -127,7 +127,7 @@ let make =
         | (Building, None, None, None) => <span> saveButton payButton </span>
         | (Building, Some(_paid), None, Some(_id)) =>
           <span> doneButton returnButton </span>
-        | (_, _, _, _) => ReasonReact.nullElement
+        | (_, _, _, _) => ReasonReact.null
         }
       )
       cancelButton

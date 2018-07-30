@@ -29,7 +29,7 @@ let make =
                        ReactUtils.s(
                          Js.Float.toFixedWithPrecision(
                            (i.suggestedPrice |> float_of_int) /. 100.,
-                           2,
+                           ~digits=2,
                          ),
                        )
                      )
@@ -40,7 +40,7 @@ let make =
                  </tr>;
                })
             |> Array.of_list
-            |> ReasonReact.arrayToElement
+            |> ReasonReact.array
           )
         </tbody>
         <tfoot>
@@ -81,7 +81,7 @@ let make =
              </button>
            )
         |> Array.of_list
-        |> ReasonReact.arrayToElement
+        |> ReasonReact.array
       )
     </div>;
   },

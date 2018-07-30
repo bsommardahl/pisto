@@ -19,7 +19,7 @@ let make = _children => {
   initialState: () => {language: "EN", deviceId: "", now: None},
   didMount: self => {
     self.send(LoadConfig);
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {

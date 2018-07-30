@@ -34,7 +34,7 @@ let expensesBody = (title: string, expenses: list(Expense.denormalized)) => {
       expenses
       |> List.map((e: Expense.denormalized) => expenseRow(e))
       |> Array.of_list
-      |> ReasonReact.arrayToElement
+      |> ReasonReact.array
     )
     <tr className="section-footer">
       <td />
@@ -76,7 +76,7 @@ let make = (~expenses: list(Expense.t), ~key="", _children) => {
                expensesBody(g.key, g.value)
              )
           |> Array.of_list
-          |> ReasonReact.arrayToElement
+          |> ReasonReact.array
         )
       </table>
     </div>;

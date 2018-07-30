@@ -33,9 +33,11 @@ let make =
   reducer: (action, state) =>
     switch (action) {
     | KeyDown(27) =>
-      ReasonReact.UpdateWithSideEffects({value: ""}, ((_) => onCancel()))
+      ReasonReact.UpdateWithSideEffects({value: ""}, (_ => onCancel()))
     | KeyDown(8) =>
-      ReasonReact.Update({value: Js.String.slice(0, -1, state.value)})
+      ReasonReact.Update({
+        value: Js.String.slice(~from=0, ~to_=-1, state.value),
+      })
     | KeyDown(20) => ReasonReact.Update({value: state.value})
     | KeyDown(112) => ReasonReact.Update({value: state.value})
     | KeyDown(113) => ReasonReact.Update({value: state.value})
@@ -73,29 +75,25 @@ let make =
     | KeyDown(13) =>
       ReasonReact.UpdateWithSideEffects(
         {value: ""},
-        ((_) => onFinish(state.value)),
+        (_ => onFinish(state.value)),
       )
     | KeyDown(key) =>
       ReasonReact.Update({
-        value:acceptInput?state.value ++ (key |> Js.String.fromCharCode):state.value,
+        value:
+          acceptInput ?
+            state.value ++ (key |> Js.String.fromCharCode) : state.value,
       })
     | Reset => ReasonReact.Update({value: ""})
     },
   subscriptions: self => {
-    let logKey = ev =>
+    let logKey = ev => self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
 
-      
-      self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
-    
- 
-  [
-    Sub(
-      () => addEventListener(window, "keydown", logKey),
-      () => removeEventListener(window, "keydown", logKey),
-    ),
-  ];
-
-   
+    [
+      Sub(
+        () => addEventListener(window, "keydown", logKey),
+        () => removeEventListener(window, "keydown", logKey),
+      ),
+    ];
   },
   render: self =>
     <input

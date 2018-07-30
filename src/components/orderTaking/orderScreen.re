@@ -218,7 +218,7 @@ let make = (~goHome, ~goToOrders, _children) => {
     |> ignore;
     let queryString = ReasonReact.Router.dangerouslyGetInitialUrl().search;
     switch (Util.QueryParam.get("orderId", queryString)) {
-    | None => ReasonReact.NoUpdate
+    | None => ()
     | Some(orderId) =>
       getOrderVm(orderId)
       |> Js.Promise.then_(vm => {
@@ -226,7 +226,7 @@ let make = (~goHome, ~goToOrders, _children) => {
            Js.Promise.resolve();
          })
       |> ignore;
-      ReasonReact.NoUpdate;
+      ();
     };
   },
   render: self => {
@@ -302,7 +302,7 @@ let make = (~goHome, ~goToOrders, _children) => {
                       self.state.tags
                       |> List.map(tag => <TagCard onSelect=selectTag tag />)
                       |> Array.of_list
-                      |> ReasonReact.arrayToElement
+                      |> ReasonReact.array
                     )
                   </div>
                 | Products(tag) =>
@@ -319,7 +319,7 @@ let make = (~goHome, ~goToOrders, _children) => {
                            <ProductCard onSelect=selectProduct product />
                          )
                       |> Array.of_list
-                      |> ReasonReact.arrayToElement
+                      |> ReasonReact.array
                     )
                   </div>
                 }

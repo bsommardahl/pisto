@@ -30,7 +30,7 @@ let make = (~orders: list(Order.t), ~key="", _children) => {
             |> DiscountGroup.fromOrders
             |> List.map(g => discountRow(g))
             |> Array.of_list
-            |> ReasonReact.arrayToElement
+            |> ReasonReact.array
           )
         </tbody>
       </table>

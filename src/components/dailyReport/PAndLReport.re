@@ -48,7 +48,7 @@ let make =
              <SalesReportSection title sales=g.value />;
            })
         |> Array.of_list
-        |> ReasonReact.arrayToElement
+        |> ReasonReact.array
       )
       <h2> (sloc("daily.discounts.header")) </h2>
       <DiscountsReportSection orders />

@@ -67,7 +67,7 @@ let make =
                        </tr>
                      )
                   |> Array.of_list
-                  |> ReasonReact.arrayToElement
+                  |> ReasonReact.array
                 )
               </tbody>
             </table>

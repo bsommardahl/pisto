@@ -1,12 +1,12 @@
 module ExpenseTypeFormParams = {
   type state = {name: string};
   type fields = [ | `name];
-  let lens = [(`name, s => s.name, (s, name) => {...s, name})];
+  let lens = [(`name, s => s.name, (_, name) => {name: name})];
 };
 
 let validationMessage = message =>
   switch (message) {
-  | None => ReasonReact.nullElement
+  | None => ReasonReact.null
   | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
   };
 

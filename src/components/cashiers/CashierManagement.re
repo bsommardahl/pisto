@@ -35,7 +35,7 @@ let make = _children => {
          Js.Promise.resolve();
        })
     |> ignore;
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {
     cashiers: [],
@@ -182,7 +182,7 @@ let make = _children => {
                        </tr>
                      )
                   |> Array.of_list
-                  |> ReasonReact.arrayToElement
+                  |> ReasonReact.array
                 )
               </tbody>
             </table>
