@@ -8,6 +8,7 @@ type doing =
 type state = {
   doing,
   order: Order.orderVm,
+  displayPinAlert: bool,
   method: option(PaymentMethod.t),
   externalId: string,
   cashier: option(Cashier.t),
@@ -16,6 +17,7 @@ type state = {
 type action =
   | LoadOrder(string)
   | OrderLoaded(Order.orderVm)
+  |HidePinAlert
   | PayOrder
   | SelectPaymentMethod((PaymentMethod.t, string))
   | PaymentMethodInvalid
@@ -42,6 +44,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
         externalId,
         doing: GettingCashier,
       })
+      |HidePinAlert=>ReasonReact.Update({...state,displayPinAlert:false})
     | ExternalIdChanged(id) => ReasonReact.Update({...state, externalId: id})
     | LoadOrder(orderId) =>
       ReasonReact.SideEffects(
@@ -70,13 +73,19 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
         ),
       )
     | CashierChanged(cashier) =>
-      ReasonReact.Update({...state, cashier, doing: Paying})
+      ReasonReact.Update({
+        ...state,
+        cashier,
+        doing: cashier !== None ? Paying : ChoosingPaymentMethod,
+        displayPinAlert: cashier === None ? true : false,
+      })
     | OrderLoaded(order) => ReasonReact.Update({...state, order})
     | Cancel => ReasonReact.SideEffects((_ => onCancel(state.order)))
     },
   initialState: () => {
     order: buildNewOrder(""),
     method: None,
+    displayPinAlert: false,
     externalId: "",
     cashier: None,
     doing: ChoosingPaymentMethod,
@@ -127,6 +136,11 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
           orderItems=self.state.order.orderItems
           discounts=self.state.order.discounts
         />
+        <IncorrectPinAlert
+        isOpen=self.state.displayPinAlert
+        label="action.incorrectPin"
+        toggle=(_=>self.send(HidePinAlert))
+      />
         (
           switch (self.state.doing) {
           | ChoosingPaymentMethod =>

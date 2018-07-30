@@ -4,6 +4,10 @@
     "content": "Save"
   },
   {
+    "key": "action.incorrectPin",
+    "content": "Please enter a valid pin."
+  },
+  {
     "key": "action.done",
     "content": "Done"
   },
