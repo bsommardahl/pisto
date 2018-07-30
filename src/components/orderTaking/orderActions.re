@@ -82,7 +82,7 @@ let make =
       <Button
         local=true
         className="pay-button-card"
-        label="order.searchProduct"
+        label="modal.SearchProduct"
         onClick=(_ => onShowProductModal())
       />;
     let payButton =

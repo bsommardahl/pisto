@@ -72,7 +72,11 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
         ),
       )
     | CashierChanged(cashier) =>
-      ReasonReact.Update({...state, cashier, doing: Paying})
+      ReasonReact.Update({
+        ...state,
+        cashier,
+        doing: cashier !== None ? Paying : ChoosingPaymentMethod,
+      })
     | OrderLoaded(order) => ReasonReact.Update({...state, order})
     | Cancel => ReasonReact.SideEffects((_ => onCancel(state.order)))
     },
