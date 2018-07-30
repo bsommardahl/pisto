@@ -19,11 +19,11 @@
     "@glennsl/bs-json",
     "cafe-domain",
     "cafe-data",
-    "bs-reactstrap",
+    "@ahrefs/bs-reactstrap",
     "bs-css",
     "bs-moment"
   ],
-  "bs-dev-dependencies": ["bs-enzyme", "@glennsl/bs-jest"],
+  "bs-dev-dependencies": ["bs-enzyme", "bs-jest"],
   "reason": {
     "react-jsx": 2
   },
