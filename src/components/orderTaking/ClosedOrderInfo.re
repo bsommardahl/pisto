@@ -10,26 +10,6 @@ let valueFromEvent = evt : string => (
 
 let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
   ...component,
-  initialState: () => {language: "EN"},
-  didMount: self => {
-    self.send(LoadConfig);
-    ();
-  },
-  reducer: (action, _state) =>
-    switch (action) {
-    | LoadConfig =>
-      ReasonReact.SideEffects(
-        (
-          self => {
-            let cfg = Config.App.get();
-            Js.log(cfg);
-            self.send(ConfigLoaded(cfg));
-          }
-        ),
-      )
-    | ConfigLoaded(config) =>
-      ReasonReact.Update({language: config.language |> Js.String.toLowerCase})
-    },
   render: _self =>
     <div className="paid-date">
       <table>
