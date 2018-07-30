@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "bs-css": "^6.7.0",
-    "bs-fetch": "^0.2.1",
-    "bs-json": "^1.0.1",
+    "@glennsl/bs-json": "^2.0.0",
+    "bs-css": "^7.0.1",
+    "bs-fetch": "^0.3.0",
     "bs-moment": "^0.3.0",
     "bs-most": "github:bsommardahl/bs-most",
-    "bs-platform": "^3.1.5",
+    "bs-platform": "^4.0.2",
     "bs-reactstrap": "^0.1.2",
-    "bs-reform": "^5.1.1",
+    "bs-reform": "^5.1.1-beta.2",
     "cafe-data": "github:bsommardahl/cafe-data",
     "cafe-domain": "github:bsommardahl/cafe-domain",
     "moment": "^2.22.2",
@@ -20,8 +20,8 @@
     "react-datetime": "^2.15.0",
     "react-dom": "^16.4.1",
     "react-modal": "^3.5.1",
-    "reason-react": "^0.3.4",
-    "reason-scripts": "0.8.0",
+    "reason-react": "^0.4.2",
+    "reason-scripts": "^0.9.0",
     "refetch": "github:bsommardahl/refetch#upgrading"
   },
   "scripts": {
@@ -35,8 +35,8 @@
     "deploy": "gh-pages -d build"
   },
   "devDependencies": {
+    "@glennsl/bs-jest": "^0.4.2",
     "bs-enzyme": "^0.4.0",
-    "bs-jest": "^0.3.2",
     "enzyme-adapter-react-16": "^1.1.1",
     "gh-pages": "^1.2.0",
     "jest-localstorage-mock": "^2.2.0"

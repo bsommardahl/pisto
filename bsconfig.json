@@ -16,14 +16,14 @@
     "bs-most",
     "bs-reform",
     "bs-fetch",
-    "bs-json",
+    "@glennsl/bs-json",
     "cafe-domain",
     "cafe-data",
     "bs-reactstrap",
     "bs-css",
     "bs-moment"
   ],
-  "bs-dev-dependencies": ["bs-enzyme", "bs-jest"],
+  "bs-dev-dependencies": ["bs-enzyme", "@glennsl/bs-jest"],
   "reason": {
     "react-jsx": 2
   },
