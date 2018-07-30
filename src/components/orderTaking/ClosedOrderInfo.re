@@ -1,10 +1,7 @@
 open ReactUtils;
-type state = {language: string};
-type action =
-  | LoadConfig
-  | ConfigLoaded(Config.App.t);
-let component = ReasonReact.reducerComponent("ClosedOrderInfo");
 
+let component = ReasonReact.statelessComponent("ClosedOrderInfo");
+let language = Config.App.get().language;
 let valueFromEvent = evt : string => (
                                        evt
                                        |> ReactEventRe.Form.target
@@ -13,26 +10,7 @@ let valueFromEvent = evt : string => (
 
 let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
   ...component,
-  initialState: () => {language: "EN"},
-  didMount: self => {
-    self.send(LoadConfig);
-    ReasonReact.NoUpdate;
-  },
-  reducer: (action, _state) =>
-    switch (action) {
-    | LoadConfig =>
-      ReasonReact.SideEffects(
-        (
-          self => {
-            let cfg = Config.App.get();
-            Js.log(cfg);
-            self.send(ConfigLoaded(cfg));
-          }
-        ),
-      )
-    | ConfigLoaded(config) => ReasonReact.Update({language: config.language})
-    },
-  render: self =>
+  render: _self =>
     <div className="paid-date">
       <table>
         <tbody>
@@ -43,7 +21,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
             <th> (sloc("order.created.date")) </th>
             <td>
               (
-                self.state.language === "EN" ?
+                language === "EN" ?
                   s(order.createdOn |> Date.toDisplayEN) :
                   s(order.createdOn |> Date.toDisplay)
               )
@@ -65,7 +43,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
                     switch (order.returned) {
                     | None =>
                       <Datetime
-                        locale=(self.state.language |> Js.String.toLowerCase)
+                        locale=(language |> Js.String.toLowerCase)
                         value=(paid.on |> Js.Date.fromFloat)
                         onChange=(
                           moment =>
@@ -73,7 +51,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
                         )
                       />
                     | Some(_) =>
-                      self.state.language === "EN" ?
+                      language === "EN" ?
                         s(paid.on |> Date.toDisplayEN) :
                         s(paid.on |> Date.toDisplay)
                     }
@@ -115,7 +93,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
                 <th> (sloc("order.returned.date")) </th>
                 <td>
                   (
-                    self.state.language === "EN" ?
+                    language === "EN" ?
                       s(returned.on |> Date.toDisplayEN) :
                       s(returned.on |> Date.toDisplay)
                   )

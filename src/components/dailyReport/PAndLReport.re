@@ -17,13 +17,14 @@ let make =
       orders |> List.map(x => x |> Sale.listOfSales) |> List.concat;
     let taxRateGroups =
       sales |> Group.by((x: Sale.t) => x.taxRate |> string_of_int);
+    let language = Config.App.get().language;
     <div className="report" key>
       <table className="table">
         <tr>
           <td> <h1> (sloc("daily.header")) </h1> </td>
           <td className="right-side-cell">
             (
-              Config.App.get().language === "EN" ?
+              language === "EN" ?
                 s(
                   (startDate |> Date.toDisplayDateEN)
                   ++ " - "

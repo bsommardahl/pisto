@@ -4,6 +4,7 @@ type action =
   | ConfigLoaded(Config.App.t);
 let component = ReasonReact.reducerComponent("OrderList");
 
+let language=Config.App.get().language;
 let headerRow =
   <tr>
     <th />
@@ -35,7 +36,7 @@ let row = (o: Order.orderVm, onSelect) => {
     <td> (ReactUtils.s(totals.subTotal |> Money.toDisplay)) </td>
     <td> (ReactUtils.s(totals.tax |> Money.toDisplay)) </td>
     <td> (ReactUtils.s(totals.total |> Money.toDisplay)) </td>
-    <td> (Config.App.get().language==="EN"?ReactUtils.s(paidOn |> Date.toDisplayDateEN):ReactUtils.s(paidOn |> Date.toDisplayDate)) </td>
+    <td> (language==="EN"?ReactUtils.s(paidOn |> Date.toDisplayDateEN):ReactUtils.s(paidOn |> Date.toDisplayDate)) </td>
     <td> (ReactUtils.s(paidOn |> Date.toDisplayTime)) </td>
   </tr>;
 };
