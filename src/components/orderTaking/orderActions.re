@@ -1,3 +1,4 @@
+[@bs.val] external alert : string => unit = "";
 open OrderHelper;
 
 type userIntent =
@@ -115,7 +116,12 @@ let make =
       />;
     let pinInput =
       <PinInput
-        onFailure=(() => self.send(ChangeIntent(Building)))
+        onFailure=(
+          () => {
+            self.send(ChangeIntent(Building));
+            alert("Please enter a valid pin.");
+          }
+        )
         onSuccess=(cashier => self.send(ReturnAndExit(cashier)))
       />;
     <div className="order-actions">
