@@ -19,14 +19,14 @@ external makeProps :
 
 let make =
     (
-      ~className: option(string)=?,
-      ~locale: option(string)=?,
-      ~value: option(Js.Date.t)=?,
-      ~timeFormat: option(bool)=?,
-      ~input: option(bool)=?,
-      ~onBlur: option(MomentRe.Moment.t => unit)=?,
-      ~onFocus: option(ReactEventRe.Focus.t => unit)=?,
-      ~onChange: option(MomentRe.Moment.t => unit)=?,
+      ~className=?,
+      ~locale=?,
+      ~value=?,
+      ~timeFormat=?,
+      ~input=?,
+      ~onBlur=?,
+      ~onFocus=?,
+      ~onChange=?,
       children,
     ) =>
   ReasonReact.wrapJsForReason(
