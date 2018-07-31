@@ -2,21 +2,28 @@ type state = {
   language: string,
   deviceId: string,
   now: option(Date.t),
+  editingDate: bool,
 };
 
 type action =
   | LoadConfig
+  | ShowDateTime
   | ConfigLoaded(Config.App.t)
   | SaveConfig
   | DeviceIdChanged(string)
   | LanguageChanged(string)
   | NowChanged(option(Date.t));
 
+let language = Config.App.get().language;
 let component = ReasonReact.reducerComponent("SyncManagement");
-
 let make = _children => {
   ...component,
-  initialState: () => {language: "EN", deviceId: "", now: None},
+  initialState: () => {
+    language: "EN",
+    deviceId: "",
+    now: None,
+    editingDate: false,
+  },
   didMount: self => {
     self.send(LoadConfig);
     ();
@@ -33,8 +40,10 @@ let make = _children => {
           }
         ),
       )
+    | ShowDateTime => ReasonReact.Update({...state, editingDate: true})
     | ConfigLoaded(config) =>
       ReasonReact.Update({
+        ...state,
         language: config.language,
         deviceId: config.deviceId,
         now: config.now,
@@ -52,11 +61,14 @@ let make = _children => {
       )
     | LanguageChanged(newVal) =>
       ReasonReact.Update({...state, language: newVal})
-    | NowChanged(newVal) => ReasonReact.Update({...state, now: newVal})
+    | NowChanged(newVal) =>
+      ReasonReact.Update({...state, editingDate: false, now: newVal})
     | DeviceIdChanged(newVal) =>
       ReasonReact.Update({...state, deviceId: newVal})
     },
   render: self => {
+    let handleDateChange = moment =>
+      self.send(NowChanged(Some(moment |> MomentRe.Moment.valueOf)));
     let getVal = ev => ReactDOMRe.domElementToObj(
                          ReactEventRe.Form.target(ev),
                        )##value;
@@ -90,20 +102,35 @@ let make = _children => {
                 <Button
                   local=true
                   label="admin.config.application.now.set"
-                  onClick=((_) => self.send(NowChanged(Some(Date.now()))))
+                  onClick=(_ => self.send(NowChanged(Some(Date.now()))))
                 />
               | Some(d) =>
                 <div>
-                  <span>
-                    <DateInput
-                      value=d
-                      onChange=(newD => self.send(NowChanged(Some(newD))))
-                    />
-                  </span>
+                  (
+                    if (self.state.editingDate) {
+                      <Datetime
+                        className="date"
+                        value=(d |> Js.Date.fromFloat)
+                        locale=(language |> Js.String.toLowerCase)
+                        timeFormat=false
+                        input=false
+                        onChange=handleDateChange
+                      />;
+                    } else {
+                      <input
+                        type_="text"
+                        value=(
+                          language === "ES" ?
+                            d |> Date.toDisplayDate : d |> Date.toDisplayDateEN
+                        )
+                        onClick=(_ => self.send(ShowDateTime))
+                      />;
+                    }
+                  )
                   <Button
                     local=true
                     label="admin.config.application.now.default"
-                    onClick=((_) => self.send(NowChanged(None)))
+                    onClick=(_ => self.send(NowChanged(None)))
                   />
                 </div>
               }
@@ -112,7 +139,7 @@ let make = _children => {
         </tr>
       </table>
       <Button
-        onClick=((_) => self.send(SaveConfig))
+        onClick=(_ => self.send(SaveConfig))
         local=true
         label="action.save"
       />
