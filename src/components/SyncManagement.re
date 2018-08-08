@@ -40,7 +40,7 @@ let make = _children => {
       | None => ()
       }
     };
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {host: "", password: "", username: ""},
   reducer: (action, state) =>

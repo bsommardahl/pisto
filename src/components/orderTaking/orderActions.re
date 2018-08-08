@@ -1,3 +1,4 @@
+[@bs.val] external alert : string => unit = "";
 open OrderHelper;
 
 type userIntent =
@@ -82,7 +83,7 @@ let make =
       <Button
         local=true
         className="pay-button-card"
-        label="order.searchProduct"
+        label="modal.SearchProduct"
         onClick=(_ => onShowProductModal())
       />;
     let payButton =
@@ -115,7 +116,12 @@ let make =
       />;
     let pinInput =
       <PinInput
-        onFailure=(() => self.send(ChangeIntent(Building)))
+        onFailure=(
+          () => {
+            self.send(ChangeIntent(Building));
+            alert("Please enter a valid pin.");
+          }
+        )
         onSuccess=(cashier => self.send(ReturnAndExit(cashier)))
       />;
     <div className="order-actions">
@@ -127,7 +133,7 @@ let make =
         | (Building, None, None, None) => <span> saveButton payButton </span>
         | (Building, Some(_paid), None, Some(_id)) =>
           <span> doneButton returnButton </span>
-        | (_, _, _, _) => ReasonReact.nullElement
+        | (_, _, _, _) => ReasonReact.null
         }
       )
       cancelButton

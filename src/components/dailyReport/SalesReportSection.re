@@ -59,7 +59,7 @@ let make = (~title: string, ~sales: list(Sale.t), ~key="", _children) => {
                  </tr>
                )
             |> Array.of_list
-            |> ReasonReact.arrayToElement
+            |> ReasonReact.array
           )
         </tbody>
         <tfoot>

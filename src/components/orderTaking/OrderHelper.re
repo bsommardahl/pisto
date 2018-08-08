@@ -35,8 +35,8 @@ let payOrder =
     (
       cashier: option(Cashier.t),
       order: Order.orderVm,
-      method: PaymentMethod.t,
-      externalId: string,
+      _method: PaymentMethod.t,
+      _externalId: string,
       onFinish: Order.orderVm => unit,
     )
     : unit => {

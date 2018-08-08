@@ -21,7 +21,7 @@ let make = _children => {
   initialState: () => {orders: []},
   didMount: self => {
     loadOpenOrders(self.send);
-    ReasonReact.NoUpdate;
+    ();
   },
   subscriptions: self => [
     Sub(
@@ -67,7 +67,7 @@ let make = _children => {
              />
            )
         |> Array.of_list
-        |> ReasonReact.arrayToElement
+        |> ReasonReact.array
       )
     </div>;
   },

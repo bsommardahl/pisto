@@ -31,7 +31,7 @@ module ProductFormParams = {
 
 let validationMessage = message =>
   switch (message) {
-  | None => ReasonReact.nullElement
+  | None => ReasonReact.null
   | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
   };
 
@@ -68,11 +68,11 @@ let make =
         }
       };
     let canAddRate = (taxCalculationMethod, taxRate) =>
-    if (taxCalculationMethod !== "exempt" && taxRate === "") {
-      Some("validation.required")
-    } else {
-      None;
-    };
+      if (taxCalculationMethod !== "exempt" && taxRate === "") {
+        Some("validation.required");
+      } else {
+        None;
+      };
     <EditProductForm
       onSubmit
       initialState=(
@@ -89,7 +89,7 @@ let make =
           let [|taxCalculationMethod, taxRate|] =
             Js.String.splitAtMost(
               "|",
-              2,
+              ~limit=2,
               prod.taxCalculation |> Tax.Calculation.toDelimitedString,
             );
           {
@@ -107,7 +107,10 @@ let make =
         (`sku, Custom(v => v.sku |> isUnique(product))),
         (`price, Required),
         (`taxCalculationMethod, Required),
-        (`taxRate, Custom(v => canAddRate(v.taxCalculationMethod, v.taxRate))),
+        (
+          `taxRate,
+          Custom(v => canAddRate(v.taxCalculationMethod, v.taxRate)),
+        ),
         (`tags, Required),
       ]>
       ...(
@@ -175,7 +178,7 @@ let make =
                      (validationMessage(getErrorForField(`taxRate)))
                    </div>;
                  } else {
-                   ReasonReact.nullElement;
+                   ReasonReact.null;
                  }
                )
                (field("product.tags", form.values.tags, `tags))

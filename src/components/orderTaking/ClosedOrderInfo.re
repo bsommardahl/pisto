@@ -68,7 +68,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
               </tr>
               (
                 switch (paid.externalId) {
-                | "" => ReasonReact.nullElement
+                | "" => ReasonReact.null
                 | id =>
                   <tr>
                     <th> (sloc(paid.method.name ++ ".externalId")) </th>

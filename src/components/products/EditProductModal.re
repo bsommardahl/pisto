@@ -1,11 +1,11 @@
-let str = ReasonReact.stringToElement;
+let str = ReasonReact.string;
 
 let component = ReasonReact.statelessComponent("EditProductModal");
 
 let make =
     (
       ~onCancel=() => (),
-      ~onCreate=() => (),
+      ~_onCreate=() => (),
       ~onSubmit,
       ~products: list(Product.t),
       ~product: option(Product.t)=None,

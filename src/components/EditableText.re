@@ -30,7 +30,6 @@ let make =
       ~mode=TouchToEdit,
       ~autoFocus=true,
       ~required=false,
-      ~submitBehavior=SubmitOnEnter,
       _children,
     ) => {
   ...component,

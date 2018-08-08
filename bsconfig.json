@@ -16,10 +16,10 @@
     "bs-most",
     "bs-reform",
     "bs-fetch",
-    "bs-json",
+    "@glennsl/bs-json",
     "cafe-domain",
     "cafe-data",
-    "bs-reactstrap",
+    "@ahrefs/bs-reactstrap",
     "bs-css",
     "bs-moment"
   ],

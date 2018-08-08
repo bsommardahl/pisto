@@ -20,7 +20,7 @@ let make = _children => {
          resolve();
        })
     |> ignore;
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {logs: []},
   reducer: (action, _state) =>
@@ -59,7 +59,7 @@ let make = _children => {
               self.state.logs
               |> List.map((d: Log.t) => <LogManagementRow log=d key=d.id />)
               |> Array.of_list
-              |> ReasonReact.arrayToElement
+              |> ReasonReact.array
             )
           </tbody>
         </table>

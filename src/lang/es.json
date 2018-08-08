@@ -8,6 +8,10 @@
     "content": "Hecho"
   },
   {
+    "key": "action.incorrectPin",
+    "content": "Por favor ingrese un pin valido."
+  },
+  {
     "key": "action.cancel",
     "content": "Salir"
   },

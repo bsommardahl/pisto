@@ -1,5 +1,3 @@
-open ReactUtils;
-
 open Js.Promise;
 
 type state = {vendors: list(Vendor.t)};
@@ -21,7 +19,7 @@ let make = _children => {
          Js.Promise.resolve();
        })
     |> ignore;
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {vendors: []},
   reducer: (action, state) =>
@@ -42,10 +40,10 @@ let make = _children => {
       ReasonReact.Update({vendors: List.concat([state.vendors, [exp]])})
     },
   render: self => {
-    let goBack = (_) => ReasonReact.Router.push("/admin");
+    let goBack = _ => ReasonReact.Router.push("/admin");
     let removeVendor = (p: Vendor.t) => {
       VendorStore.remove(p.id)
-      |> then_((_) => {
+      |> then_(_ => {
            self.send(VendorRemoved(p));
            resolve();
          })
@@ -54,7 +52,7 @@ let make = _children => {
     };
     let modifyVendor = (modifiedVendor: Vendor.t) =>
       VendorStore.update(modifiedVendor)
-      |> then_((_) => {
+      |> then_(_ => {
            self.send(VendorModified(modifiedVendor));
            resolve();
          })
@@ -78,7 +76,9 @@ let make = _children => {
             label="nav.back"
           />
         </div>
-        <div className="header-options"> (sloc("admin.vendors.header")) </div>
+        <div className="header-options">
+          (ReactUtils.sloc("admin.vendors.header"))
+        </div>
       </div>
       <div className="vendor-management">
         <table className="table">
@@ -97,7 +97,7 @@ let make = _children => {
                    />
                  )
               |> Array.of_list
-              |> ReasonReact.arrayToElement
+              |> ReasonReact.array
             )
           </tbody>
           <tfoot> <VendorManagementNew create=createVendor /> </tfoot>

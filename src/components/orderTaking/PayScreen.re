@@ -1,4 +1,4 @@
-open Js.Promise;
+[@bs.val] external alert : string => unit = "";
 
 open OrderHelper;
 
@@ -31,7 +31,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
   ...component,
   didMount: self => {
     self.send(LoadOrder(orderId));
-    ReasonReact.NoUpdate;
+    ();
   },
   reducer: (action, state) =>
     switch (action) {
@@ -44,6 +44,7 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
         externalId,
         doing: GettingCashier,
       })
+
     | ExternalIdChanged(id) => ReasonReact.Update({...state, externalId: id})
     | LoadOrder(orderId) =>
       ReasonReact.SideEffects(
@@ -72,7 +73,11 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
         ),
       )
     | CashierChanged(cashier) =>
-      ReasonReact.Update({...state, cashier, doing: Paying})
+      ReasonReact.Update({
+        ...state,
+        cashier,
+        doing: cashier !== None ? Paying : ChoosingPaymentMethod,
+      })
     | OrderLoaded(order) => ReasonReact.Update({...state, order})
     | Cancel => ReasonReact.SideEffects((_ => onCancel(state.order)))
     },
@@ -144,7 +149,12 @@ let make = (~orderId, ~onPay, ~onCancel, _children) => {
               paymentMethod
               <PinInput
                 autoFocus=true
-                onFailure=(() => self.send(CashierChanged(None)))
+                onFailure=(
+                  () => {
+                    self.send(CashierChanged(None));
+                    alert("Please enter a valid pin.");
+                  }
+                )
                 onSuccess=(
                   cashier => self.send(CashierChanged(Some(cashier)))
                 )

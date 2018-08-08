@@ -12,7 +12,7 @@ module DiscountFormParams = {
 
 let validationMessage = message =>
   switch (message) {
-  | None => ReasonReact.nullElement
+  | None => ReasonReact.null
   | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
   };
 

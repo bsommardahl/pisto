@@ -13,5 +13,5 @@ let make = (~discounts: list(Discount.t), ~selected, _children) => {
          </div>
        )
     |> Array.of_list
-    |> ReasonReact.arrayToElement,
+    |> ReasonReact.array,
 };

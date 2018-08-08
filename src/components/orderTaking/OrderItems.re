@@ -13,7 +13,7 @@ type action =
   | RemoveNote(OrderItemNote.t)
   | ShowDialog(OrderItem.t)
   | HideDialog;
-let str = ReasonReact.stringToElement;
+let str = ReasonReact.string;
 let lastId = ref(0);
 let newNote = (value: string) => {
   lastId := lastId^ + 1;
@@ -119,8 +119,7 @@ let make =
       <table>
         (
           orderItems
-          |> List.map((i: OrderItem.t) => {
-               let totals = OrderItemCalculation.getTotals(discounts, [i]);
+          |> List.map((i: OrderItem.t) =>
                <tbody key=i.id>
                  <OrderItemRow
                    orderItem=i
@@ -133,13 +132,12 @@ let make =
                  />
                  (
                    i.notes |> List.length > 0 ?
-                     <DisplayOrderItemNotes notes=i.notes /> :
-                     ReasonReact.nullElement
+                     <DisplayOrderItemNotes notes=i.notes /> : ReasonReact.null
                  )
-               </tbody>;
-             })
+               </tbody>
+             )
           |> Array.of_list
-          |> ReasonReact.arrayToElement
+          |> ReasonReact.array
         )
         <tfoot>
           <tr className="divider">
@@ -179,7 +177,7 @@ let make =
              </button>
            )
         |> Array.of_list
-        |> ReasonReact.arrayToElement
+        |> ReasonReact.array
       )
     </div>;
   },

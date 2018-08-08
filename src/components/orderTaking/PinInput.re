@@ -21,7 +21,7 @@ let make =
   ...component,
   didMount: self => {
     self.send(LoadCashiers);
-    ReasonReact.NoUpdate;
+    ();
   },
   initialState: () => {pin: "", cashiers: []},
   reducer: (action, state) =>
