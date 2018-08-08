@@ -59,6 +59,7 @@ let make = _children => {
     let onStartNewOrder = customerName =>
       ReasonReact.Router.push("order?customerName=" ++ customerName);
     let goHome = () => ReasonReact.Router.push("/");
+    let goToOrders = () => ReasonReact.Router.push("/orders");
     let goToOrder = order =>
       ReasonReact.Router.push(
         "/order?orderId=" ++ (order |> Order.fromVm).id,
@@ -75,7 +76,7 @@ let make = _children => {
       (
         switch (self.state.currentView) {
         | Home => <Home onStartNewOrder />
-        | Order => <OrderScreen goBack=goHome />
+        | Order => <OrderScreen goHome goToOrders />
         | Pay =>
           <PayScreen
             orderId
