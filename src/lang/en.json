@@ -12,20 +12,20 @@
     "content": "Exit"
   },
   {
-    "key": "action.plus",
-    "content": "+"
-  },
-  {
-    "key": "action.minus",
-    "content": "-"
-  },
-  {
-    "key": "actionSymbol.delete",
-    "content": "x"
+    "key": "action.addNotes",
+    "content": "Add Notes"
   },
   {
     "key": "action.cancelModal",
     "content": "Cancel"
+  },
+  {
+    "key": "action.acceptModal",
+    "content": "Accept"
+  },
+  {
+    "key": "action.addNoteModal",
+    "content": "Add"
   },
   {
     "key": "action.edit",
@@ -34,6 +34,38 @@
   {
     "key": "action.create",
     "content": "Create"
+  },
+  {
+    "key": "action.createProduct",
+    "content": "Create Product"
+  },
+  {
+    "key": "action.createDiscount",
+    "content": "Create Discount"
+  },
+  {
+    "key": "action.editDiscount",
+    "content": "Edit Discount"
+  },
+  {
+    "key": "action.editProduct",
+    "content": "Edit Product"
+  },
+  {
+    "key": "action.editCashier",
+    "content": "Edit Cashier"
+  },
+  {
+    "key": "action.createCashier",
+    "content": "Create Cashier"
+  },
+  {
+    "key": "cashier.name",
+    "content": "Name"
+  },
+  {
+    "key": "cashier.pin",
+    "content": "Pin"
   },
   {
     "key": "action.delete",
@@ -176,8 +208,12 @@
     "content": "Price"
   },
   {
-    "key": "product.taxCalculation",
-    "content": "Tax Calc Method"
+    "key": "product.taxCalculationMethod",
+    "content": "Tax Calculation Method"
+  },
+  {
+    "key": "product.taxRate",
+    "content": "Tax Rate"
   },
   {
     "key": "product.tags",

@@ -7,6 +7,8 @@ type intent =
 
 type state = {
   discounts: list(Discount.t),
+  showDiscountDialog: bool,
+  showEditDiscountDialog: bool,
   intent,
 };
 
@@ -15,6 +17,10 @@ type action =
   | DiscountsLoaded(list(Discount.t))
   | ShowDialog(Discount.t)
   | HideDialog
+  | ShowDiscountDialog
+  | HideDiscountDialog
+  | ShowEditDiscountDialog
+  | HideEditDiscountDialog
   | RemoveDiscount(Discount.t)
   | ModifyDiscount(Discount.t)
   | CreateDiscount(Discount.NewDiscount.t)
@@ -25,7 +31,12 @@ let component = ReasonReact.reducerComponent("DiscountManagement");
 
 let make = _children => {
   ...component,
-  initialState: () => {discounts: [], intent: Viewing},
+  initialState: () => {
+    discounts: [],
+    intent: Viewing,
+    showDiscountDialog: false,
+    showEditDiscountDialog: false,
+  },
   didMount: self => {
     self.send(LoadDiscounts);
     ReasonReact.NoUpdate;
@@ -44,14 +55,32 @@ let make = _children => {
             |> ignore
         ),
       )
+    | ShowDiscountDialog =>
+      ReasonReact.Update({...state, showDiscountDialog: true})
+    | HideDiscountDialog =>
+      ReasonReact.Update({
+        ...state,
+        showDiscountDialog: false,
+        intent: Viewing,
+      })
+    | ShowEditDiscountDialog =>
+      ReasonReact.Update({...state, showEditDiscountDialog: true})
+    | HideEditDiscountDialog =>
+      ReasonReact.Update({
+        ...state,
+        showEditDiscountDialog: false,
+        intent: Viewing,
+      })
     | ShowDialog(discount) =>
       ReasonReact.Update({...state, intent: Deleting(discount)})
     | HideDialog => ReasonReact.Update({...state, intent: Viewing})
     | DiscountsLoaded(discounts) => ReasonReact.Update({...state, discounts})
-    | Change(intent) => ReasonReact.Update({...state, intent})
+    | Change(intent) =>
+      ReasonReact.Update({...state, intent, showEditDiscountDialog: true})
     | RemoveDiscount(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           intent: Viewing,
           discounts:
             state.discounts
@@ -59,14 +88,13 @@ let make = _children => {
         },
         (
           _self =>
-            DiscountStore.remove(prod.id)
-            |> then_((_) => resolve())
-            |> ignore
+            DiscountStore.remove(prod.id) |> then_(_ => resolve()) |> ignore
         ),
       )
     | ModifyDiscount(discount) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           intent: Viewing,
           discounts:
             state.discounts
@@ -85,7 +113,8 @@ let make = _children => {
         ),
       )
     | CreateDiscount(prod) =>
-      ReasonReact.SideEffects(
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showDiscountDialog: false},
         (
           self =>
             DiscountStore.add(prod)
@@ -103,10 +132,15 @@ let make = _children => {
       })
     },
   render: self => {
-    let goBack = (_) => ReasonReact.Router.push("/admin");
+    let goBack = _ => ReasonReact.Router.push("/admin");
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
+          <div
+            className="card wide-card pay-button-card"
+            onClick=(_ => self.send(ShowDiscountDialog))>
+            (ReactUtils.s("Create"))
+          </div>
           <div className="card wide-card quiet-card" onClick=goBack>
             (ReactUtils.s("Atras"))
           </div>
@@ -138,7 +172,7 @@ let make = _children => {
                              local=true
                              disabled=false
                              onClick=(
-                               (_) => self.send(Change(Modifying(prod)))
+                               _ => self.send(Change(Modifying(prod)))
                              )
                              label="action.edit"
                            />
@@ -151,7 +185,7 @@ let make = _children => {
                            <Button
                              local=true
                              className="danger-card"
-                             onClick=((_) => self.send(ShowDialog(prod)))
+                             onClick=(_ => self.send(ShowDialog(prod)))
                              label="action.delete"
                            />
                          </td>
@@ -162,9 +196,11 @@ let make = _children => {
                 )
               </tbody>
             </table>
-            <h3> (ReactUtils.sloc("action.create")) </h3>
-            <DiscountEdit
+            <CreateDiscountModal
               discounts=self.state.discounts
+              isOpen=self.state.showDiscountDialog
+              label="action.createDiscount"
+              onCancel=(_ => self.send(HideDiscountDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(
@@ -178,10 +214,12 @@ let make = _children => {
           </div>
         | Modifying(discount) =>
           <div>
-            <h3> (ReactUtils.sloc("action.edit")) </h3>
-            <DiscountEdit
+            <EditDiscountModal
               discounts=self.state.discounts
+              isOpen=self.state.showEditDiscountDialog
+              label="action.editProduct"
               discount=(Some(discount))
+              onCancel=(_ => self.send(HideEditDiscountDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(

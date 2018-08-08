@@ -42,19 +42,28 @@ let make =
   reducer: (action, state) =>
     switch (action) {
     | EnableMod =>
-      ReasonReact.Update({...state, modifying: mode === TouchToEdit})
+      ReasonReact.Update({
+        ...state,
+        value: text,
+        modifying: mode === TouchToEdit,
+      })
     | DisableMod =>
       ReasonReact.Update({...state, modifying: mode === EditOnly})
     | ValueChanged(value) =>
       ReasonReact.UpdateWithSideEffects(
         {...state, value},
-        (
-          self =>
-            if (submitBehavior === SubmitOnKey) {
-              onChange(self.state.value);
-            }
-        ),
+        (self => onChange(self.state.value)),
       )
+    | KeyDown(164) =>
+      ReasonReact.Update({
+        ...state,
+        value: state.value ++ (164 |> Js.String.fromCharCode),
+      })
+    | KeyDown(165) =>
+      ReasonReact.Update({
+        ...state,
+        value: state.value ++ (165 |> Js.String.fromCharCode),
+      })
     | KeyDown(27) =>
       ReasonReact.UpdateWithSideEffects(
         {...state, value: state.original},
@@ -99,8 +108,6 @@ let make =
           hidden=(! required || required && self.state.value !== "")
         />
       </div> :
-      <div onClick=((_) => self.send(EnableMod))>
-        (ReactUtils.s(text))
-      </div>;
+      <div onClick=(_ => self.send(EnableMod))> (ReactUtils.s(text)) </div>;
   },
 };

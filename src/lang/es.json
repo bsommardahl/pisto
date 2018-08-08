@@ -16,20 +16,52 @@
     "content": "Cancelar"
   },
   {
-    "key": "action.plus",
-    "content": "+"
+    "key": "action.acceptModal",
+    "content": "Aceptar"
   },
   {
-    "key": "action.minus",
-    "content": "-"
+    "key": "action.addNotes",
+    "content": "Add Notes"
   },
   {
-    "key": "actionSymbol.delete",
-    "content": "x"
+    "key": "action.addNoteModal",
+    "content": "Add"
   },
   {
     "key": "action.edit",
     "content": "Editar"
+  },
+  {
+    "key": "action.createCashier",
+    "content": "Crear Cashier"
+  },
+  {
+    "key": "cashier.name",
+    "content": "Nombre"
+  },
+  {
+    "key": "cashier.pin",
+    "content": "Pin"
+  },
+  {
+    "key": "action.createProduct",
+    "content": "Crear Producto"
+  },
+  {
+    "key": "action.editProduct",
+    "content": "Editar Producto"
+  },
+  {
+    "key": "action.editDiscount",
+    "content": "Editar Descuento"
+  },
+  {
+    "key": "action.createDiscount",
+    "content": "Crear Descuento"
+  },
+  {
+    "key": "action.editCashier",
+    "content": "Editar Cashier"
   },
   {
     "key": "action.create",
@@ -188,12 +220,16 @@
     "content": "Precio"
   },
   {
-    "key": "product.taxCalcMethod",
-    "content": "Method de Impuesto"
+    "key": "product.taxCalculationMethod",
+    "content": "Método de impuesto"
+  },
+  {
+    "key": "product.taxRate",
+    "content": "Tasa de impuesto"
   },
   {
     "key": "product.tags",
-    "content": "Categorias"
+    "content": "Categorias:"
   },
   {
     "key": "admin.expenseTypes",

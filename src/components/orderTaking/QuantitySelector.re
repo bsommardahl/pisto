@@ -18,17 +18,15 @@ let make = (~onChange, ~value, _children) => {
         (self => onChange(self.state.value)),
       )
     | Add =>
-      Js.log(value);
       ReasonReact.UpdateWithSideEffects(
         {value: state.value + 1},
         (self => onChange(self.state.value)),
-      );
+      )
     | Subtract =>
-      Js.log(value);
       ReasonReact.UpdateWithSideEffects(
         {value: state.value > 1 ? state.value - 1 : state.value},
         (self => onChange(self.state.value)),
-      );
+      )
     },
   render: self => {
     let getVal = ev => ReactDOMRe.domElementToObj(
@@ -38,8 +36,7 @@ let make = (~onChange, ~value, _children) => {
       <div className="quantityDivider" />
       <Button
         className="smallItems-card"
-        local=true
-        label="action.minus"
+        iconClass="fas fa-angle-down"
         onClick=(_ => self.send(Subtract))
       />
       <input
@@ -51,8 +48,7 @@ let make = (~onChange, ~value, _children) => {
       <div className="quantityDivider" />
       <Button
         className="smallItems-card pay-button-card"
-        local=true
-        label="action.plus"
+        iconClass="fas fa-angle-up"
         onClick=(_ => self.send(Add))
       />
     </div>;

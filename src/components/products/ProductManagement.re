@@ -7,6 +7,8 @@ type intent =
 
 type state = {
   products: list(Product.t),
+  showProductDialog: bool,
+  showEditProductDialog: bool,
   intent,
 };
 
@@ -14,6 +16,9 @@ type action =
   | LoadProducts
   | ProductsLoaded(list(Product.t))
   | RemoveProduct(Product.t)
+  | ShowProductDialog
+  | HideProductDialog
+  | HideEditProductDialog
   | ShowDialog(Product.t)
   | HideDialog
   | ModifyProduct(Product.t)
@@ -25,7 +30,12 @@ let component = ReasonReact.reducerComponent("ProductManagement");
 
 let make = _children => {
   ...component,
-  initialState: () => {products: [], intent: Viewing},
+  initialState: () => {
+    products: [],
+    intent: Viewing,
+    showProductDialog: false,
+    showEditProductDialog: false,
+  },
   didMount: self => {
     self.send(LoadProducts);
     ReasonReact.NoUpdate;
@@ -48,10 +58,12 @@ let make = _children => {
     | ShowDialog(prod) =>
       ReasonReact.Update({...state, intent: Deleting(prod)})
     | HideDialog => ReasonReact.Update({...state, intent: Viewing})
-    | Change(intent) => ReasonReact.Update({...state, intent})
+    | Change(intent) =>
+      ReasonReact.Update({...state, intent, showEditProductDialog: true})
     | RemoveProduct(prod) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           intent: Viewing,
           products:
             state.products |> List.filter((d: Product.t) => d.id !== prod.id),
@@ -64,6 +76,7 @@ let make = _children => {
     | ModifyProduct(product) =>
       ReasonReact.UpdateWithSideEffects(
         {
+          ...state,
           intent: Viewing,
           products:
             state.products
@@ -79,8 +92,23 @@ let make = _children => {
             |> ignore
         ),
       )
+    | ShowProductDialog =>
+      ReasonReact.Update({...state, showProductDialog: true})
+    | HideProductDialog =>
+      ReasonReact.Update({
+        ...state,
+        showProductDialog: false,
+        intent: Viewing,
+      })
+    | HideEditProductDialog =>
+      ReasonReact.Update({
+        ...state,
+        showProductDialog: false,
+        intent: Viewing,
+      })
     | CreateProduct(prod) =>
-      ReasonReact.SideEffects(
+      ReasonReact.UpdateWithSideEffects(
+        {...state, showProductDialog: false},
         (
           self =>
             ProductStore.add(prod)
@@ -102,6 +130,11 @@ let make = _children => {
     <div className="admin-menu">
       <div className="header">
         <div className="header-menu">
+          <div
+            className="card wide-card pay-button-card"
+            onClick=(_ => self.send(ShowProductDialog))>
+            (ReactUtils.s("Create"))
+          </div>
           <div className="card wide-card quiet-card" onClick=goBack>
             (ReactUtils.s("Atras"))
           </div>
@@ -129,7 +162,7 @@ let make = _children => {
                   <th> (ReactUtils.sloc("product.sku")) </th>
                   <th> (ReactUtils.sloc("product.name")) </th>
                   <th> (ReactUtils.sloc("product.price")) </th>
-                  <th> (ReactUtils.sloc("product.taxCalculation")) </th>
+                  <th> (ReactUtils.sloc("product.taxCalculationMethod")) </th>
                   <th> (ReactUtils.sloc("product.tags")) </th>
                   <th />
                 </tr>
@@ -182,9 +215,11 @@ let make = _children => {
                 )
               </tbody>
             </table>
-            <h3> (ReactUtils.sloc("action.create")) </h3>
-            <ProductEdit
+            <CreateProductModal
+              isOpen=self.state.showProductDialog
+              label="action.createProduct"
               products=self.state.products
+              onCancel=(_ => self.send(HideProductDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(
@@ -193,7 +228,10 @@ let make = _children => {
                       name: values.name,
                       suggestedPrice: values.price |> Money.toT,
                       taxCalculation:
-                        values.taxCalculation |> Tax.Calculation.toMethod,
+                        values.taxCalculationMethod
+                        ++ "|"
+                        ++ values.taxRate
+                        |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
                       onHand: 0,
                       startDate: None,
@@ -211,9 +249,12 @@ let make = _children => {
         | Modifying(product) =>
           <div>
             <h3> (ReactUtils.sloc("action.edit")) </h3>
-            <ProductEdit
+            <EditProductModal
+              label="action.editProduct"
+              isOpen=self.state.showEditProductDialog
               products=self.state.products
               product=(Some(product))
+              onCancel=(_ => self.send(HideEditProductDialog))
               onSubmit=(
                 ({values}) =>
                   self.send(
@@ -223,7 +264,10 @@ let make = _children => {
                       sku: values.sku,
                       suggestedPrice: values.price |> Money.toT,
                       taxCalculation:
-                        values.taxCalculation |> Tax.Calculation.toMethod,
+                        values.taxCalculationMethod
+                        ++ "|"
+                        ++ values.taxRate
+                        |> Tax.Calculation.toMethod,
                       tags: values.tags |> Tags.toList,
                       onHand: product.onHand,
                       startDate: product.startDate,

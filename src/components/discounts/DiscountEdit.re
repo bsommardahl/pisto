@@ -21,7 +21,13 @@ module EditDiscountForm = ReForm.Create(DiscountFormParams);
 let component = ReasonReact.statelessComponent("DiscountEdit");
 
 let make =
-    (~discount: option(Discount.t)=None, ~onSubmit, ~discounts, _children) => {
+    (
+      ~discount: option(Discount.t)=None,
+      ~onCancel=() => (),
+      ~onSubmit,
+      ~discounts,
+      _children,
+    ) => {
   ...component,
   render: _self => {
     let hasDuplicateName = name => {
@@ -76,7 +82,20 @@ let make =
                onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
                (field("discount.name", form.values.name, `name))
                (field("discount.percent", form.values.percent, `percent))
-               <Button _type="submit" label="action.done" local=true />
+               <div className="modal-footer">
+                 <Button
+                   onClick=(_ => onCancel())
+                   className="cancel-button-card"
+                   label="action.cancelModal"
+                   local=true
+                 />
+                 <Button
+                   _type="submit"
+                   className="pay-button-card"
+                   label="action.done"
+                   local=true
+                 />
+               </div>
              </form>;
            }
          )
