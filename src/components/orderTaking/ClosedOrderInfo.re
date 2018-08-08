@@ -1,6 +1,12 @@
 open ReactUtils;
 
 let component = ReasonReact.statelessComponent("ClosedOrderInfo");
+let language = Config.App.get().language;
+let valueFromEvent = evt : string => (
+                                       evt
+                                       |> ReactEventRe.Form.target
+                                       |> ReactDOMRe.domElementToObj
+                                     )##value;
 
 let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
   ...component,
@@ -13,7 +19,13 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
           </tr>
           <tr>
             <th> (sloc("order.created.date")) </th>
-            <td> (s(order.createdOn |> Date.toDisplay)) </td>
+            <td>
+              (
+                language === "EN" ?
+                  s(order.createdOn |> Date.toDisplayEN) :
+                  s(order.createdOn |> Date.toDisplay)
+              )
+            </td>
           </tr>
         </tbody>
         (
@@ -27,7 +39,23 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
               <tr>
                 <th> (sloc("order.paid.date")) </th>
                 <td>
-                  <EditableDate date=paid.on onChange=paidDateChanged />
+                  (
+                    switch (order.returned) {
+                    | None =>
+                      <Datetime
+                        locale=(language |> Js.String.toLowerCase)
+                        value=(paid.on |> Js.Date.fromFloat)
+                        onChange=(
+                          moment =>
+                            paidDateChanged(moment |> MomentRe.Moment.valueOf)
+                        )
+                      />
+                    | Some(_) =>
+                      language === "EN" ?
+                        s(paid.on |> Date.toDisplayEN) :
+                        s(paid.on |> Date.toDisplay)
+                    }
+                  )
                 </td>
               </tr>
               <tr>
@@ -63,10 +91,16 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
               </tr>
               <tr>
                 <th> (sloc("order.returned.date")) </th>
-                <td> (s(returned.on |> Date.toDisplay)) </td>
+                <td>
+                  (
+                    language === "EN" ?
+                      s(returned.on |> Date.toDisplayEN) :
+                      s(returned.on |> Date.toDisplay)
+                  )
+                </td>
               </tr>
               <tr>
-                <th> (s("order.returned.by")) </th>
+                <th> (sloc("order.returned.by")) </th>
                 <td> (s(returned.by)) </td>
               </tr>
             </tbody>
@@ -76,7 +110,7 @@ let make = (~order: Order.orderVm, ~paidDateChanged, _children) => {
       <Button
         local=true
         onClick=(
-          (_) =>
+          _ =>
             WebhookEngine.getWebhooks(ReprintReceipt, Order)
             |> WebhookEngine.fire(order |> Order.fromVm |> Order.toJs)
             |> ignore

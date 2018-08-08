@@ -204,6 +204,10 @@
     "content": "Gestion de Descuentos"
   },
   {
+    "key": "admin.discounts",
+    "content": "Descuentos"
+  },
+  {
     "key": "admin.cashiers.header",
     "content": "Gestion de Cajeros"
   },
@@ -533,7 +537,7 @@
   },
   {
     "key": "admin.config.application.header",
-    "content": "Applicacion"
+    "content": "Aplicacion"
   },
   {
     "key": "admin.config.application.language",

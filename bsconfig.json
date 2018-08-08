@@ -20,7 +20,8 @@
     "cafe-domain",
     "cafe-data",
     "bs-reactstrap",
-    "bs-css"
+    "bs-css",
+    "bs-moment"
   ],
   "bs-dev-dependencies": ["bs-enzyme", "bs-jest"],
   "reason": {

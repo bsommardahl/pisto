@@ -17,6 +17,7 @@ let saveOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) : unit =
     |> ignore;
     ();
   | Some(_id) =>
+    [%bs.debugger];
     let o: Order.updateOrder = Order.vmToUpdateOrder(order);
     OrderStore.update(o)
     |> Js.Promise.then_(updatedOrder => {
