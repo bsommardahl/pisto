@@ -3,17 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-<<<<<<< HEAD
     "@ahrefs/bs-reactstrap": "^0.4.0",
     "@glennsl/bs-json": "^2.0.0",
     "bs-css": "^7.0.1",
     "bs-fetch": "^0.3.0",
     "bs-moment": "^0.3.0",
-=======
-    "bs-css": "^6.7.0",
-    "bs-fetch": "^0.2.1",
-    "bs-json": "^1.0.1",
->>>>>>> 712dce89cf45a142fa0efaff3cdad7e763bc6177
     "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^4.0.2",
     "bs-reform": "^5.1.1-beta.2",
