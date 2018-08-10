@@ -1,4 +1,4 @@
-module WithItemManagement = ItemManagement.Create(CashierStore);
+module CashierManager = ItemManager.Create(CashierStore);
 
 let component = ReasonReact.statelessComponent("CashierManagement");
 
@@ -60,7 +60,7 @@ let renderEdit = (~items as cashiers, ~item as cashier, ~onSubmit, ~onCancel) =>
 let make = _children => {
   ...component,
   render: _self =>
-    <WithItemManagement
+    <CashierManager
       header="admin.cashiers.header"
       name="cashier"
       tableHeaders=[|"name", "pin"|]

@@ -1,4 +1,4 @@
-module WithItemManagement = ItemManagement.Create(ProductStore);
+module ProductManager = ItemManager.Create(ProductStore);
 
 let component = ReasonReact.statelessComponent("ProductManagement");
 
@@ -97,7 +97,7 @@ let renderEdit = (~items as products, ~item as product, ~onSubmit, ~onCancel) =>
 let make = _children => {
   ...component,
   render: _self =>
-    <WithItemManagement
+    <ProductManager
       header="admin.products.header"
       name="product"
       tableHeaders=[|"sku", "name", "price", "taxCalculationMethod", "tags"|]

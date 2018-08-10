@@ -1,4 +1,4 @@
-module WithItemManagement = ItemManagement.Create(DiscountStore);
+module DiscountManager = ItemManager.Create(DiscountStore);
 
 let component = ReasonReact.statelessComponent("DiscountManagement");
 
@@ -62,7 +62,7 @@ let renderEdit =
 let make = _children => {
   ...component,
   render: _self =>
-    <WithItemManagement
+    <DiscountManager
       header="admin.discounts.header"
       name="discount"
       tableHeaders=[|"name", "percent"|]

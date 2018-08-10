@@ -21,7 +21,7 @@ module Create = (Store: DbStore.Interface) => {
     | CreateItem(Store.newItem)
     | ItemCreated(Store.item);
 
-  let component = ReasonReact.reducerComponent("ItemManagement");
+  let component = ReasonReact.reducerComponent("ItemManager");
 
   let goBack = _ => ReasonReact.Router.push("/admin");
 
