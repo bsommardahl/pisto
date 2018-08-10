@@ -1,16 +1,4 @@
-module type Config = {type item; type newItem;};
-
-module type DbStore = {
-  type item;
-  type newItem;
-  let id: item => string;
-  let add: newItem => Js.Promise.t(item);
-  let getAll: unit => Js.Promise.t(list(item));
-  let update: item => Js.Promise.t(item);
-  let remove: (~id: string) => Js.Promise.t(unit);
-};
-
-module Create = (Store: DbStore) => {
+module Create = (Store: DbStore.Interface) => {
   type intent =
     | Viewing
     | Modifying(Store.item)
@@ -176,7 +164,14 @@ module Create = (Store: DbStore) => {
                 <tbody>
                   (
                     self.state.items
-                    |> List.map(i => renderItem(i))
+                    |> List.map(i =>
+                         renderItem(
+                           ~item=i,
+                           ~onEditClick=
+                             _ => self.send(Change(Modifying(i))),
+                           ~onDeleteClick=_ => self.send(ShowDialog(i)),
+                         )
+                       )
                     |> Array.of_list
                     |> ReasonReact.array
                   )
@@ -186,7 +181,14 @@ module Create = (Store: DbStore) => {
                 isOpen=self.state.showItemDialog
                 label="action.createDiscount"
                 onClose=(_ => self.send(HideItemDialog))
-                render=renderCreate
+                render=(
+                  () =>
+                    renderCreate(
+                      ~items=self.state.items,
+                      ~onSubmit=item => self.send(CreateItem(item)),
+                      ~onCancel=_ => self.send(HideItemDialog),
+                    )
+                )
               />
             </div>
           | Modifying(item) =>
@@ -195,7 +197,15 @@ module Create = (Store: DbStore) => {
                 isOpen=self.state.showEditItemDialog
                 label="action.editProduct"
                 onClose=(_ => self.send(HideEditItemDialog))
-                render=(() => renderEdit(item))
+                render=(
+                  () =>
+                    renderEdit(
+                      ~items=self.state.items,
+                      ~item,
+                      ~onSubmit=item => self.send(ModifyItem(item)),
+                      ~onCancel=_ => self.send(HideEditItemDialog),
+                    )
+                )
               />
             </div>
           | Deleting(item) =>
