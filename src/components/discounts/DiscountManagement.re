@@ -61,5 +61,13 @@ let renderEdit =
 
 let make = _children => {
   ...component,
-  render: _self => <WithItemManagement renderCreate renderEdit renderItem />,
+  render: _self =>
+    <WithItemManagement
+      header="admin.discounts.header"
+      name="discount"
+      tableHeaders=[|"name", "percent"|]
+      renderCreate
+      renderEdit
+      renderItem
+    />,
 };

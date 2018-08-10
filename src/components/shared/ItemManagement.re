@@ -32,7 +32,16 @@ module Create = (Store: DbStore.Interface) => {
 
   let goBack = _ => ReasonReact.Router.push("/admin");
 
-  let make = (~renderCreate, ~renderEdit, ~renderItem, _children) => {
+  let make =
+      (
+        ~name,
+        ~header,
+        ~tableHeaders=[||],
+        ~renderCreate,
+        ~renderEdit,
+        ~renderItem,
+        _children,
+      ) => {
     ...component,
     initialState: () => {
       items: [],
@@ -131,7 +140,9 @@ module Create = (Store: DbStore.Interface) => {
       | ItemCreated(item) =>
         ReasonReact.Update({...state, items: state.items @ [item]})
       },
-    render: self =>
+    render: self => {
+      let name = String.lowercase(name);
+      let capitalizedName = String.capitalize(name);
       <div className="admin-menu">
         <div className="header">
           <div className="header-menu">
@@ -144,20 +155,23 @@ module Create = (Store: DbStore.Interface) => {
               (ReactUtils.s("Atras"))
             </div>
           </div>
-          <div className="header-options">
-            (ReactUtils.sloc("admin.discounts.header"))
-          </div>
+          <div className="header-options"> (ReactUtils.sloc(header)) </div>
         </div>
         (
           switch (self.state.intent) {
           | Viewing =>
-            <div className="discount-management">
+            <div className={j|$name-management|j}>
               <table className="table">
                 <thead>
                   <tr>
                     <th />
-                    <th> (ReactUtils.sloc("discount.name")) </th>
-                    <th> (ReactUtils.sloc("discount.percent")) </th>
+                    (
+                      tableHeaders
+                      |> Array.map(h =>
+                           <th key=h> (ReactUtils.sloc({j|$name.$h|j})) </th>
+                         )
+                      |> ReasonReact.array
+                    )
                     <th />
                   </tr>
                 </thead>
@@ -179,7 +193,7 @@ module Create = (Store: DbStore.Interface) => {
               </table>
               <ItemModal
                 isOpen=self.state.showItemDialog
-                label="action.createDiscount"
+                label={j|action.create$capitalizedName|j}
                 onClose=(_ => self.send(HideItemDialog))
                 render=(
                   () =>
@@ -195,7 +209,7 @@ module Create = (Store: DbStore.Interface) => {
             <div>
               <ItemModal
                 isOpen=self.state.showEditItemDialog
-                label="action.editProduct"
+                label={j|action.edit$capitalizedName|j}
                 onClose=(_ => self.send(HideEditItemDialog))
                 render=(
                   () =>
@@ -210,14 +224,15 @@ module Create = (Store: DbStore.Interface) => {
             </div>
           | Deleting(item) =>
             <DeleteModal
-              contentLabel="modal.deleteDiscountContent"
-              label="modal.deleteDiscount"
+              contentLabel=("modal.delete" ++ capitalizedName ++ "Content")
+              label={j|modal.delete$capitalizedName|j}
               isOpen=true
               onConfirm=(() => self.send(RemoveItem(item)))
               onCancel=(() => self.send(HideDialog))
             />
           }
         )
-      </div>,
+      </div>;
+    },
   };
 };

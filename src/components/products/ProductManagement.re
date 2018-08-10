@@ -96,5 +96,13 @@ let renderEdit = (~items as products, ~item as product, ~onSubmit, ~onCancel) =>
 
 let make = _children => {
   ...component,
-  render: _self => <WithItemManagement renderCreate renderEdit renderItem />,
+  render: _self =>
+    <WithItemManagement
+      header="admin.products.header"
+      name="product"
+      tableHeaders=[|"sku", "name", "price", "taxCalculationMethod", "tags"|]
+      renderCreate
+      renderEdit
+      renderItem
+    />,
 };
