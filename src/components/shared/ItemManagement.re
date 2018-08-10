@@ -1,32 +1,25 @@
 module Create = (Store: DbStore.Interface) => {
   type intent =
     | Viewing
-    | Modifying(Store.item)
+    | Creating
+    | Updating(Store.item)
     | Deleting(Store.item);
 
   type state = {
     items: list(Store.item),
-    showItemDialog: bool,
-    showEditItemDialog: bool,
     intent,
   };
 
   type action =
+    | UpdateIntent(intent)
     | LoadItems
     | ItemsLoaded(list(Store.item))
-    | ShowDialog(Store.item)
-    | HideDialog
-    | ShowItemDialog
-    | HideItemDialog
-    | ShowEditItemDialog
-    | HideEditItemDialog
-    | RemoveItem(Store.item)
-    | ItemRemoved(Store.item)
-    | ModifyItem(Store.item)
-    | ItemModified(Store.item)
+    | DeleteItem(Store.item)
+    | ItemDeleted(Store.item)
+    | UpdateItem(Store.item)
+    | ItemUpdated(Store.item)
     | CreateItem(Store.newItem)
-    | ItemCreated(Store.item)
-    | Change(intent);
+    | ItemCreated(Store.item);
 
   let component = ReasonReact.reducerComponent("ItemManagement");
 
@@ -43,81 +36,55 @@ module Create = (Store: DbStore.Interface) => {
         _children,
       ) => {
     ...component,
-    initialState: () => {
-      items: [],
-      intent: Viewing,
-      showItemDialog: false,
-      showEditItemDialog: false,
-    },
+    initialState: () => {items: [], intent: Viewing},
     didMount: self => self.send(LoadItems),
     reducer: (action, state) =>
       switch (action) {
+      | UpdateIntent(intent) => ReasonReact.Update({...state, intent})
       | LoadItems =>
         ReasonReact.SideEffects(
           (
             self =>
-              Store.getAll()
-              |> Js.Promise.then_(items => {
-                   self.send(ItemsLoaded(items));
-                   Js.Promise.resolve();
-                 })
-              |> ignore
+              Js.Promise.(
+                Store.getAll()
+                |> then_(items => resolve(self.send(ItemsLoaded(items))))
+                |> ignore
+              )
           ),
         )
-      | ShowItemDialog => ReasonReact.Update({...state, showItemDialog: true})
-      | HideItemDialog =>
-        ReasonReact.Update({...state, showItemDialog: false, intent: Viewing})
-      | ShowEditItemDialog =>
-        ReasonReact.Update({...state, showEditItemDialog: true})
-      | HideEditItemDialog =>
-        ReasonReact.Update({
-          ...state,
-          showEditItemDialog: false,
-          intent: Viewing,
-        })
-      | ShowDialog(item) =>
-        ReasonReact.Update({...state, intent: Deleting(item)})
-      | HideDialog => ReasonReact.Update({...state, intent: Viewing})
       | ItemsLoaded(items) => ReasonReact.Update({...state, items})
-      | Change(intent) =>
-        ReasonReact.Update({...state, intent, showEditItemDialog: true})
-      | RemoveItem(item) =>
+      | DeleteItem(item) =>
         ReasonReact.UpdateWithSideEffects(
           {...state, intent: Viewing},
           (
             self =>
-              Store.remove(~id=Store.id(item))
-              |> Js.Promise.then_(() => {
-                   self.send(ItemRemoved(item));
-                   Js.Promise.resolve();
-                 })
-              |> ignore
+              Js.Promise.(
+                Store.remove(~id=Store.id(item))
+                |> then_(() => resolve(self.send(ItemDeleted(item))))
+                |> ignore
+              )
           ),
         )
-      | ItemRemoved(item) =>
+      | ItemDeleted(item) =>
         ReasonReact.Update({
           ...state,
           items:
             state.items |> List.filter(i => Store.id(i) !== Store.id(item)),
         })
-      | ModifyItem(item) =>
+      | UpdateItem(item) =>
         ReasonReact.UpdateWithSideEffects(
           {...state, intent: Viewing},
           (
             self =>
-              Store.update(item)
-              |> Js.Promise.then_(item => {
-                   self.send(ItemModified(item));
-                   Js.Promise.resolve();
-                 })
-              |> Js.Promise.catch(err => {
-                   Js.log(err);
-                   Js.Promise.resolve();
-                 })
-              |> ignore
+              Js.Promise.(
+                Store.update(item)
+                |> then_(item => resolve(self.send(ItemUpdated(item))))
+                |> catch(err => resolve(Js.log(err)))
+                |> ignore
+              )
           ),
         )
-      | ItemModified(item) =>
+      | ItemUpdated(item) =>
         ReasonReact.Update({
           ...state,
           items:
@@ -126,15 +93,14 @@ module Create = (Store: DbStore.Interface) => {
         })
       | CreateItem(item) =>
         ReasonReact.UpdateWithSideEffects(
-          {...state, showItemDialog: false},
+          {...state, intent: Viewing},
           (
             self =>
-              Store.add(item)
-              |> Js.Promise.then_(item => {
-                   self.send(ItemCreated(item));
-                   Js.Promise.resolve();
-                 })
-              |> ignore
+              Js.Promise.(
+                Store.add(item)
+                |> then_(item => resolve(self.send(ItemCreated(item))))
+                |> ignore
+              )
           ),
         )
       | ItemCreated(item) =>
@@ -148,7 +114,7 @@ module Create = (Store: DbStore.Interface) => {
           <div className="header-menu">
             <div
               className="card wide-card pay-button-card"
-              onClick=(_ => self.send(ShowItemDialog))>
+              onClick=(_ => self.send(UpdateIntent(Creating)))>
               (ReactUtils.s("Create"))
             </div>
             <div className="card wide-card quiet-card" onClick=goBack>
@@ -157,78 +123,78 @@ module Create = (Store: DbStore.Interface) => {
           </div>
           <div className="header-options"> (ReactUtils.sloc(header)) </div>
         </div>
+        <div className={j|$name-management|j}>
+          <table className="table">
+            <thead>
+              <tr>
+                <th />
+                (
+                  tableHeaders
+                  |> Array.map(h =>
+                       <th key=h> (ReactUtils.sloc({j|$name.$h|j})) </th>
+                     )
+                  |> ReasonReact.array
+                )
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              (
+                self.state.items
+                |> List.map(i =>
+                     renderItem(
+                       ~item=i,
+                       ~onEditClick=
+                         _ => self.send(UpdateIntent(Updating(i))),
+                       ~onDeleteClick=
+                         _ => self.send(UpdateIntent(Deleting(i))),
+                     )
+                   )
+                |> Array.of_list
+                |> ReasonReact.array
+              )
+            </tbody>
+          </table>
+        </div>
         (
           switch (self.state.intent) {
-          | Viewing =>
-            <div className={j|$name-management|j}>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th />
-                    (
-                      tableHeaders
-                      |> Array.map(h =>
-                           <th key=h> (ReactUtils.sloc({j|$name.$h|j})) </th>
-                         )
-                      |> ReasonReact.array
-                    )
-                    <th />
-                  </tr>
-                </thead>
-                <tbody>
-                  (
-                    self.state.items
-                    |> List.map(i =>
-                         renderItem(
-                           ~item=i,
-                           ~onEditClick=
-                             _ => self.send(Change(Modifying(i))),
-                           ~onDeleteClick=_ => self.send(ShowDialog(i)),
-                         )
-                       )
-                    |> Array.of_list
-                    |> ReasonReact.array
+          | Viewing => ReasonReact.null
+          | Creating =>
+            <ItemModal
+              isOpen=true
+              label={j|action.create$capitalizedName|j}
+              onClose=(_ => self.send(UpdateIntent(Viewing)))
+              render=(
+                () =>
+                  renderCreate(
+                    ~items=self.state.items,
+                    ~onSubmit=item => self.send(CreateItem(item)),
+                    ~onCancel=_ => self.send(UpdateIntent(Viewing)),
                   )
-                </tbody>
-              </table>
-              <ItemModal
-                isOpen=self.state.showItemDialog
-                label={j|action.create$capitalizedName|j}
-                onClose=(_ => self.send(HideItemDialog))
-                render=(
-                  () =>
-                    renderCreate(
-                      ~items=self.state.items,
-                      ~onSubmit=item => self.send(CreateItem(item)),
-                      ~onCancel=_ => self.send(HideItemDialog),
-                    )
-                )
-              />
-            </div>
-          | Modifying(item) =>
-            <div>
-              <ItemModal
-                isOpen=self.state.showEditItemDialog
-                label={j|action.edit$capitalizedName|j}
-                onClose=(_ => self.send(HideEditItemDialog))
-                render=(
-                  () =>
-                    renderEdit(
-                      ~items=self.state.items,
-                      ~item,
-                      ~onSubmit=item => self.send(ModifyItem(item)),
-                      ~onCancel=_ => self.send(HideEditItemDialog),
-                    )
-                )
-              />
-            </div>
+              )
+            />
+          | Updating(item) =>
+            <ItemModal
+              isOpen=true
+              label={j|action.edit$capitalizedName|j}
+              onClose=(_ => self.send(UpdateIntent(Viewing)))
+              render=(
+                () =>
+                  renderEdit(
+                    ~items=self.state.items,
+                    ~item,
+                    ~onSubmit=item => self.send(UpdateItem(item)),
+                    ~onCancel=_ => self.send(UpdateIntent(Viewing)),
+                  )
+              )
+            />
           | Deleting(item) =>
             <DeleteModal
+              isOpen=true
               contentLabel=("modal.delete" ++ capitalizedName ++ "Content")
               label={j|modal.delete$capitalizedName|j}
-              isOpen=true
-              onConfirm=(() => self.send(RemoveItem(item)))
-              onCancel=(() => self.send(HideDialog))
+              onConfirm=(() => self.send(DeleteItem(item)))
+              onCancel=(() => self.send(UpdateIntent(Viewing)))
             />
           }
         )
