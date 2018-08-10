@@ -21,15 +21,21 @@ module EditCashierForm = ReForm.Create(CashierFormParams);
 let component = ReasonReact.statelessComponent("CashierEdit");
 
 let make =
-    (~name="", ~pin="", ~onSubmit, ~isUnique, ~onCancel=() => (), _children) => {
+    (
+      ~cashier: Cashier.t={id: "", name: "", pin: ""},
+      ~onSubmit,
+      ~isUnique,
+      ~onCancel=() => (),
+      _children,
+    ) => {
   ...component,
   render: _self =>
     <EditCashierForm
       onSubmit
-      initialState={name, pin}
+      initialState={name: cashier.name, pin: cashier.pin}
       schema=[
         (`name, Required),
-        (`pin, Custom(v => v.pin |> isUnique(pin))),
+        (`pin, Custom(v => v.pin |> isUnique(cashier.pin))),
       ]>
       ...(
            ({handleSubmit, handleChange, form, getErrorForField}) =>
