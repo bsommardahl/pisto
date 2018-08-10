@@ -18,7 +18,7 @@ let make =
           />
         </BsReactstrap.ModalHeader>
         <BsReactstrap.ModalBody className="modal-content">
-          <div> (render()) </div>
+          (render())
         </BsReactstrap.ModalBody>
         <BsReactstrap.ModalFooter className="modal-footer" />
       </BsReactstrap.Modal>
