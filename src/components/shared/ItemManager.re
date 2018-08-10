@@ -1,4 +1,9 @@
 module Create = (Store: DbStore.Interface) => {
+  type columnRenderer = {
+    name: string,
+    render: Store.item => ReasonReact.reactElement,
+  };
+
   type intent =
     | Viewing
     | Creating
@@ -27,12 +32,11 @@ module Create = (Store: DbStore.Interface) => {
 
   let make =
       (
-        ~name,
-        ~header,
-        ~tableHeaders=[||],
+        ~headerKey,
+        ~columnKeyPrefix,
         ~renderCreate,
         ~renderEdit,
-        ~renderItem,
+        ~renderColumns,
         _children,
       ) => {
     ...component,
@@ -107,8 +111,8 @@ module Create = (Store: DbStore.Interface) => {
         ReasonReact.Update({...state, items: state.items @ [item]})
       },
     render: self => {
-      let name = String.lowercase(name);
-      let capitalizedName = String.capitalize(name);
+      let lowercaseName = String.lowercase(columnKeyPrefix);
+      let capitalizedName = String.capitalize(lowercaseName);
       <div className="admin-menu">
         <div className="header">
           <div className="header-menu">
@@ -121,17 +125,19 @@ module Create = (Store: DbStore.Interface) => {
               (ReactUtils.s("Atras"))
             </div>
           </div>
-          <div className="header-options"> (ReactUtils.sloc(header)) </div>
+          <div className="header-options"> (ReactUtils.sloc(headerKey)) </div>
         </div>
-        <div className={j|$name-management|j}>
+        <div className={j|$lowercaseName-management|j}>
           <table className="table">
             <thead>
               <tr>
                 <th />
                 (
-                  tableHeaders
-                  |> Array.map(h =>
-                       <th key=h> (ReactUtils.sloc({j|$name.$h|j})) </th>
+                  renderColumns
+                  |> Array.mapi((i, {name}) =>
+                       <th key=(i |> string_of_int)>
+                         (ReactUtils.sloc({j|$lowercaseName.$name|j}))
+                       </th>
                      )
                   |> ReasonReact.array
                 )
@@ -141,14 +147,38 @@ module Create = (Store: DbStore.Interface) => {
             <tbody>
               (
                 self.state.items
-                |> List.map(i =>
-                     renderItem(
-                       ~item=i,
-                       ~onEditClick=
-                         _ => self.send(UpdateIntent(Updating(i))),
-                       ~onDeleteClick=
-                         _ => self.send(UpdateIntent(Deleting(i))),
-                     )
+                |> List.map(item =>
+                     <tr key=(Store.id(item))>
+                       <td>
+                         <Button
+                           local=true
+                           disabled=false
+                           onClick=(
+                             _ => self.send(UpdateIntent(Updating(item)))
+                           )
+                           label="action.edit"
+                         />
+                       </td>
+                       (
+                         renderColumns
+                         |> Array.mapi((i, columnRenderer) =>
+                              <td key=(i |> string_of_int)>
+                                (columnRenderer.render(item))
+                              </td>
+                            )
+                         |> ReasonReact.array
+                       )
+                       <td>
+                         <Button
+                           local=true
+                           className="danger-card"
+                           onClick=(
+                             _ => self.send(UpdateIntent(Deleting(item)))
+                           )
+                           label="action.delete"
+                         />
+                       </td>
+                     </tr>
                    )
                 |> Array.of_list
                 |> ReasonReact.array

@@ -20,28 +20,13 @@ let itemFromValues =
   percent: values.percent |> Percent.toT,
 };
 
-let renderItem =
-    (~item as discount: DiscountStore.item, ~onEditClick, ~onDeleteClick) =>
-  <tr key=discount.id>
-    <td>
-      <Button
-        local=true
-        disabled=false
-        onClick=onEditClick
-        label="action.edit"
-      />
-    </td>
-    <td> (ReactUtils.s(discount.name)) </td>
-    <td> (ReactUtils.s(discount.percent |> Percent.toDisplay)) </td>
-    <td>
-      <Button
-        local=true
-        className="danger-card"
-        onClick=onDeleteClick
-        label="action.delete"
-      />
-    </td>
-  </tr>;
+let renderColumns: array(DiscountManager.columnRenderer) = [|
+  {name: "name", render: discount => ReactUtils.s(discount.name)},
+  {
+    name: "percent",
+    render: discount => ReactUtils.s(discount.percent |> Percent.toDisplay),
+  },
+|];
 
 let renderCreate = (~items as discounts, ~onSubmit, ~onCancel) =>
   <DiscountEdit
@@ -63,11 +48,10 @@ let make = _children => {
   ...component,
   render: _self =>
     <DiscountManager
-      header="admin.discounts.header"
-      name="discount"
-      tableHeaders=[|"name", "percent"|]
+      headerKey="admin.discounts.header"
+      columnKeyPrefix="discount"
       renderCreate
       renderEdit
-      renderItem
+      renderColumns
     />,
 };

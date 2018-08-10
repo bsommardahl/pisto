@@ -47,37 +47,26 @@ let itemFromValues =
   location: product.location,
 };
 
-let renderItem =
-    (~item as product: ProductStore.item, ~onEditClick, ~onDeleteClick) =>
-  <tr key=product.id>
-    <td>
-      <Button
-        local=true
-        disabled=false
-        onClick=onEditClick
-        label="action.edit"
-      />
-    </td>
-    <td> (ReactUtils.s(product.sku)) </td>
-    <td> (ReactUtils.s(product.name)) </td>
-    <td> (ReactUtils.s(product.suggestedPrice |> Money.toDisplay)) </td>
-    <td>
-      (
-        ReactUtils.s(
-          product.taxCalculation |> Tax.Calculation.toDelimitedString,
-        )
-      )
-    </td>
-    <td> (ReactUtils.s(product.tags |> Tags.toCSV)) </td>
-    <td>
-      <Button
-        local=true
-        className="danger-card"
-        onClick=onDeleteClick
-        label="action.delete"
-      />
-    </td>
-  </tr>;
+let renderColumns: array(ProductManager.columnRenderer) = [|
+  {name: "sku", render: product => ReactUtils.s(product.sku)},
+  {name: "name", render: product => ReactUtils.s(product.name)},
+  {
+    name: "price",
+    render: product =>
+      ReactUtils.s(product.suggestedPrice |> Money.toDisplay),
+  },
+  {
+    name: "taxCalculationMethod",
+    render: product =>
+      ReactUtils.s(
+        product.taxCalculation |> Tax.Calculation.toDelimitedString,
+      ),
+  },
+  {
+    name: "tags",
+    render: product => ReactUtils.s(product.tags |> Tags.toCSV),
+  },
+|];
 
 let renderCreate = (~items as products, ~onSubmit, ~onCancel) =>
   <ProductEdit
@@ -98,11 +87,10 @@ let make = _children => {
   ...component,
   render: _self =>
     <ProductManager
-      header="admin.products.header"
-      name="product"
-      tableHeaders=[|"sku", "name", "price", "taxCalculationMethod", "tags"|]
+      headerKey="admin.products.header"
+      columnKeyPrefix="product"
       renderCreate
       renderEdit
-      renderItem
+      renderColumns
     />,
 };

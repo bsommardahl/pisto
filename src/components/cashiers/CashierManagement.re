@@ -26,21 +26,10 @@ let isUnique = (cashiers, originalPin, pin) =>
     isDuplicate ? Some("validation.duplicate") : None;
   };
 
-let renderItem =
-    (~item as cashier: CashierStore.item, ~onEditClick, ~onDeleteClick) =>
-  <tr key=cashier.id>
-    <td> <Button local=true onClick=onEditClick label="action.edit" /> </td>
-    <td> (ReactUtils.s(cashier.name)) </td>
-    <td> (ReactUtils.s(cashier.pin)) </td>
-    <td>
-      <Button
-        local=true
-        onClick=onDeleteClick
-        className="danger-card"
-        label="action.delete"
-      />
-    </td>
-  </tr>;
+let renderColumns: array(CashierManager.columnRenderer) = [|
+  {name: "name", render: cashier => ReactUtils.s(cashier.name)},
+  {name: "pin", render: cashier => ReactUtils.s(cashier.pin)},
+|];
 
 let renderCreate = (~items as cashiers, ~onSubmit, ~onCancel) =>
   <CashierEdit
@@ -61,11 +50,10 @@ let make = _children => {
   ...component,
   render: _self =>
     <CashierManager
-      header="admin.cashiers.header"
-      name="cashier"
-      tableHeaders=[|"name", "pin"|]
+      headerKey="admin.cashiers.header"
+      columnKeyPrefix="cashier"
       renderCreate
       renderEdit
-      renderItem
+      renderColumns
     />,
 };
