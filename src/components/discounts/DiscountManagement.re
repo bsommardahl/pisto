@@ -2,14 +2,14 @@ module DiscountManager = ItemManager.Create(DiscountStore);
 
 let component = ReasonReact.statelessComponent("DiscountManagement");
 
-let newItemFromValues =
+let mapValuesToNewDiscount =
     (values: DiscountEdit.EditDiscountForm.values)
     : DiscountStore.newItem => {
   name: values.name,
   percent: values.percent |> Percent.toT,
 };
 
-let itemFromValues =
+let mapValuesToDiscount =
     (
       discount: DiscountStore.item,
       values: DiscountEdit.EditDiscountForm.values,
@@ -31,7 +31,7 @@ let renderColumns: array(DiscountManager.columnRenderer) = [|
 let renderCreate = (~items as discounts, ~onSubmit, ~onCancel) =>
   <DiscountEdit
     discounts
-    onSubmit=(({values}) => onSubmit(newItemFromValues(values)))
+    onSubmit=(({values}) => onSubmit(mapValuesToNewDiscount(values)))
     onCancel
   />;
 
@@ -40,7 +40,9 @@ let renderEdit =
   <DiscountEdit
     discount=(Some(discount))
     discounts
-    onSubmit=(({values}) => onSubmit(itemFromValues(discount, values)))
+    onSubmit=(
+      ({values}) => onSubmit(mapValuesToDiscount(discount, values))
+    )
     onCancel
   />;
 

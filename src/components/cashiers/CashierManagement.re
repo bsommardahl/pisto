@@ -2,14 +2,14 @@ module CashierManager = ItemManager.Create(CashierStore);
 
 let component = ReasonReact.statelessComponent("CashierManagement");
 
-let newItemFromValues =
+let mapValuesToNewCashier =
     (values: CashierEdit.EditCashierForm.values)
     : CashierStore.newItem => {
   name: values.name,
   pin: values.pin,
 };
 
-let itemFromValues =
+let mapValuesToCashier =
     (cashier: CashierStore.item, values: CashierEdit.EditCashierForm.values)
     : CashierStore.item => {
   id: cashier.id,
@@ -34,7 +34,7 @@ let renderColumns: array(CashierManager.columnRenderer) = [|
 let renderCreate = (~items as cashiers, ~onSubmit, ~onCancel) =>
   <CashierEdit
     isUnique=(isUnique(cashiers))
-    onSubmit=(({values}) => onSubmit(newItemFromValues(values)))
+    onSubmit=(({values}) => onSubmit(mapValuesToNewCashier(values)))
     onCancel
   />;
 
@@ -42,7 +42,7 @@ let renderEdit = (~items as cashiers, ~item as cashier, ~onSubmit, ~onCancel) =>
   <CashierEdit
     cashier
     isUnique=(isUnique(cashiers))
-    onSubmit=(({values}) => onSubmit(itemFromValues(cashier, values)))
+    onSubmit=(({values}) => onSubmit(mapValuesToCashier(cashier, values)))
     onCancel
   />;
 

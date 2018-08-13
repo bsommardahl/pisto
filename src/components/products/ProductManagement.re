@@ -2,7 +2,7 @@ module ProductManager = ItemManager.Create(ProductStore);
 
 let component = ReasonReact.statelessComponent("ProductManagement");
 
-let newItemFromValues =
+let mapValuesToNewProduct =
     (values: ProductEdit.EditProductForm.values)
     : ProductStore.newItem => {
   sku: values.sku,
@@ -24,7 +24,7 @@ let newItemFromValues =
   location: "",
 };
 
-let itemFromValues =
+let mapValuesToProduct =
     (product: ProductStore.item, values: ProductEdit.EditProductForm.values)
     : ProductStore.item => {
   id: product.id,
@@ -71,7 +71,7 @@ let renderColumns: array(ProductManager.columnRenderer) = [|
 let renderCreate = (~items as products, ~onSubmit, ~onCancel) =>
   <ProductEdit
     products
-    onSubmit=(({values}) => onSubmit(newItemFromValues(values)))
+    onSubmit=(({values}) => onSubmit(mapValuesToNewProduct(values)))
     onCancel
   />;
 
@@ -79,7 +79,7 @@ let renderEdit = (~items as products, ~item as product, ~onSubmit, ~onCancel) =>
   <ProductEdit
     product=(Some(product))
     products
-    onSubmit=(({values}) => onSubmit(itemFromValues(product, values)))
+    onSubmit=(({values}) => onSubmit(mapValuesToProduct(product, values)))
     onCancel
   />;
 
