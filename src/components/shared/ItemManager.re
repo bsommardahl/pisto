@@ -1,6 +1,6 @@
 module Create = (Store: DbStore.Interface) => {
   type columnRenderer = {
-    name: string,
+    nameKey: string,
     render: Store.item => ReasonReact.reactElement,
   };
 
@@ -33,7 +33,7 @@ module Create = (Store: DbStore.Interface) => {
   let make =
       (
         ~headerKey,
-        ~columnKeyPrefix,
+        ~name,
         ~renderCreate,
         ~renderEdit,
         ~renderColumns,
@@ -111,8 +111,8 @@ module Create = (Store: DbStore.Interface) => {
         ReasonReact.Update({...state, items: state.items @ [item]})
       },
     render: self => {
-      let lowercaseName = String.lowercase(columnKeyPrefix);
-      let capitalizedName = String.capitalize(lowercaseName);
+      let lowerCaseName = String.lowercase(name);
+      let capitalizedName = String.capitalize(lowerCaseName);
       <div className="admin-menu">
         <div className="header">
           <div className="header-menu">
@@ -127,16 +127,16 @@ module Create = (Store: DbStore.Interface) => {
           </div>
           <div className="header-options"> (ReactUtils.sloc(headerKey)) </div>
         </div>
-        <div className={j|$lowercaseName-management|j}>
+        <div className={j|$lowerCaseName-management|j}>
           <table className="table">
             <thead>
               <tr>
                 <th />
                 (
                   renderColumns
-                  |> Array.mapi((i, {name}) =>
+                  |> Array.mapi((i, {nameKey}) =>
                        <th key=(i |> string_of_int)>
-                         (ReactUtils.sloc({j|$lowercaseName.$name|j}))
+                         (ReactUtils.sloc(nameKey))
                        </th>
                      )
                   |> ReasonReact.array

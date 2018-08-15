@@ -48,22 +48,22 @@ let mapValuesToProduct =
 };
 
 let renderColumns: array(ProductManager.columnRenderer) = [|
-  {name: "sku", render: product => ReactUtils.s(product.sku)},
-  {name: "name", render: product => ReactUtils.s(product.name)},
+  {nameKey: "product.sku", render: product => ReactUtils.s(product.sku)},
+  {nameKey: "product.name", render: product => ReactUtils.s(product.name)},
   {
-    name: "price",
+    nameKey: "product.price",
     render: product =>
       ReactUtils.s(product.suggestedPrice |> Money.toDisplay),
   },
   {
-    name: "taxCalculationMethod",
+    nameKey: "product.taxCalculationMethod",
     render: product =>
       ReactUtils.s(
         product.taxCalculation |> Tax.Calculation.toDelimitedString,
       ),
   },
   {
-    name: "tags",
+    nameKey: "product.tags",
     render: product => ReactUtils.s(product.tags |> Tags.toCSV),
   },
 |];
@@ -87,8 +87,8 @@ let make = _children => {
   ...component,
   render: _self =>
     <ProductManager
+      name="product"
       headerKey="admin.products.header"
-      columnKeyPrefix="product"
       renderCreate
       renderEdit
       renderColumns

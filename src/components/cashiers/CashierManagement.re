@@ -27,8 +27,8 @@ let isUnique = (cashiers, originalPin, pin) =>
   };
 
 let renderColumns: array(CashierManager.columnRenderer) = [|
-  {name: "name", render: cashier => ReactUtils.s(cashier.name)},
-  {name: "pin", render: cashier => ReactUtils.s(cashier.pin)},
+  {nameKey: "cashier.name", render: cashier => ReactUtils.s(cashier.name)},
+  {nameKey: "cashier.pin", render: cashier => ReactUtils.s(cashier.pin)},
 |];
 
 let renderCreate = (~items as cashiers, ~onSubmit, ~onCancel) =>
@@ -50,8 +50,8 @@ let make = _children => {
   ...component,
   render: _self =>
     <CashierManager
+      name="cashier"
       headerKey="admin.cashiers.header"
-      columnKeyPrefix="cashier"
       renderCreate
       renderEdit
       renderColumns

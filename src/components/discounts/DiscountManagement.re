@@ -21,9 +21,12 @@ let mapValuesToDiscount =
 };
 
 let renderColumns: array(DiscountManager.columnRenderer) = [|
-  {name: "name", render: discount => ReactUtils.s(discount.name)},
   {
-    name: "percent",
+    nameKey: "discount.name",
+    render: discount => ReactUtils.s(discount.name),
+  },
+  {
+    nameKey: "discount.percent",
     render: discount => ReactUtils.s(discount.percent |> Percent.toDisplay),
   },
 |];
@@ -50,8 +53,8 @@ let make = _children => {
   ...component,
   render: _self =>
     <DiscountManager
+      name="discount"
       headerKey="admin.discounts.header"
-      columnKeyPrefix="discount"
       renderCreate
       renderEdit
       renderColumns
