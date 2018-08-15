@@ -1,30 +1,30 @@
-module Create = (Store: DbStore.Interface) => {
+module Create = (ItemStore: DbStore.T) => {
   type columnRenderer = {
     nameKey: string,
-    render: Store.item => ReasonReact.reactElement,
+    render: ItemStore.item => ReasonReact.reactElement,
   };
 
   type intent =
     | Viewing
     | Creating
-    | Updating(Store.item)
-    | Deleting(Store.item);
+    | Updating(ItemStore.item)
+    | Deleting(ItemStore.item);
 
   type state = {
-    items: list(Store.item),
+    items: list(ItemStore.item),
     intent,
   };
 
   type action =
     | UpdateIntent(intent)
     | LoadItems
-    | ItemsLoaded(list(Store.item))
-    | DeleteItem(Store.item)
-    | ItemDeleted(Store.item)
-    | UpdateItem(Store.item)
-    | ItemUpdated(Store.item)
-    | CreateItem(Store.newItem)
-    | ItemCreated(Store.item);
+    | ItemsLoaded(list(ItemStore.item))
+    | DeleteItem(ItemStore.item)
+    | ItemDeleted(ItemStore.item)
+    | UpdateItem(ItemStore.item)
+    | ItemUpdated(ItemStore.item)
+    | CreateItem(ItemStore.newItem)
+    | ItemCreated(ItemStore.item);
 
   let component = ReasonReact.reducerComponent("ItemManager");
 
@@ -50,7 +50,7 @@ module Create = (Store: DbStore.Interface) => {
           (
             self =>
               Js.Promise.(
-                Store.getAll()
+                ItemStore.getAll()
                 |> then_(items => resolve(self.send(ItemsLoaded(items))))
                 |> ignore
               )
@@ -63,7 +63,7 @@ module Create = (Store: DbStore.Interface) => {
           (
             self =>
               Js.Promise.(
-                Store.remove(~id=Store.id(item))
+                ItemStore.remove(~id=ItemStore.id(item))
                 |> then_(() => resolve(self.send(ItemDeleted(item))))
                 |> ignore
               )
@@ -73,7 +73,8 @@ module Create = (Store: DbStore.Interface) => {
         ReasonReact.Update({
           ...state,
           items:
-            state.items |> List.filter(i => Store.id(i) !== Store.id(item)),
+            state.items
+            |> List.filter(i => ItemStore.id(i) !== ItemStore.id(item)),
         })
       | UpdateItem(item) =>
         ReasonReact.UpdateWithSideEffects(
@@ -81,7 +82,7 @@ module Create = (Store: DbStore.Interface) => {
           (
             self =>
               Js.Promise.(
-                Store.update(item)
+                ItemStore.update(item)
                 |> then_(item => resolve(self.send(ItemUpdated(item))))
                 |> catch(err => resolve(Js.log(err)))
                 |> ignore
@@ -93,7 +94,9 @@ module Create = (Store: DbStore.Interface) => {
           ...state,
           items:
             state.items
-            |> List.map(i => Store.id(i) === Store.id(item) ? item : i),
+            |> List.map(i =>
+                 ItemStore.id(i) === ItemStore.id(item) ? item : i
+               ),
         })
       | CreateItem(item) =>
         ReasonReact.UpdateWithSideEffects(
@@ -101,7 +104,7 @@ module Create = (Store: DbStore.Interface) => {
           (
             self =>
               Js.Promise.(
-                Store.add(item)
+                ItemStore.add(item)
                 |> then_(item => resolve(self.send(ItemCreated(item))))
                 |> ignore
               )
@@ -148,7 +151,7 @@ module Create = (Store: DbStore.Interface) => {
               (
                 self.state.items
                 |> List.map(item =>
-                     <tr key=(Store.id(item))>
+                     <tr key=(ItemStore.id(item))>
                        <td>
                          <Button
                            local=true
