@@ -4,17 +4,14 @@ let component = ReasonReact.statelessComponent("DiscountManagement");
 
 let mapValuesToNewDiscount =
     (values: DiscountEdit.EditDiscountForm.values)
-    : DiscountStore.newItem => {
+    : Discount.NewDiscount.t => {
   name: values.name,
   percent: values.percent |> Percent.toT,
 };
 
 let mapValuesToDiscount =
-    (
-      discount: DiscountStore.item,
-      values: DiscountEdit.EditDiscountForm.values,
-    )
-    : DiscountStore.item => {
+    (discount: Discount.t, values: DiscountEdit.EditDiscountForm.values)
+    : Discount.t => {
   id: discount.id,
   name: values.name,
   percent: values.percent |> Percent.toT,

@@ -4,14 +4,14 @@ let component = ReasonReact.statelessComponent("CashierManagement");
 
 let mapValuesToNewCashier =
     (values: CashierEdit.EditCashierForm.values)
-    : CashierStore.newItem => {
+    : Cashier.New.t => {
   name: values.name,
   pin: values.pin,
 };
 
 let mapValuesToCashier =
-    (cashier: CashierStore.item, values: CashierEdit.EditCashierForm.values)
-    : CashierStore.item => {
+    (cashier: Cashier.t, values: CashierEdit.EditCashierForm.values)
+    : Cashier.t => {
   id: cashier.id,
   name: values.name,
   pin: values.pin,

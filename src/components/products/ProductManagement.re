@@ -4,7 +4,7 @@ let component = ReasonReact.statelessComponent("ProductManagement");
 
 let mapValuesToNewProduct =
     (values: ProductEdit.EditProductForm.values)
-    : ProductStore.newItem => {
+    : Product.NewProduct.t => {
   sku: values.sku,
   name: values.name,
   suggestedPrice: values.price |> Money.toT,
@@ -25,8 +25,8 @@ let mapValuesToNewProduct =
 };
 
 let mapValuesToProduct =
-    (product: ProductStore.item, values: ProductEdit.EditProductForm.values)
-    : ProductStore.item => {
+    (product: Product.t, values: ProductEdit.EditProductForm.values)
+    : Product.t => {
   id: product.id,
   name: values.name,
   sku: values.sku,
