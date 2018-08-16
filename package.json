@@ -11,8 +11,8 @@
     "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^4.0.2",
     "bs-reform": "^5.1.1-beta.2",
-    "cafe-data": "github:bsommardahl/cafe-data",
-    "cafe-domain": "github:bsommardahl/cafe-domain",
+    "cafe-data": "github:bsommardahl/cafe-data#264-management-hocs",
+    "cafe-domain": "github:bsommardahl/cafe-domain#264-management-hocs",
     "moment": "^2.22.2",
     "pouchdb": "^6.4.3",
     "pouchdb-find": "^6.4.3",
@@ -30,6 +30,7 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "prepare": "npm link bs-platform",
+    "re:make": "bsb -make-world",
     "re:clean": "bsb -clean-world",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build"

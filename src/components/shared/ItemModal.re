@@ -1,16 +1,9 @@
 let str = ReasonReact.string;
 
-let component = ReasonReact.statelessComponent("CreateProductModal");
+let component = ReasonReact.statelessComponent("CreateItemModal");
 
 let make =
-    (
-      ~onCancel=() => (),
-      ~onSubmit,
-      ~products: list(Product.t),
-      ~isOpen=false,
-      ~label: string,
-      _children,
-    ) => {
+    (~onClose=() => (), ~isOpen=false, ~label: string, ~render, _children) => {
   ...component,
   render: _self =>
     <div>
@@ -19,15 +12,13 @@ let make =
           (ReactUtils.sloc(label))
           <Button
             className="exit-modal-button-card exit-card"
-            onClick=(_ => onCancel())
+            onClick=(_ => onClose())
             iconClass="fas fa-times"
             local=true
           />
         </BsReactstrap.ModalHeader>
         <BsReactstrap.ModalBody className="modal-content">
-          <div>
-            <ProductEdit onCancel=(_ => onCancel()) products onSubmit />
-          </div>
+          (render())
         </BsReactstrap.ModalBody>
         <BsReactstrap.ModalFooter className="modal-footer" />
       </BsReactstrap.Modal>
