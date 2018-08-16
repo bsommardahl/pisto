@@ -21,7 +21,7 @@ let make =
           local=true
         />
       </BsReactstrap.ModalHeader>
-      <BsReactstrap.ModalBody className="modal-content">
+      <BsReactstrap.ModalBody className="modal-body">
         (ReactUtils.sloc(contentLabel))
       </BsReactstrap.ModalBody>
       <BsReactstrap.ModalFooter className="modal-footer">

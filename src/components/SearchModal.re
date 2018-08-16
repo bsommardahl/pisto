@@ -42,7 +42,7 @@ let make =
             local=true
           />
         </BsReactstrap.ModalHeader>
-        <BsReactstrap.ModalBody className="modal-content">
+        <BsReactstrap.ModalBody className="modal-body">
           <NormalInput onFinish=(text => self.send(FilterProduct(text))) />
           <div className="order-items">
             <table>
