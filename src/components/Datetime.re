@@ -1,10 +1,13 @@
 [%bs.raw {|require('react-datetime/css/react-datetime.css')|}];
 [@bs.module] external reactClass : ReasonReact.reactClass = "react-datetime";
+
 [@bs.obj]
 external makeProps :
   (
     ~className: string=?,
     ~locale: string=?,
+    ~timeFormat: bool=?,
+    ~input: bool=?,
     ~value: Js.Date.t=?,
     ~onBlur: MomentRe.Moment.t => unit=?,
     ~onFocus: ReactEventRe.Focus.t => unit=?,
@@ -16,12 +19,14 @@ external makeProps :
 
 let make =
     (
-      ~className: option(string)=?,
-      ~locale: option(string)=?,
-      ~value: option(Js.Date.t)=?,
-      ~onBlur: option(MomentRe.Moment.t => unit)=?,
-      ~onFocus: option(ReactEventRe.Focus.t => unit)=?,
-      ~onChange: option(MomentRe.Moment.t => unit)=?,
+      ~className=?,
+      ~locale=?,
+      ~value=?,
+      ~timeFormat=?,
+      ~input=?,
+      ~onBlur=?,
+      ~onFocus=?,
+      ~onChange=?,
       children,
     ) =>
   ReasonReact.wrapJsForReason(
@@ -31,6 +36,8 @@ let make =
         ~className?,
         ~locale?,
         ~value?,
+        ~timeFormat?,
+        ~input?,
         ~onBlur?,
         ~onFocus?,
         ~onChange?,
