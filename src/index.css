@@ -143,6 +143,13 @@ input.customer-name-input {
   font-size: 25px;
   margin-bottom: 5px;
 }
+
+.sub-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid #36373c;
+}
+
 .pin-entry {
   border: 1px solid black;
   border-radius: 8px;
