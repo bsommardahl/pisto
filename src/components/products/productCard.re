@@ -7,5 +7,5 @@ let make = (~product: Product.t, ~onSelect, _children) => {
       onClick=((_) => onSelect(product))
       className="product-card"
       label=product.name
-    />,
+      subLabel=product.sku />,
 };

@@ -53,33 +53,40 @@ body {
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 4);
 }
-.alert{
-  position:fixed;
-  z-index:1;
-  width:20%;
-  height:20%;
-  left:0;
-  right:0;
-  border:1px solid #666;
-  background-color:darkgray;
+.alert {
+  position: fixed;
+  z-index: 1;
+  width: 20%;
+  height: 20%;
+  left: 0;
+  right: 0;
+  border: 1px solid #666;
+  background-color: darkgray;
 }
 .modal-header {
   text-align: center;
-  font-size: 40 px;
+  font-size: 40px;
 }
 .modal-footer {
+  margin-top: 20px;
   text-align: center;
 }
+
+.modal-body {
+  background-color: #fefefe;
+  margin: 0 auto;
+  width: 65%;
+  font-size: 20px;
+}
+
 .modal-content {
   background-color: #fefefe;
   margin: 15% auto;
   padding: 20px;
-  border: 1 px solid #888;
   width: 65%;
   font-size: 20px;
   position: relative;
   animation-name: animatetop;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   animation-duration: 0.4s;
 }
 @keyframes animatetop {
@@ -136,6 +143,13 @@ input.customer-name-input {
   font-size: 25px;
   margin-bottom: 5px;
 }
+
+.sub-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid #36373c;
+}
+
 .pin-entry {
   border: 1px solid black;
   border-radius: 8px;
@@ -193,8 +207,8 @@ input.customer-name-input {
   background-color: darkred;
   color: #dddddd;
 }
-.exit-card{
-  background-color:white;
+.exit-card {
+  background-color: white;
 }
 .order .right-side {
   width: 475px;
@@ -264,13 +278,13 @@ input.customer-name-input {
   margin-top: 0px;
   margin-bottom: 0px;
 }
-.productFields{
+.productFields {
   padding-right: 10px;
 }
-.exit-modal-button-card{
-position: absolute;
-top:0;
-right:0;
+.exit-modal-button-card {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 .save-button-card {
   background-color: darkblue;

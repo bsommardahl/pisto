@@ -4,6 +4,7 @@ let make =
     (
       ~iconClass=?,
       ~label=?,
+      ~subLabel=?,
       ~onClick=_ => (),
       ~_type="button",
       ~disabled=false,
@@ -29,6 +30,15 @@ let make =
         | Some(label) =>
           ReactUtils.s(local ? label |> Lang.translate : label)
         | None => ReasonReact.null
+        }
+      )
+      (
+        switch (subLabel) {
+          | Some(subLabel) =>
+            <div className="sub-label">
+              {ReasonReact.string(subLabel)}
+            </div>
+          | None => ReasonReact.null
         }
       )
     </button>,
