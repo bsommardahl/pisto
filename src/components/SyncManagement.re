@@ -120,7 +120,7 @@ let make = _children => {
       </table>
       <Button
         local=true
-        onClick=((_) => saveChanges(getConfigFromState()))
+        onClick=(_ => saveChanges(getConfigFromState()))
         label="action.save"
       />
       <div className="sharing no-float">
@@ -131,7 +131,7 @@ let make = _children => {
             ++ "?cfg="
             ++ (getConfigFromState() |> Config.Database.toString)
           )
-          onChange=((_) => ())
+          onChange=(_ => ())
         />
       </div>
     </div>;
