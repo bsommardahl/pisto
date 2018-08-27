@@ -128,7 +128,7 @@ let removeOrder = (order: Order.orderVm, onFinish: Order.orderVm => unit) =>
   switch (order.id) {
   | None => onFinish(order)
   | Some(id) =>
-    OrderStore.remove(id)
+    OrderStore.remove(~id)
     |> Js.Promise.then_(() => {
          onFinish(order);
          Js.Promise.resolve(Js.Console.log("Removed order."));

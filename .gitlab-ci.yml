@@ -10,13 +10,13 @@ before_script:
 test:
   stage: test
   script:
-    - CI=true npm test
+    - npm test
 
 build:
   stage: build
   script: 
   script:
-    - CI=true npm run build
+    - npm run build
   artifacts:
     paths:
       - build
