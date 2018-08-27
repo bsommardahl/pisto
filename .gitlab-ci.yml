@@ -1,4 +1,4 @@
-image: node:latest
+image: node:10.3.0
 
 cache:
   paths:
