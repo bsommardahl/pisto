@@ -12,10 +12,18 @@ test:
   script:
     - CI=true npm test
 
+build:
+  stage: build
+  script: 
+  script:
+    - CI=true npm run build
+  artifacts:
+    paths:
+      - build
+
 pages:
   stage: deploy
   script:
-    - CI=true npm run build
     - rm -rf public
     - mv build public
   artifacts:
