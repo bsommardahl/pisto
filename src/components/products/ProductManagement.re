@@ -3,8 +3,7 @@ module ProductManager = ItemManager.Create(ProductStore);
 let component = ReasonReact.statelessComponent("ProductManagement");
 
 let mapValuesToNewProduct =
-    (values: ProductEdit.EditProductForm.values)
-    : Product.NewProduct.t => {
+    (values: ProductEdit.EditProductForm.values): Product.NewProduct.t => {
   sku: values.sku,
   name: values.name,
   suggestedPrice: values.price |> Money.toT,
@@ -14,7 +13,6 @@ let mapValuesToNewProduct =
     ++ values.taxRate
     |> Tax.Calculation.toMethod,
   tags: values.tags |> Tags.toList,
-  onHand: 0,
   startDate: None,
   endDate: None,
   department: "",
@@ -37,7 +35,6 @@ let mapValuesToProduct =
     ++ values.taxRate
     |> Tax.Calculation.toMethod,
   tags: values.tags |> Tags.toList,
-  onHand: product.onHand,
   startDate: product.startDate,
   endDate: product.endDate,
   department: product.department,
@@ -71,15 +68,15 @@ let renderColumns: array(ProductManager.columnRenderer) = [|
 let renderCreate = (~items as products, ~onSubmit, ~onCancel) =>
   <ProductEdit
     products
-    onSubmit=(({values}) => onSubmit(mapValuesToNewProduct(values)))
+    onSubmit={({values}) => onSubmit(mapValuesToNewProduct(values))}
     onCancel
   />;
 
 let renderEdit = (~items as products, ~item as product, ~onSubmit, ~onCancel) =>
   <ProductEdit
-    product=(Some(product))
+    product={Some(product)}
     products
-    onSubmit=(({values}) => onSubmit(mapValuesToProduct(product, values)))
+    onSubmit={({values}) => onSubmit(mapValuesToProduct(product, values))}
     onCancel
   />;
 
