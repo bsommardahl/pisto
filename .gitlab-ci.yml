@@ -1,6 +1,7 @@
 image: node:10.3.0
 
 cache:
+  key: "$CI_COMMIT_REF_NAME"
   paths:
     - node_modules/
 
