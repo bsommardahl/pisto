@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {value: string};
 
 type action =
@@ -20,22 +22,18 @@ let make = (~value="", ~onFinish, ~className="", _children) => {
     | Change(text) => ReasonReact.Update({value: text})
     | Reset => ReasonReact.Update({value: ""})
     },
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
+  render: self =>
     <div>
       <input
-        onChange=(ev => self.send(Change(getVal(ev))))
-        className=("search-input " ++ className)
-        value=self.state.value
+        onChange={ev => self.send(Change(getVal(ev)))}
+        className={"search-input " ++ className}
+        value={self.state.value}
         placeholder="Search a product..."
       />
       <Button
-        onClick=((_) => onFinish(self.state.value))
+        onClick={_ => onFinish(self.state.value)}
         local=true
         label="modal.SearchProduct"
       />
-    </div>;
-  },
+    </div>,
 };

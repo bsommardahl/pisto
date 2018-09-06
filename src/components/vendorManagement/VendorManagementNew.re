@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {
   name: string,
   percent: string,
@@ -23,21 +25,18 @@ let make = (~create, _children) => {
       self.send(ClearInputs);
       create(newVendor);
     };
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
     <tr>
       <td />
       <td>
         <input
-          value=self.state.name
-          onChange=(ev => self.send(ChangeName(getVal(ev))))
+          value={self.state.name}
+          onChange={ev => self.send(ChangeName(getVal(ev)))}
         />
       </td>
       <td>
         <Button
           local=true
-          onClick=(_ => finishedEnteringData())
+          onClick={_ => finishedEnteringData()}
           label="action.create"
         />
       </td>

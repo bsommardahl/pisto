@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type mode =
   | TouchToEdit
   | EditOnly
@@ -86,27 +88,22 @@ let make =
       )
     | KeyDown(_) => ReasonReact.NoUpdate
     },
-  render: self => {
-    let getVal = ev => {
-      let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
-      value;
-    };
+  render: self =>
     self.state.modifying ?
       <div>
         <input
-          value=self.state.value
+          value={self.state.value}
           placeholder
           autoFocus
-          onChange=(ev => self.send(ValueChanged(getVal(ev))))
-          onKeyDown=(
-            event => self.send(KeyDown(ReactEventRe.Keyboard.which(event)))
-          )
-          className=(big ? "big-text" : "")
+          onChange={ev => self.send(ValueChanged(getVal(ev)))}
+          onKeyDown={
+            event => self.send(KeyDown(ReactEvent.Keyboard.which(event)))
+          }
+          className={big ? "big-text" : ""}
         />
         <ValidationMessage
-          hidden=(! required || required && self.state.value !== "")
+          hidden={!required || required && self.state.value !== ""}
         />
       </div> :
-      <div onClick=(_ => self.send(EnableMod))> (ReactUtils.s(text)) </div>;
-  },
+      <div onClick={_ => self.send(EnableMod)}> {ReactUtils.s(text)} </div>,
 };

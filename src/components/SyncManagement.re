@@ -1,6 +1,8 @@
-[@bs.val] external protocol : string = "window.location.protocol";
+[@bs.val] external protocol: string = "window.location.protocol";
 
-[@bs.val] external host : string = "window.location.host";
+[@bs.val] external host: string = "window.location.host";
+
+open ReactUtils;
 
 type state = {
   host: string,
@@ -59,16 +61,13 @@ let make = _children => {
       ReasonReact.Update({...state, password: newVal})
     },
   render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
     let thisPageUrl = () => {
       let url = ReasonReact.Router.dangerouslyGetInitialUrl();
       let joinStrings = l => l |> Array.of_list |> Js.Array.joinWith("/");
       let host: string = protocol ++ "//" ++ host ++ "/";
       host ++ (url.path |> joinStrings);
     };
-    let getConfigFromState = () : Config.Database.syncConnectionConfig => {
+    let getConfigFromState = (): Config.Database.syncConnectionConfig => {
       host: self.state.host,
       options: {
         "auth": {
@@ -88,50 +87,50 @@ let make = _children => {
       ReasonReact.Router.push("sync");
     };
     <div className="config-management">
-      <h2> (ReactUtils.sloc("admin.config.remote.header")) </h2>
+      <h2> {ReactUtils.sloc("admin.config.remote.header")} </h2>
       <table>
         <tr>
-          <th> (ReactUtils.sloc("admin.config.remote.host")) </th>
+          <th> {ReactUtils.sloc("admin.config.remote.host")} </th>
           <td>
             <input
-              value=self.state.host
-              onChange=(ev => self.send(RemoteHostChanged(getVal(ev))))
+              value={self.state.host}
+              onChange={ev => self.send(RemoteHostChanged(getVal(ev)))}
             />
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.sloc("admin.config.remote.username")) </th>
+          <th> {ReactUtils.sloc("admin.config.remote.username")} </th>
           <td>
             <input
-              value=self.state.username
-              onChange=(ev => self.send(RemoteUsernameChanged(getVal(ev))))
+              value={self.state.username}
+              onChange={ev => self.send(RemoteUsernameChanged(getVal(ev)))}
             />
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.sloc("admin.config.remote.password")) </th>
+          <th> {ReactUtils.sloc("admin.config.remote.password")} </th>
           <td>
             <input
-              value=self.state.password
-              onChange=(ev => self.send(RemotePasswordChanged(getVal(ev))))
+              value={self.state.password}
+              onChange={ev => self.send(RemotePasswordChanged(getVal(ev)))}
             />
           </td>
         </tr>
       </table>
       <Button
         local=true
-        onClick=(_ => saveChanges(getConfigFromState()))
+        onClick={_ => saveChanges(getConfigFromState())}
         label="action.save"
       />
       <div className="sharing no-float">
-        <h4> (ReactUtils.sloc("admin.config.remote.share")) </h4>
+        <h4> {ReactUtils.sloc("admin.config.remote.share")} </h4>
         <input
-          value=(
+          value={
             thisPageUrl()
             ++ "?cfg="
             ++ (getConfigFromState() |> Config.Database.toString)
-          )
-          onChange=(_ => ())
+          }
+          onChange={_ => ()}
         />
       </div>
     </div>;

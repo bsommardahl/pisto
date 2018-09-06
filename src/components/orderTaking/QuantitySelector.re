@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {value: int};
 
 type action =
@@ -28,29 +30,25 @@ let make = (~onChange, ~value, _children) => {
         (self => onChange(self.state.value)),
       )
     },
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
+  render: self =>
     <div className="quantitySelectorDiv">
       <div className="quantityDivider" />
       <Button
         className="smallItems-card"
         iconClass="fas fa-angle-down"
-        onClick=(_ => self.send(Subtract))
+        onClick={_ => self.send(Subtract)}
       />
       <input
         className="quantityInput"
-        _type="numbers"
-        value=(self.state.value |> string_of_int)
-        onChange=(ev => self.send(Change(getVal(ev))))
+        type_="numbers"
+        value={self.state.value |> string_of_int}
+        onChange={ev => self.send(Change(getVal(ev)))}
       />
       <div className="quantityDivider" />
       <Button
         className="smallItems-card pay-button-card"
         iconClass="fas fa-angle-up"
-        onClick=(_ => self.send(Add))
+        onClick={_ => self.send(Add)}
       />
-    </div>;
-  },
+    </div>,
 };

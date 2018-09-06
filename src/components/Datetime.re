@@ -10,7 +10,7 @@ external makeProps :
     ~input: bool=?,
     ~value: Js.Date.t=?,
     ~onBlur: MomentRe.Moment.t => unit=?,
-    ~onFocus: ReactEventRe.Focus.t => unit=?,
+    ~onFocus: ReactEvent.Focus.t => unit=?,
     ~onChange: MomentRe.Moment.t => unit=?,
     unit
   ) =>

@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {
   name: string,
   url: string,
@@ -53,8 +55,6 @@ let make = (~create, _children) => {
       self.send(ClearInputs);
       create(newWebhook);
     };
-    let getVal = ev =>
-      ReactDOMRe.domElementToObj(ReactEventRe.Form.target(ev))##value;
     <tr>
       <td>
         <input

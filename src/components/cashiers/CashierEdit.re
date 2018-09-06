@@ -13,7 +13,7 @@ module CashierFormParams = {
 let validationMessage = message =>
   switch (message) {
   | None => ReasonReact.null
-  | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
+  | Some(msg) => <span className="invalid"> {ReactUtils.sloc(msg)} </span>
   };
 
 module EditCashierForm = ReForm.Create(CashierFormParams);
@@ -37,45 +37,45 @@ let make =
         (`name, Required),
         (`pin, Custom(v => v.pin |> isUnique(cashier.pin))),
       ]>
-      ...(
+      ...{
            ({handleSubmit, handleChange, form, getErrorForField}) =>
              <form
-               onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
+               onSubmit={ReForm.Helpers.handleDomFormSubmit(handleSubmit)}>
                <div>
-                 (ReactUtils.sloc("cashier.name"))
+                 {ReactUtils.sloc("cashier.name")}
                  <input
-                   value=form.values.name
-                   onChange=(
+                   value={form.values.name}
+                   onChange={
                      ReForm.Helpers.handleDomFormChange(handleChange(`name))
-                   )
+                   }
                  />
-                 (validationMessage(getErrorForField(`name)))
+                 {validationMessage(getErrorForField(`name))}
                </div>
                <div>
-                 (ReactUtils.sloc("cashier.pin"))
+                 {ReactUtils.sloc("cashier.pin")}
                  <input
-                   value=form.values.pin
-                   onChange=(
+                   value={form.values.pin}
+                   onChange={
                      ReForm.Helpers.handleDomFormChange(handleChange(`pin))
-                   )
+                   }
                  />
-                 (validationMessage(getErrorForField(`pin)))
+                 {validationMessage(getErrorForField(`pin))}
                </div>
                <div className="modal-footer">
                  <Button
-                   onClick=(_ => onCancel())
+                   onClick={_ => onCancel()}
                    className="cancel-button-card"
                    label="action.cancelModal"
                    local=true
                  />
                  <Button
-                   _type="submit"
+                   type_="submit"
                    className="pay-button-card"
                    label="action.done"
                    local=true
                  />
                </div>
              </form>
-         )
+         }
     </EditCashierForm>,
 };

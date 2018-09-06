@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {
   language: string,
   deviceId: string,
@@ -69,34 +71,31 @@ let make = _children => {
   render: self => {
     let handleDateChange = moment =>
       self.send(NowChanged(Some(moment |> MomentRe.Moment.valueOf)));
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
     <div className="config-management">
-      <h2> (ReactUtils.sloc("admin.config.application.header")) </h2>
+      <h2> {ReactUtils.sloc("admin.config.application.header")} </h2>
       <table>
         <tr>
-          <th> (ReactUtils.sloc("admin.config.application.language")) </th>
+          <th> {ReactUtils.sloc("admin.config.application.language")} </th>
           <td>
             <input
-              value=self.state.language
-              onChange=(ev => self.send(LanguageChanged(getVal(ev))))
+              value={self.state.language}
+              onChange={ev => self.send(LanguageChanged(getVal(ev)))}
             />
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.sloc("admin.config.application.deviceId")) </th>
+          <th> {ReactUtils.sloc("admin.config.application.deviceId")} </th>
           <td>
             <input
-              value=self.state.deviceId
-              onChange=(ev => self.send(DeviceIdChanged(getVal(ev))))
+              value={self.state.deviceId}
+              onChange={ev => self.send(DeviceIdChanged(getVal(ev)))}
             />
           </td>
         </tr>
         <tr>
-          <th> (ReactUtils.sloc("admin.config.application.now")) </th>
+          <th> {ReactUtils.sloc("admin.config.application.now")} </th>
           <td>
-            (
+            {
               switch (self.state.now) {
               | None =>
                 <Button
@@ -106,12 +105,12 @@ let make = _children => {
                 />
               | Some(d) =>
                 <div>
-                  (
+                  {
                     if (self.state.editingDate) {
                       <Datetime
                         className="date"
-                        value=(d |> Js.Date.fromFloat)
-                        locale=(language |> Js.String.toLowerCase)
+                        value={d |> Js.Date.fromFloat}
+                        locale={language |> Js.String.toLowerCase}
                         timeFormat=false
                         input=false
                         onChange=handleDateChange
@@ -119,14 +118,14 @@ let make = _children => {
                     } else {
                       <input
                         type_="text"
-                        value=(
+                        value={
                           language === "ES" ?
                             d |> Date.toDisplayDate : d |> Date.toDisplayDateEN
-                        )
+                        }
                         onClick=(_ => self.send(ShowDateTime))
                       />;
                     }
-                  )
+                  }
                   <Button
                     local=true
                     label="admin.config.application.now.default"
@@ -134,12 +133,12 @@ let make = _children => {
                   />
                 </div>
               }
-            )
+            }
           </td>
         </tr>
       </table>
       <Button
-        onClick=(_ => self.send(SaveConfig))
+        onClick={_ => self.send(SaveConfig)}
         local=true
         label="action.save"
       />

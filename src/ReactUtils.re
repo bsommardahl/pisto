@@ -7,3 +7,5 @@ let sopt = (str: option(string)) =>
   | Some(thing) => ReasonReact.string(thing)
   | None => ReasonReact.string("")
   };
+
+let getVal = ev => ev->ReactEvent.Form.target##value;

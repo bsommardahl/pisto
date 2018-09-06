@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {currentValue: string};
 
 type action =
@@ -29,18 +31,14 @@ let make =
       })
     },
   initialState: () => {currentValue: amount |> Money.toDisplay},
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
+  render: self =>
     <div className="money-input" key>
       <input
         className="money"
-        value=self.state.currentValue
-        onChange=(ev => self.send(UpdateCurrentValue(getVal(ev))))
-        onBlur=(_ev => self.send(FinishedEditing))
-        onFocus=((_) => self.send(StartEditing))
+        value={self.state.currentValue}
+        onChange={ev => self.send(UpdateCurrentValue(getVal(ev)))}
+        onBlur={_ev => self.send(FinishedEditing)}
+        onFocus={_ => self.send(StartEditing)}
       />
-    </div>;
-  },
+    </div>,
 };
