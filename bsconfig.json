@@ -14,6 +14,7 @@
   "bs-dependencies": [
     "@ahrefs/bs-reactstrap",
     "@glennsl/bs-json",
+    "bs-jest",
     "reason-react",
     "bs-most",
     "bs-reform",
@@ -23,7 +24,7 @@
     "bs-css",
     "bs-moment"
   ],
-  "bs-dev-dependencies": ["bs-enzyme", "bs-jest"],
+  "bs-dev-dependencies": ["bs-enzyme"],
   "reason": {
     "react-jsx": 2
   },

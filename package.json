@@ -7,6 +7,7 @@
     "@glennsl/bs-json": "^3.0.0",
     "bs-css": "^7.2.0",
     "bs-fetch": "^0.3.0",
+    "bs-jest": "^0.3.2",
     "bs-moment": "^0.3.1",
     "bs-most": "github:bsommardahl/bs-most",
     "bs-platform": "^4.0.5",
@@ -37,7 +38,6 @@
   },
   "devDependencies": {
     "bs-enzyme": "^0.4.0",
-    "bs-jest": "^0.3.2",
     "enzyme-adapter-react-16": "^1.5.0",
     "gh-pages": "^1.2.0",
     "jest-localstorage-mock": "^2.2.0"
