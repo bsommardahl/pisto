@@ -1,8 +1,8 @@
 [%bs.raw {|require('react-datetime/css/react-datetime.css')|}];
-[@bs.module] external reactClass : ReasonReact.reactClass = "react-datetime";
+[@bs.module] external reactClass: ReasonReact.reactClass = "react-datetime";
 
 [@bs.obj]
-external makeProps :
+external makeProps:
   (
     ~className: string=?,
     ~locale: string=?,

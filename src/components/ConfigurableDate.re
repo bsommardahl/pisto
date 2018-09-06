@@ -1,12 +1,14 @@
-let addTime = (now, t) : Date.t => {
+let addTime = (now, t): Date.t => {
   let n = Js.Date.fromFloat(now);
   Js.Date.fromFloat(t)
-  |. Js.Date.setHoursMS(
-       ~hours=Js.Date.getHours(n),
-       ~minutes=Js.Date.getMinutes(n),
-       ~seconds=Js.Date.getSeconds(n),
-       (),
-     );
+  ->(
+      Js.Date.setHoursMS(
+        ~hours=Js.Date.getHours(n),
+        ~minutes=Js.Date.getMinutes(n),
+        ~seconds=Js.Date.getSeconds(n),
+        (),
+      )
+    );
 };
 
 let now = () =>
