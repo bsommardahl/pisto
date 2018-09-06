@@ -12,14 +12,14 @@
     }
   ],
   "bs-dependencies": [
+    "@ahrefs/bs-reactstrap",
+    "@glennsl/bs-json",
     "reason-react",
     "bs-most",
     "bs-reform",
     "bs-fetch",
-    "@glennsl/bs-json",
     "cafe-domain",
     "cafe-data",
-    "@ahrefs/bs-reactstrap",
     "bs-css",
     "bs-moment"
   ],
