@@ -21,14 +21,10 @@ let make = _children => {
   initialState: () => {orders: []},
   didMount: self => {
     loadOpenOrders(self.send);
-    ();
+    let intervalId =
+      Js.Global.setInterval(() => loadOpenOrders(self.send), 5000);
+    self.onUnmount(() => Js.Global.clearInterval(intervalId));
   },
-  subscriptions: self => [
-    Sub(
-      () => Js.Global.setInterval(() => loadOpenOrders(self.send), 5000),
-      Js.Global.clearInterval,
-    ),
-  ],
   reducer: (action, _state) =>
     switch (action) {
     | OrdersLoaded(orders) =>
@@ -57,18 +53,18 @@ let make = _children => {
     let selectOpenOrder = (order: Order.orderVm) =>
       self.send(SelectOrder(order));
     <div className="open-orders">
-      (
+      {
         self.state.orders
         |> List.map((o: Order.orderVm) =>
              <OpenOrderCard
                order=o
-               onSelect=(_event => selectOpenOrder(o))
-               key=(o.createdOn |> string_of_float)
+               onSelect={_event => selectOpenOrder(o)}
+               key={o.createdOn |> string_of_float}
              />
            )
         |> Array.of_list
         |> ReasonReact.array
-      )
+      }
     </div>;
   },
 };

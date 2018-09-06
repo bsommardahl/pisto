@@ -13,7 +13,7 @@ module DiscountFormParams = {
 let validationMessage = message =>
   switch (message) {
   | None => ReasonReact.null
-  | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
+  | Some(msg) => <span className="invalid"> {ReactUtils.sloc(msg)} </span>
   };
 
 module EditDiscountForm = ReForm.Create(DiscountFormParams);
@@ -48,7 +48,7 @@ let make =
       };
     <EditDiscountForm
       onSubmit
-      initialState=(
+      initialState={
         switch (discount) {
         | None => {name: "", percent: ""}
         | Some(disc) => {
@@ -56,41 +56,41 @@ let make =
             percent: disc.percent |> Percent.toDisplay,
           }
         }
-      )
+      }
       schema=[
         (`name, Custom(v => v.name |> isUnique(discount))),
         (`percent, Required),
       ]>
-      ...(
+      ...{
            ({handleSubmit, handleChange, form, getErrorForField}) => {
              let field = (label, value, fieldType: DiscountFormParams.fields) =>
                <div className="field-input">
                  <label>
-                   (ReactUtils.sloc(label))
+                   {ReactUtils.sloc(label)}
                    <input
                      value
-                     onChange=(
+                     onChange={
                        ReForm.Helpers.handleDomFormChange(
                          handleChange(fieldType),
                        )
-                     )
+                     }
                    />
                  </label>
-                 (validationMessage(getErrorForField(fieldType)))
+                 {validationMessage(getErrorForField(fieldType))}
                </div>;
              <form
-               onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
-               (field("discount.name", form.values.name, `name))
-               (field("discount.percent", form.values.percent, `percent))
+               onSubmit={ReForm.Helpers.handleDomFormSubmit(handleSubmit)}>
+               {field("discount.name", form.values.name, `name)}
+               {field("discount.percent", form.values.percent, `percent)}
                <div className="modal-footer">
                  <Button
-                   onClick=(_ => onCancel())
+                   onClick={_ => onCancel()}
                    className="cancel-button-card"
                    label="action.cancelModal"
                    local=true
                  />
                  <Button
-                   _type="submit"
+                   type_="submit"
                    className="pay-button-card"
                    label="action.done"
                    local=true
@@ -98,7 +98,7 @@ let make =
                </div>
              </form>;
            }
-         )
+         }
     </EditDiscountForm>;
   },
 };

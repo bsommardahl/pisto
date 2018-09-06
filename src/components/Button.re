@@ -6,7 +6,7 @@ let make =
       ~label=?,
       ~subLabel=?,
       ~onClick=_ => (),
-      ~_type="button",
+      ~type_="button",
       ~disabled=false,
       ~local=false,
       ~className="",
@@ -15,31 +15,29 @@ let make =
   ...component,
   render: _self =>
     <button
-      _type
-      onClick=(_ => onClick(label))
+      type_
+      onClick={_ => onClick(label)}
       disabled
-      className=("card " ++ className)>
-      (
+      className={"card " ++ className}>
+      {
         switch (iconClass) {
         | Some(iconClass) => <i className=iconClass />
         | None => ReasonReact.null
         }
-      )
-      (
+      }
+      {
         switch (label) {
         | Some(label) =>
           ReactUtils.s(local ? label |> Lang.translate : label)
         | None => ReasonReact.null
         }
-      )
-      (
+      }
+      {
         switch (subLabel) {
-          | Some(subLabel) =>
-            <div className="sub-label">
-              {ReasonReact.string(subLabel)}
-            </div>
-          | None => ReasonReact.null
+        | Some(subLabel) =>
+          <div className="sub-label"> {ReasonReact.string(subLabel)} </div>
+        | None => ReasonReact.null
         }
-      )
+      }
     </button>,
 };

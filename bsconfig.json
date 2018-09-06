@@ -12,18 +12,19 @@
     }
   ],
   "bs-dependencies": [
+    "@ahrefs/bs-reactstrap",
+    "@glennsl/bs-json",
+    "bs-jest",
     "reason-react",
     "bs-most",
     "bs-reform",
     "bs-fetch",
-    "@glennsl/bs-json",
     "cafe-domain",
     "cafe-data",
-    "@ahrefs/bs-reactstrap",
     "bs-css",
     "bs-moment"
   ],
-  "bs-dev-dependencies": ["bs-enzyme", "bs-jest"],
+  "bs-dev-dependencies": ["bs-enzyme"],
   "reason": {
     "react-jsx": 2
   },

@@ -55,10 +55,7 @@ let make = (~vendor, ~remove, ~modify, _children) => {
       })
     },
   render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
-    let saveModification = (_) => {
+    let saveModification = _ => {
       let modified = self.state.modifiedVendor;
       modify(modified);
       self.send(SaveMod(modified));
@@ -67,27 +64,27 @@ let make = (~vendor, ~remove, ~modify, _children) => {
       <DeleteModal
         contentLabel="modal.deleteOrderContent"
         label="modal.deleteOrder"
-        isOpen=self.state.showModal
-        onConfirm=(() => remove(self.state.originalVendor))
-        onCancel=(() => self.send(HideDialog))
+        isOpen={self.state.showModal}
+        onConfirm={() => remove(self.state.originalVendor)}
+        onCancel={() => self.send(HideDialog)}
       />
-      (
+      {
         switch (self.state.modifying) {
         | false =>
           <tr>
             <td>
               <Button
                 local=true
-                onClick=((_) => self.send(EnableMod))
+                onClick=(_ => self.send(EnableMod))
                 label="action.edit"
               />
             </td>
-            <td> (s(self.state.originalVendor.name)) </td>
+            <td> {s(self.state.originalVendor.name)} </td>
             <td>
               <Button
                 local=true
                 className="remove-button-card"
-                onClick=((_) => self.send(ShowDialog))
+                onClick=(_ => self.send(ShowDialog))
                 label="action.delete"
               />
             </td>
@@ -97,13 +94,13 @@ let make = (~vendor, ~remove, ~modify, _children) => {
             <td>
               <Button
                 local=true
-                onClick=((_) => self.send(CancelMod))
+                onClick=(_ => self.send(CancelMod))
                 label="action.cancel"
               />
             </td>
             <td>
               <input
-                value=self.state.modifiedVendor.name
+                value={self.state.modifiedVendor.name}
                 onChange=(ev => self.send(ChangeName(getVal(ev))))
               />
             </td>
@@ -116,7 +113,7 @@ let make = (~vendor, ~remove, ~modify, _children) => {
             </td>
           </tr>
         }
-      )
+      }
     </div>;
   },
 };

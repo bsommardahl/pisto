@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {customerName: string};
 
 type action =
@@ -14,22 +16,20 @@ let make = (~onStartNewOrder, _children) => {
       ReasonReact.Update({customerName: customerName})
     },
   render: self => {
-    let handleChange = ({ReasonReact.send}, event) => {
-      let value = ReactDOMRe.domElementToObj(ReactEventRe.Form.target(event))##value;
-      send(UpdateCustomerName(value));
-    };
+    let handleChange = ({ReasonReact.send}, event) =>
+      send(UpdateCustomerName(getVal(event)));
     <div className="home">
       <div className="header">
         <input
-          _type="text"
+          type_="text"
           className="customer-name-input"
-          value=self.state.customerName
+          value={self.state.customerName}
           name="customerName"
-          onChange=(handleChange(self))
+          onChange={handleChange(self)}
         />
         <Button
           local=true
-          onClick=(_event => onStartNewOrder(self.state.customerName))
+          onClick={_event => onStartNewOrder(self.state.customerName)}
           label="order.startNew"
         />
       </div>

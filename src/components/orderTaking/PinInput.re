@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {
   pin: string,
   cashiers: list(Cashier.t),
@@ -74,18 +76,14 @@ let make =
         ),
       )
     },
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
+  render: self =>
     <div className="pin-entry">
-      (ReactUtils.s("PIN:"))
+      {ReactUtils.s("PIN:")}
       <input
         autoFocus
         className="big pin"
-        value=self.state.pin
-        onChange=(ev => self.send(Update(getVal(ev))))
+        value={self.state.pin}
+        onChange={ev => self.send(Update(getVal(ev)))}
       />
-    </div>;
-  },
+    </div>,
 };

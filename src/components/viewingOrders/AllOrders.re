@@ -39,7 +39,12 @@ let make = (~startDate, ~endDate, _children) => {
   initialState: () => {startDate, endDate, orders: [], interval: (-1)},
   didMount: self => {
     loadClosedOrders(self.state, self.send);
-    ();
+    let intervalId =
+      Js.Global.setInterval(
+        () => loadClosedOrders(self.state, self.send),
+        5000,
+      );
+    self.onUnmount(() => Js.Global.clearInterval(intervalId));
   },
   reducer: (action, state) =>
     switch (action) {
@@ -49,27 +54,17 @@ let make = (~startDate, ~endDate, _children) => {
         (_self => ReasonReact.Router.push("order?orderId=" ++ id)),
       )
     },
-  subscriptions: self => [
-    Sub(
-      () =>
-        Js.Global.setInterval(
-          () => loadClosedOrders(self.state, self.send),
-          5000,
-        ),
-      Js.Global.clearInterval,
-    ),
-  ],
   render: self =>
     <div className="all-orders">
       <div className="header">
         <div className="header-menu" />
         <div className="header-options">
-          (ReactUtils.s("allOrders.header" |> Lang.translate))
+          {ReactUtils.s("allOrders.header" |> Lang.translate)}
         </div>
       </div>
       <OrderList
-        orders=self.state.orders
-        onSelect=(
+        orders={self.state.orders}
+        onSelect={
           order =>
             self.send(
               ViewOrder(
@@ -79,7 +74,7 @@ let make = (~startDate, ~endDate, _children) => {
                 },
               ),
             )
-        )
+        }
       />
     </div>,
 };
