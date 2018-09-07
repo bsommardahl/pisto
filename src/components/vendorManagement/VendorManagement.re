@@ -42,7 +42,7 @@ let make = _children => {
   render: self => {
     let goBack = _ => ReasonReact.Router.push("/admin");
     let removeVendor = (p: Vendor.t) => {
-      VendorStore.remove(p.id)
+      VendorStore.remove(~id=p.id)
       |> then_(_ => {
            self.send(VendorRemoved(p));
            resolve();

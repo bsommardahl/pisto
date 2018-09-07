@@ -32,7 +32,7 @@ module ProductFormParams = {
 let validationMessage = message =>
   switch (message) {
   | None => ReasonReact.null
-  | Some(msg) => <span className="invalid"> (ReactUtils.sloc(msg)) </span>
+  | Some(msg) => <span className="invalid"> {ReactUtils.sloc(msg)} </span>
   };
 
 module EditProductForm = ReForm.Create(ProductFormParams);
@@ -75,7 +75,7 @@ let make =
       };
     <EditProductForm
       onSubmit
-      initialState=(
+      initialState={
         switch (product) {
         | None => {
             name: "",
@@ -101,7 +101,7 @@ let make =
             tags: prod.tags |> Tags.toCSV,
           };
         }
-      )
+      }
       schema=[
         (`name, Required),
         (`sku, Custom(v => v.sku |> isUnique(product))),
@@ -113,85 +113,85 @@ let make =
         ),
         (`tags, Required),
       ]>
-      ...(
+      ...{
            ({handleSubmit, handleChange, form, getErrorForField}) => {
              let field = (label, value, fieldType: ProductFormParams.fields) =>
                <div className="field-input productFields">
                  <label>
-                   (ReactUtils.sloc(label))
+                   {ReactUtils.sloc(label)}
                    <input
                      value
-                     onChange=(
+                     onChange={
                        ReForm.Helpers.handleDomFormChange(
                          handleChange(fieldType),
                        )
-                     )
+                     }
                    />
                  </label>
-                 (validationMessage(getErrorForField(fieldType)))
+                 {validationMessage(getErrorForField(fieldType))}
                </div>;
              <form
-               onSubmit=(ReForm.Helpers.handleDomFormSubmit(handleSubmit))>
-               (field("product.name", form.values.name, `name))
-               (field("product.sku", form.values.sku, `sku))
-               (field("product.price", form.values.price, `price))
+               onSubmit={ReForm.Helpers.handleDomFormSubmit(handleSubmit)}>
+               {field("product.name", form.values.name, `name)}
+               {field("product.sku", form.values.sku, `sku)}
+               {field("product.price", form.values.price, `price)}
                <div className="field-input">
                  <label>
-                   (ReactUtils.sloc("product.taxCalculationMethod"))
+                   {ReactUtils.sloc("product.taxCalculationMethod")}
                    <select
-                     value=form.values.taxCalculationMethod
-                     onChange=(
+                     value={form.values.taxCalculationMethod}
+                     onChange={
                        ReForm.Helpers.handleDomFormChange(
                          handleChange(`taxCalculationMethod),
                        )
-                     )>
+                     }>
                      <option value="totalFirst">
-                       (ReactUtils.s("Total First"))
+                       {ReactUtils.s("Total First")}
                      </option>
                      <option value="subTotalFirst">
-                       (ReactUtils.s("Subtotal First"))
+                       {ReactUtils.s("Subtotal First")}
                      </option>
                      <option value="exempt">
-                       (ReactUtils.s("Exempt"))
+                       {ReactUtils.s("Exempt")}
                      </option>
                    </select>
                  </label>
-                 (validationMessage(getErrorForField(`taxCalculationMethod)))
+                 {validationMessage(getErrorForField(`taxCalculationMethod))}
                </div>
-               (
+               {
                  if (form.values.taxCalculationMethod !== "exempt") {
                    <div className="field-input productFields">
                      <label>
-                       (ReactUtils.sloc("product.taxRate"))
+                       {ReactUtils.sloc("product.taxRate")}
                        <input
-                         _type="number"
+                         type_="number"
                          min=1
                          max="100"
-                         value=form.values.taxRate
-                         onChange=(
+                         value={form.values.taxRate}
+                         onChange={
                            ReForm.Helpers.handleDomFormChange(
                              handleChange(`taxRate),
                            )
-                         )
+                         }
                        />
                      </label>
-                     (validationMessage(getErrorForField(`taxRate)))
+                     {validationMessage(getErrorForField(`taxRate))}
                    </div>;
                  } else {
                    ReasonReact.null;
                  }
-               )
-               (field("product.tags", form.values.tags, `tags))
+               }
+               {field("product.tags", form.values.tags, `tags)}
                <div className="modal-footer">
                  <div className="spaceDivider" />
                  <Button
-                   onClick=(_ => onCancel())
+                   onClick={_ => onCancel()}
                    className="cancel-button-card"
                    label="action.cancelModal"
                    local=true
                  />
                  <Button
-                   _type="submit"
+                   type_="submit"
                    className="pay-button-card"
                    label="action.done"
                    local=true
@@ -199,7 +199,7 @@ let make =
                </div>
              </form>;
            }
-         )
+         }
     </EditProductForm>;
   },
 };

@@ -1,10 +1,10 @@
-[@bs.val] external window : Dom.window = "";
+[@bs.val] external window: Dom.window = "";
 
 [@bs.send]
-external addEventListener : (Dom.window, string, 'a => unit) => unit = "";
+external addEventListener: (Dom.window, string, 'a => unit) => unit = "";
 
 [@bs.send]
-external removeEventListener : (Dom.window, string, 'a => unit) => unit = "";
+external removeEventListener: (Dom.window, string, 'a => unit) => unit = "";
 
 type state = {value: string};
 
@@ -85,20 +85,15 @@ let make =
       })
     | Reset => ReasonReact.Update({value: ""})
     },
-  subscriptions: self => {
-    let logKey = ev => self.send(KeyDown(ReactEventRe.Keyboard.which(ev)));
-
-    [
-      Sub(
-        () => addEventListener(window, "keydown", logKey),
-        () => removeEventListener(window, "keydown", logKey),
-      ),
-    ];
+  didMount: self => {
+    let logKey = ev => self.send(KeyDown(ReactEvent.Keyboard.which(ev)));
+    addEventListener(window, "keydown", logKey);
+    self.onUnmount(() => removeEventListener(window, "keydown", logKey));
   },
   render: self =>
     <input
       readOnly=true
-      className=("key-input " ++ className)
-      value=self.state.value
+      className={"key-input " ++ className}
+      value={self.state.value}
     />,
 };

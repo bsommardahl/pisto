@@ -20,15 +20,13 @@ let component = ReasonReact.reducerComponent("WebhookManagement");
 
 let make = _children => {
   ...component,
-  didMount: self => {
+  didMount: self =>
     WebhookStore.getAll()
     |> Js.Promise.then_(webhooks => {
          self.send(LoadWebhooks(webhooks));
          Js.Promise.resolve();
        })
-    |> ignore;
-    ();
-  },
+    |> ignore,
   initialState: () => {webhooks: [], intent: Viewing},
   reducer: (action, state) =>
     switch (action) {
@@ -49,11 +47,11 @@ let make = _children => {
       })
     },
   render: self => {
-    let goBack = (_) => ReasonReact.Router.push("/admin");
+    let goBack = _ => ReasonReact.Router.push("/admin");
     let displayDialog = (p: Webhook.t) => self.send(ShowDialog(p));
     let removeWebhook = (p: Webhook.t) => {
-      WebhookStore.remove(p.id)
-      |> then_((_) => {
+      WebhookStore.remove(~id=p.id)
+      |> then_(_ => {
            self.send(WebhookRemoved(p));
            resolve();
          })
@@ -70,7 +68,7 @@ let make = _children => {
       ();
     };
     <div>
-      (
+      {
         switch (self.state.intent) {
         | Deleting(dis) =>
           <DeleteModal
@@ -85,44 +83,46 @@ let make = _children => {
             <div className="header">
               <div className="header-menu">
                 <div className="card wide-card quiet-card" onClick=goBack>
-                  (ReactUtils.s("Atras"))
+                  {ReactUtils.s("Atras")}
                 </div>
               </div>
               <div className="header-options">
-                (ReactUtils.s("Gestion de Webhooks"))
+                {ReactUtils.s("Gestion de Webhooks")}
               </div>
             </div>
             <div className="webhook-management">
               <table className="table">
                 <thead>
                   <tr>
-                    <th> (ReactUtils.s("Nombre")) </th>
-                    <th> (ReactUtils.s("Url")) </th>
-                    <th> (ReactUtils.s("Evento")) </th>
-                    <th> (ReactUtils.s("Fuente")) </th>
+                    <th> {ReactUtils.s("Nombre")} </th>
+                    <th> {ReactUtils.s("Url")} </th>
+                    <th> {ReactUtils.s("Evento")} </th>
+                    <th> {ReactUtils.s("Fuente")} </th>
+                    <th> {ReactUtils.s("Comportamiento")} </th>
+                    <th> {ReactUtils.s("Tipo")} </th>
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  (
+                  {
                     self.state.webhooks
                     |> List.map((d: Webhook.t) =>
                          <WebhookManagementRow
                            webhook=d
                            remove=displayDialog
-                           key=d.id
+                           key={d.id}
                          />
                        )
                     |> Array.of_list
                     |> ReasonReact.array
-                  )
+                  }
                 </tbody>
                 <tfoot> <WebhookManagementNew create=createWebhook /> </tfoot>
               </table>
             </div>
           </div>
         }
-      )
+      }
     </div>;
   },
 };

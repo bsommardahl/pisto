@@ -6,7 +6,7 @@ let make = (~tag: string, ~onSelect, _children) => {
   render: _self =>
     <Button
       key=tag
-      onClick=(_ev => onSelect(tag))
+      onClick={_ev => onSelect(tag)}
       className="tag-card"
       label=tag
     />,

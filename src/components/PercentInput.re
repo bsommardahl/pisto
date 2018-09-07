@@ -1,3 +1,5 @@
+open ReactUtils;
+
 type state = {currentValue: string};
 
 type action =
@@ -30,18 +32,14 @@ let make = (~percent: int, ~onChange, ~key="", ~onValidate=_ => (), _children) =
       })
     },
   initialState: () => {currentValue: percent |> Percent.toDisplay},
-  render: self => {
-    let getVal = ev => ReactDOMRe.domElementToObj(
-                         ReactEventRe.Form.target(ev),
-                       )##value;
+  render: self =>
     <div className="money-input" key>
       <input
         className="money"
-        value=self.state.currentValue
-        onChange=(ev => self.send(UpdateCurrentValue(getVal(ev))))
-        onBlur=(_ev => self.send(FinishedEditing))
-        onFocus=(_ => self.send(StartEditing))
+        value={self.state.currentValue}
+        onChange={ev => self.send(UpdateCurrentValue(getVal(ev)))}
+        onBlur={_ev => self.send(FinishedEditing)}
+        onFocus={_ => self.send(StartEditing)}
       />
-    </div>;
-  },
+    </div>,
 };

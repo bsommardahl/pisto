@@ -3,18 +3,18 @@ let component = ReasonReact.statelessComponent("Admin");
 let make = _children => {
   ...component,
   render: _self => {
-    let go = (u: string) : unit => ReasonReact.Router.push(u);
+    let go = (u: string): unit => ReasonReact.Router.push(u);
     <div className="admin-menu">
       <div className="header">
         <div className="header-options">
-          (ReactUtils.sloc("admin.header"))
+          {ReactUtils.sloc("admin.header")}
         </div>
       </div>
       <div className="admin-menu-buttons">
-        <Button local=true onClick=(_ => go("logs")) label="admin.logs" />
+        <Button local=true onClick={_ => go("logs")} label="admin.logs" />
         <Button
           local=true
-          onClick=(_ => go("products"))
+          onClick={_ => go("products")}
           label="admin.products"
         />
         /* <Button
@@ -29,18 +29,18 @@ let make = _children => {
            /> */
         <Button
           local=true
-          onClick=(_ => go("discounts"))
+          onClick={_ => go("discounts")}
           label="admin.discounts"
         />
         <Button
           local=true
-          onClick=(_ => go("cashiers"))
+          onClick={_ => go("cashiers")}
           label="admin.cashiers"
         />
-        <Button local=true onClick=(_ => go("config")) label="admin.config" />
+        <Button local=true onClick={_ => go("config")} label="admin.config" />
         <Button
           local=true
-          onClick=(_ => go("webhooks"))
+          onClick={_ => go("webhooks")}
           label="admin.webhooks"
         />
       </div>
