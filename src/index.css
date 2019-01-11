@@ -5,6 +5,10 @@ body {
   font-size: 15px;
 }
 
+#Smallchat {
+  display: none;
+}
+
 #Smallchat > iframe {
   right: unset !important;
 }
